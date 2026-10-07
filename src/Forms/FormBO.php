@@ -87,17 +87,18 @@ class FormBO
     }
 
     /**
-     * Run after card edit by admin or agent
+     * Run before card edit by admin or agent
      *
      * @param numeric-string|int $card_id
+     * @param array $newvalues the values about to be saved
      * @return void
      */
-    public static function create_status_log($card_id)
+    public static function create_status_log(int|string $card_id, array $newvalues): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
-        $status = $processed['status'];
-        $oldstatus = $processed['oldstatus'];
+        $status = $newvalues['status'];
+        $oldstatus = Connection::getConnection("cc_card")
+            ->where("id", $card_id)
+            ->value("status");
         if ("$oldstatus" === "$status") {
             return;
         }
@@ -989,16 +990,17 @@ class FormBO
     /**
      * Run before card edit is processed
      * Updates the lock date if the card is being locked
+     *
+     * @param numeric-string|int $card
+     * @param array $newvalues
      * @return void
      */
-    public static function change_card_lock($card)
+    public static function change_card_lock(int|string $card, array $newvalues): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $card_lock_info = Connection::getConnection("cc_card")
             ->where("id", $card)
             ->value("block");
-        if ($card_lock_info != $processed["block"] && $processed["block"] == 1) {
+        if ($card_lock_info != $newvalues["block"] && $newvalues["block"] === "1") {
             Connection::getConnection("cc_card")
                 ->where("id", $card)
                 ->update(["lock_date" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);

@@ -172,12 +172,6 @@ class FormHandler
     public array $update_query_conditions = ["id" => "%id"];
 
     /**
-     * @var array list of key/value pairs that will be added to the edit form as hidden inputs
-     * @todo only used in common/form_data/FG_var_card.inc; why not just use fg_edit_query_hidden_inputs?
-     */
-    public array $FG_EDIT_FORM_HIDDEN_INPUTS = [];
-
-    /**
      * @var array list of key/value pairs that will be added to the add form as hidden inputs
      * @todo only used in customer/form_data/FG_var_signup.inc
      */
@@ -256,10 +250,7 @@ class FormHandler
     public $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = null;
 
     /** @var callable|null Static method of FormBO class executed before editing */
-    public $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = null;
-
-    /** @var callable|null Static method of FormBO class executed after editing */
-    public $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = null;
+    public $FG_ADDITIONAL_FUNCTION_BEFORE_EDIT = null;
 
     /**
      * Foreign keys indexed by table
@@ -1665,8 +1656,8 @@ class FormHandler
             $values[$name] = $value;
         }
 
-        if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)) {
-            ($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)($processed["id"]);
+        if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDIT)) {
+            ($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDIT)($processed["id"], $values);
         }
 
         try {
@@ -1687,11 +1678,6 @@ class FormHandler
                     array_keys($values),
                     array_values($values)
                 );
-            }
-
-            // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-            if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)) {
-                ($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)($processed["id"]);
             }
 
             $this->gotoLocation($this->FG_LOCATION_AFTER_EDIT ?? "?form_action=list");

@@ -854,7 +854,8 @@ if ($popup_select) {
     );
 
     $HD_Form->add_message_intro = "";
-    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = [FormBO::class, "change_card_lock"];
+    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDIT = [FormBO::class, "change_card_lock"];
+    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDIT = [FormBO::class, "create_status_log"];
 
     if (is_admin()) {
         $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_add"];
@@ -862,16 +863,13 @@ if ($popup_select) {
         $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_add_agent"];
         $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = [FormBO::class, "processing_card_del_agent"];
     }
-    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = [FormBO::class, "create_status_log"];
 
     if ($form_action === "ask-edit" || $form_action === "delete") {
         $result_card = Connection::getConnection("cc_card", "status", "sip_buddy", "iax_buddy")
             ->where("id", $id)
             ->first();
 
-        if ($form_action === "ask-edit") {
-            $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";
-        } elseif (!USE_REALTIME) {
+        if ($form_action !== "ask-edit" && !USE_REALTIME) {
             $sip_buddy = $result_card['sip_buddy'] ?? "";
             $iax_buddy = $result_card['iax_buddy'] ?? "";
             if ($sip_buddy && $iax_buddy) {
