@@ -91,7 +91,9 @@ if (is_admin()) {
     );
 } else {
     $id_agent = Agent::id();
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_agent"] = $id_agent;
+    if ($form_action === "ask-add" || $form_action === "add") {
+        $HD_Form->AddEditHidden("id_agent", $id_agent);
+    }
 }
 if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form_action === "ask-delete") {
     $HD_Form->AddEditSqlSelect(
@@ -121,6 +123,7 @@ if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form
 
     if ($form_action === "ask-delete") {
         $HD_Form->AddEditElement(_("Code"), "code");
+    } else {
+        $HD_Form->AddEditHidden("code", generate_unique_value("cc_agent_signup", 10, "code"));
     }
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["code"] = generate_unique_value("cc_agent_signup", 10, "code");
 }

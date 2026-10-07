@@ -36,6 +36,9 @@ use A2billing\Forms\Validator;
  *
  *
 **/
+/**
+ * @var string $form_action
+ */
 
 $HD_Form = new FormHandler(
     "cc_currencies",
@@ -85,7 +88,10 @@ $HD_Form->AddEditElement(
 // Set the filter variables
 $HD_Form->AddListFilter("currency", _("Currency"));
 
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["basecurrency"] = strtoupper(BASE_CURRENCY);
+$form_action ??= "list";
+if ($form_action !== "edit" && $form_action !== "ask-edit") {
+    $HD_Form->AddEditHidden("basecurrency", strtoupper(BASE_CURRENCY));
+}
 
 $HD_Form -> add_message_intro = '';
 

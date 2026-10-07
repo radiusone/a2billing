@@ -108,7 +108,7 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
         validator: [Validator::class, "requiredForeignKey"],
     );
 } elseif ($form_action !== "ask-edit" && $form_action !== "edit") {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
+    $HD_Form->AddEditHidden("id_cc_card", Customer::id());
 
     $HD_Form->AddEditSqlSelect(
         _("Use an existing DID"),

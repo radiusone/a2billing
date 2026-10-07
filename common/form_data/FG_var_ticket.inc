@@ -179,10 +179,10 @@ if ($ticket_type === "agent") {
             "creator",
             "A2B_entity_agent.php"
         );
-    } else {
-        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = Agent::id();
+    } elseif ($form_action === "add" || $form_action === "ask-add") {
+        $HD_Form->AddEditHidden("creator", Agent::id());
     }
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::AGENT;
+    $HD_Form->AddEditHidden("creator_type", Ticket::AGENT);
 } elseif (!is_customer()) {
     $creator_attr = [];
     if ($form_action === 'ask-add' && !empty($username)) {
@@ -199,10 +199,10 @@ if ($ticket_type === "agent") {
         [Validator::class, "numeric"],
         _("Insert the Customer ID")
     );
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::CUSTOMER;
+    $HD_Form->AddEditHidden("creator_type", Ticket::CUSTOMER);
 } else {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::CUSTOMER;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = Customer::id();
+    $HD_Form->AddEditHidden("creator_type", Ticket::CUSTOMER);
+    $HD_Form->AddEditHidden("creator", Customer::id());
 }
 
 $HD_Form->AddEditElement(
@@ -238,12 +238,14 @@ if ($ticket_type === "agent") {
     $HD_Form->AddListFilter("username", _("Account number"));
 }
 
-if (is_admin()) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_admin"] = 0;
-} elseif (is_agent()) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_agent"] = 0;
-} else {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_cust"] = 0;
+if ($form_action === "add" || $form_action === "ask-add") {
+    if (is_admin()) {
+        $HD_Form->AddEditHidden("viewed_admin", 0);
+    } elseif (is_agent()) {
+        $HD_Form->AddEditHidden("viewed_agent", 0);
+    } else {
+        $HD_Form->AddEditHidden("viewed_cust", 0);
+    }
 }
 $HD_Form->edit_message_intro = "";
 $HD_Form->add_message_intro = "";

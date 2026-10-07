@@ -271,41 +271,46 @@ if ($form_action === "add") {
     $pass = generate_random_value("##########");
     $loginkey = generate_random_value("XXXXXXXXXXXXXXXXXXXX");
 
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["iax_buddy"] = $A2B->config["signup"]['iax_account'] ? 1 : 0;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["sip_buddy"] = $A2B->config["signup"]['sip_account'] ? 1 : 0;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expiredays"] = $A2B->config["signup"]['expiredays'];
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expirationdate"] = $A2B->config["signup"]['expirationdate'] ?? ""
-        ?: (new DateTime("+10 years"))->format("Y-m-d H:i:s");
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["typepaid"] = $A2B->config["signup"]['typepaid'];
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["enableexpire"] = $A2B->config["signup"]['enableexpire'] ? 1 : 0;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["runservice"] = $A2B->config["signup"]['runservice'] ? 1 : 0;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["simultaccess"] = $A2B->config["signup"]['simultaccess'] ? 1 : 0;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["credit"] = $A2B->config["signup"]['credit'];
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["username"] = $cardnumber;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["useralias"] = $cardalias;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["uipass"] = $pass;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["loginkey"] = $loginkey;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["status"] = $A2B->config["signup"]['activated']
-        ? ($A2B->config["signup"]['activatedbyuser'] ? '1' : '3')
-        : ($A2B->config["signup"]['activatedbyuser'] ? '2' : '3');
+    $HD_Form->AddEditHidden("iax_buddy", $A2B->config["signup"]['iax_account'] ? 1 : 0);
+    $HD_Form->AddEditHidden("sip_buddy", $A2B->config["signup"]['sip_account'] ? 1 : 0);
+    $HD_Form->AddEditHidden("expiredays", $A2B->config["signup"]['expiredays']);
+    $HD_Form->AddEditHidden(
+        "expirationdate",
+        ($A2B->config["signup"]['expirationdate'] ?? "") ?: (new DateTime("+10 years"))->format("Y-m-d H:i:s")
+    );
+    $HD_Form->AddEditHidden("typepaid", $A2B->config["signup"]['typepaid']);
+    $HD_Form->AddEditHidden("enableexpire", $A2B->config["signup"]['enableexpire'] ? 1 : 0);
+    $HD_Form->AddEditHidden("runservice", $A2B->config["signup"]['runservice'] ? 1 : 0);
+    $HD_Form->AddEditHidden("simultaccess", $A2B->config["signup"]['simultaccess'] ? 1 : 0);
+    $HD_Form->AddEditHidden("credit", $A2B->config["signup"]['credit']);
+    $HD_Form->AddEditHidden("username", $cardnumber);
+    $HD_Form->AddEditHidden("useralias", $cardalias);
+    $HD_Form->AddEditHidden("uipass", $pass);
+    $HD_Form->AddEditHidden("loginkey", $loginkey);
+    $HD_Form->AddEditHidden(
+        "status",
+        $A2B->config["signup"]['activated']
+            ? ($A2B->config["signup"]['activatedbyuser'] ? '1' : '3')
+            : ($A2B->config["signup"]['activatedbyuser'] ? '2' : '3')
+    );
 
     if ($groupid) {
-        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_group"] = $groupid;
+        $HD_Form->AddEditHidden("id_group", $groupid);
     }
 
     if (!is_numeric($subscriber_signup)) {
         if (!empty($callPlan_idlist)) {
             $mytariff = implode(",", $callPlan_idlist);
-            $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $mytariff;
+            $HD_Form->AddEditHidden("tariff", $mytariff);
         } elseif ($tariffid) {
-            $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $tariffid;
+            $HD_Form->AddEditHidden("tariff", $tariffid);
         }
     } else {
         // If Service - find the callplan associate
         $id_callplan = Connection::getConnection("cc_subscription_signup")
             ->where("id", $subscriber_signup)
             ->value("id_callplan");
-        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan ?? "";
+        $HD_Form->AddEditHidden("tariff", $id_callplan ?? "");
     }
 
     $HD_Form->REALTIME_SIP_IAX_INFO = ["username" => $cardnumber, "secret" => $pass];
