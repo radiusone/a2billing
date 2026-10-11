@@ -4,7 +4,16 @@ namespace A2billing\Forms;
 
 use A2billing\Admin;
 use A2billing\Connection;
+use A2billing\Forms\Elements\Edit\DayTime;
+use A2billing\Forms\Elements\Edit\HasMany;
 use A2billing\Forms\Elements\Edit\Hidden;
+use A2billing\Forms\Elements\Edit\Input;
+use A2billing\Forms\Elements\Edit\Popup;
+use A2billing\Forms\Elements\Edit\Radio;
+use A2billing\Forms\Elements\Edit\Section;
+use A2billing\Forms\Elements\Edit\Select;
+use A2billing\Forms\Elements\Edit\Textarea;
+use A2billing\Forms\Elements\EditElement;
 use A2billing\Logger;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
@@ -152,17 +161,7 @@ class FormHandler
     //	-------------------- DATA FOR THE EDITION --------------------
 
     /**
-     * @var array{array{
-     *     type: string,
-     *     label: string,
-     *     table: Builder,
-     *     insert: string,
-     *     foreign_key: string,
-     *     section: string,
-     *     validator: callable|null,
-     *     validation_err: bool,
-     *     attributes: array<string,mixed>
-     * }} List of form elements used to create the edit form
+     * @var EditElement[] List of form elements used to create the edit form
      */
     public array $FG_EDIT_FORM_ELEMENTS = [];
 
@@ -562,20 +561,18 @@ class FormHandler
         string $error_message = "",
         string $check_emptyvalue = "",
         ?callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
-    )
+    ): void
     {
-        $el = [
-            "label" => $label_text,
-            "name" => $fieldname,
-            "type" => "INPUT",
-            "attributes" => array_merge(["id" => $fieldname], $html_attributes),
-            "validator" => $validator,
-            "error" => $error_message,
-            "check_empty" => strtoupper($check_emptyvalue),
-            "custom_function" => $custom_function,
-            "comment" => $form_text_bottom,
-            "validation_err" => true,
-        ];
+        $el = new Input(
+            $label_text,
+            $fieldname,
+            $form_text_bottom,
+            $html_attributes,
+            $validator,
+            $error_message,
+            $check_emptyvalue,
+            $custom_function,
+        );
 
         if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -593,17 +590,15 @@ class FormHandler
         string $form_text_bottom = "",
         string $default_value = "",
         string $error_message = ""
-    )
+    ): void
     {
-        $el = [
-            "label" => $label_text,
-            "name" => $fieldname,
-            "type" => "DAYTIME",
-            "error" => $error_message,
-            "comment" => $form_text_bottom,
-            "validation_err" => true,
-            "default" => $default_value,
-        ];
+        $el = new DayTime(
+            $label_text,
+            $fieldname,
+            $form_text_bottom,
+            $default_value,
+            $error_message,
+        );
 
         if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -647,20 +642,17 @@ class FormHandler
             )
             ->mapWithKeys(fn ($v) => [$v[1] => $v[0]]);
 
-        $el = [
-            "label" => $label_text,
-            "name" => $fieldname,
-            "default" => $default_value,
-            "type" => "SELECT",
-            "attributes" => array_merge(["id" => $fieldname], $html_attributes),
-            "error" => $error_message,
-            "select_type" => "LIST",
-            "select_fields" => $options,
-            "first_option" => $first_option,
-            "comment" => $form_text_bottom,
-            "validator" => $validator,
-            "validation_err" => true,
-        ];
+        $el = new Select(
+            $label_text,
+            $fieldname,
+            $options,
+            $default_value,
+            $form_text_bottom,
+            $html_attributes,
+            $error_message,
+            $first_option,
+            $validator
+        );
 
         if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -693,20 +685,17 @@ class FormHandler
         ?callable $validator = null,
     ): void
     {
-        $el = [
-            "label" => $label_text,
-            "name" => $fieldname,
-            "default" => $default_value,
-            "type" => "SELECT",
-            "attributes" => array_merge(["id" => $fieldname], $html_attributes),
-            "error" => $error_message,
-            "select_type" => "LIST",
-            "select_fields" => $options,
-            "first_option" => $first_option,
-            "comment" => $form_text_bottom,
-            "validator" => $validator,
-            "validation_err" => true,
-        ];
+        $el = new Select(
+            $label_text,
+            $fieldname,
+            $options,
+            $default_value,
+            $form_text_bottom,
+            $html_attributes,
+            $error_message,
+            $first_option,
+            $validator,
+        );
 
         if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -735,17 +724,15 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $el = [
-            "label" => $label_text,
-            "name" => $fieldname,
-            "default" => $default_value,
-            "type" => "RADIOBUTTON",
-            "attributes" => $html_attributes,
-            "error" => $error_message,
-            "radio_options" => $options,
-            "comment" => $form_text_bottom,
-            "validation_err" => true,
-        ];
+        $el = new Radio(
+            $label_text,
+            $fieldname,
+            $options,
+            $default_value,
+            $form_text_bottom,
+            $html_attributes,
+            $error_message,
+        );
 
         if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -774,18 +761,15 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $el = [
-            "label" => $label_text,
-            "name" => $fieldname,
-            "popup_dest" => $href,
-            "popup_params" => "width=750,height=450,top=50,left=100,scrollbars=1",
-            "type" => "POPUPVALUE",
-            "attributes" => array_merge(["id" => $fieldname], $html_attributes),
-            "validator" => $validator,
-            "error" => $error_message,
-            "comment" => $form_text_bottom,
-            "validation_err" => true,
-        ];
+        $el = new Popup(
+            $label_text,
+            $fieldname,
+            $href,
+            $form_text_bottom,
+            $html_attributes,
+            $validator,
+            $error_message,
+        );
 
         if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -821,23 +805,17 @@ class FormHandler
     ): void
     {
         $index = $table->from . "." . $insert_column;
-        $el = [
-            "type" => "HAS_MANY",
-            "label" => $label,
-            "name" => $index,
-            "table" => $table,
-            "cols" => array_map(
-                fn ($v) => substr($v, (strpos($v, ".") ?: -1) + 1),
-                $table->getColumns()
-            ),
-            "insert" => $insert_column,
-            "foreign_key" => $foreign_key,
-            "multiline" => $multiline,
-            "select" => $select,
-            "pivot_table" => $pivot_table,
-            "validator" => $validator,
-            "validation_err" => true,
-        ];
+        $el = new HasMany(
+            $label,
+            $index,
+            $table,
+            $insert_column,
+            $foreign_key,
+            $validator,
+            $multiline,
+            $select,
+            $pivot_table,
+        );
 
         if (array_key_exists($index, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -866,17 +844,15 @@ class FormHandler
         ?callable $validator = null
     ): void
     {
-        $el = [
-            "name" => $fieldname,
-            "type" => "TEXTAREA",
-            "label" => $label_text,
-            "attributes" => array_merge(["id" => $fieldname], $html_attributes),
-            "comment" => $form_text_bottom,
-            "validator" => $validator,
-            "error" => $error_message,
-            "validation_err" => true,
-            "default" => $default_value,
-        ];
+        $el = new Textarea(
+            $label_text,
+            $fieldname,
+            $form_text_bottom,
+            $html_attributes,
+            $error_message,
+            $default_value,
+            $validator,
+        );
 
         if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
             $this->FG_EDIT_FORM_ELEMENTS[] = $el;
@@ -898,7 +874,7 @@ class FormHandler
 
     public function AddEditSection(string $label): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = ["type" => "SECTION", "section_name" => $label, "name" => ""];
+        $this->FG_EDIT_FORM_ELEMENTS[] = new Section($label);
     }
 
     /**
@@ -1379,7 +1355,7 @@ class FormHandler
                 array_filter(
                     $this->FG_EDIT_FORM_ELEMENTS,
                     // "has many" have a fake index, some fields may have a numeric one
-                    fn ($v, $k) => $v["type"] !== "HAS_MANY" && !is_numeric($k),
+                    fn ($v, $k) => !($v instanceof HasMany || is_numeric($k)),
                     ARRAY_FILTER_USE_BOTH
                 ),
                 "name"
@@ -1555,10 +1531,6 @@ class FormHandler
         if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
             return;
-        }
-
-        foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value) {
-            $values[$name] = $value;
         }
 
         $id = null;
