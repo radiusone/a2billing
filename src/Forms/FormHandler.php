@@ -1296,13 +1296,12 @@ class FormHandler
         $list = [];
         if ($form_action === "list") {
             $dir = "asc";
-            if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
-                $dir = $processed["sens"];
-            }
-            if (!empty($processed["order"])) {
-                foreach (array_filter([$processed['order']]) as $order) {
-                    $this->query_builder->orderBy($order, $dir);
+            $order = $processed["order"] ?? "";
+            if ($order) {
+                if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
+                    $dir = strtolower($processed["sens"]);
                 }
+                $this->query_builder->reorder($order, $dir);
             }
 
             $current_page = (int)($processed["current_page"] ?? 0);
@@ -1331,6 +1330,7 @@ class FormHandler
             // instance_primary_key is used to fill in links for edit/delete buttons
             $this->query_builder->addSelect("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key");
 
+            // this sets up the conditions based on searches etc
             $this->prepare_list_subselection($form_action);
 
             // Code here to call the Delete Selected items Fucntion
@@ -1338,7 +1338,8 @@ class FormHandler
                 $this->Delete_Selected();
             }
 
-            $list = $this->query_builder->offset($current_page * $current_size)->get()->toArray();
+            // clone because setting an offset breaks the call to count()
+            $list = $this->query_builder->clone()->offset($current_page * $this->query_builder->limit)->get()->toArray();
             $this->FG_LIST_VIEW_ROW_COUNT = $this->query_builder->count();
 
             if ($this->FG_LIST_VIEW_ROW_COUNT <= $current_size) {
