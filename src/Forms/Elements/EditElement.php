@@ -35,21 +35,20 @@ abstract class EditElement implements ArrayAccess
     /** @var string The type, for backward compatibility during testing */
     public string $type = "";
 
-    public function validate(): bool
+    public function validate(mixed &$value = null): bool
     {
-        if (!$this->validator) {
-            $this->valid = true;
-        } else {
-            $result = ($this->validator)($this->value);
-            if ($result === true) {
-                $this->valid = true;
-            } else {
-                $this->valid = false;
+        $this->validation_err = true;
+        $this->valid = true;
+        if ($this->validator) {
+            $result = ($this->validator)($value);
+            if ($result !== true) {
                 $this->validation_err = $result;
+                $this->valid = false;
+                return false;
             }
         }
 
-        return $this->valid;
+        return true;
     }
 
     /**

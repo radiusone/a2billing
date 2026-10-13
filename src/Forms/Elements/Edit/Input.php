@@ -10,6 +10,9 @@ use A2billing\Forms\Elements\EditElement;
  */
 class Input extends EditElement
 {
+    public bool $check_empty = true;
+    public bool $empty_is_null = false;
+
     /**
      * @param string $label The label text
      * @param string $name The form input name
@@ -28,7 +31,7 @@ class Input extends EditElement
         array $attributes = [],
         mixed $validator = null,
         string $error = "",
-        protected string $check_empty = "",
+        string $check_empty = "",
         protected mixed $callback = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
     {
@@ -39,18 +42,25 @@ class Input extends EditElement
         $this->validator = $validator;
         $this->error = $error;
         $this->type = "INPUT";
+        if ($check_empty === "NO") {
+            $this->check_empty = false;
+        }
+        if ($check_empty === "NO-NULL") {
+            $this->check_empty = false;
+            $this->empty_is_null = true;
+        }
     }
 
-    public function validate(): bool
+    public function validate(mixed &$value = null): bool
     {
-        if ($this->check_empty === "NO" && $this->value === "") {
-            return true;
-        }
-        if ($this->check_empty === "NO-NULL" && $this->value === "") {
+        if ($this->empty_is_null === true && $value === "") {
             $this->value = null;
             return true;
         }
-        return parent::validate();
+        if ($this->check_empty === false && $value === "") {
+            return true;
+        }
+        return parent::validate($value);
     }
 
     protected function attributeString(): string
