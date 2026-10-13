@@ -31,7 +31,11 @@ class DayTime extends EditElement
      */
     protected function renderElement(): string
     {
-        $value = intval(is_null($this->value) ? $this->default : $this->value);
+        if (array_key_exists("value", $this->attributes)) {
+            $this->value = $this->attributes["value"];
+            unset($this->attributes["value"]);
+        }
+        $value = intval($this->value ?? $this->default);
         $name = htmlspecialchars($this->name);
 
         $day = intdiv($value, 1440);

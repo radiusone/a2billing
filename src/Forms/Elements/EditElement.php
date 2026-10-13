@@ -124,7 +124,7 @@ abstract class EditElement implements ArrayAccess
 
     public function offsetGet(mixed $offset): mixed
     {
-        return property_exists($this, $offset)
+        return property_exists($this, $offset) && isset($this->$offset)
             ? $this->$offset
             : null;
     }

@@ -63,9 +63,13 @@ class Input extends EditElement
 
     protected function renderElement(): string
     {
+        if (array_key_exists("value", $this->attributes)) {
+            $this->value = $this->attributes["value"];
+            unset($this->attributes["value"]);
+        }
         $value = $this->value;
         if ($this->callback) {
-            $value = ($this->callback)($value);
+            $value = ($this->callback)("$value");
         }
         $this->attributes["type"] ??= "text";
         $attributes = $this->attributeString();

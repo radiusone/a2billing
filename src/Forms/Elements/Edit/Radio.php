@@ -41,10 +41,7 @@ class Radio extends EditElement
         $options = "";
         foreach ($this->options as $value => $label) {
             $check = "";
-            if (
-                (is_null($this->value) && "$this->default" === "$value")
-                || (!is_null($this->value) && "$this->value" === "$value")
-            ) {
+            if ("$value" === strval($this->value ?? $this->default)) {
                 $check = 'checked="checked"';
             }
             $value = htmlspecialchars("$value");
@@ -52,8 +49,8 @@ class Radio extends EditElement
             $options .= <<< HTML
             <div class="form-check">
                 <input id="{$this->name}_$value" class="form-check-input $invalid" type="radio" name="$this->name" value="$value" $check/>
+                <label for="{$this->name}_$value" class="form-check-label">$label</label>
             </div>
-            <label for="{$this->name}_$value" class="form-check-label">$label</label>
             HTML;
         }
 

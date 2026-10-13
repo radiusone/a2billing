@@ -13,6 +13,6 @@ class Hidden extends Input
 
     public function render(int|string $i, mixed $value): string
     {
-        return $this->renderElement();
+        return is_null($this->value) ? "" : $this->renderElement();
     }
 }

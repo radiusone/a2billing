@@ -46,9 +46,7 @@ class Textarea extends EditElement
 
     protected function renderElement(): string
     {
-        if (is_null($this->value)) {
-            $this->value = $this->default;
-        }
+        $this->value ??= $this->default;
         $value = htmlspecialchars("$this->value");
         $attributes = $this->attributeString();
 
