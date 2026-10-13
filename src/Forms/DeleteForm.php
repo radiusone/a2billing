@@ -1,19 +1,15 @@
 <?php
 namespace A2billing\Forms;
 
-class DeleteForm
+readonly class DeleteForm
 {
-    private FormHandler $form;
-    private array $processed;
-    private array $list;
-    private string $form_action;
-
-    public function __construct(FormHandler $form, array $processed, array $list, string $form_action) {
-        $this->form = $form;
-        $this->processed = $processed;
-        $this->list = $list;
-        $this->form_action = $form_action;
-    }
+    public function __construct(
+        private FormHandler $form,
+        private array $processed,
+        private array $list,
+        private string $form_action,
+    )
+    {}
 
     public function __toString(): string
     {

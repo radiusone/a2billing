@@ -2,19 +2,14 @@
 
 namespace A2billing\Forms;
 
-class ViewForm
+readonly class ViewForm
 {
-    private FormHandler $form;
-    private array $list;
-
     /**
      * @param FormHandler $form
      * @param array $list the list of database records to be displayed
      */
-    public function __construct(FormHandler $form, array $list) {
-        $this->form = $form;
-        $this->list = $list;
-    }
+    public function __construct(private FormHandler $form, private array $list)
+    {}
 
     public function __toString(): string
     {

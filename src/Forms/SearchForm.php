@@ -1,19 +1,16 @@
 <?php
 namespace A2billing\Forms;
 
-class SearchForm
+readonly class SearchForm
 {
-    private FormHandler $form;
-    private array $processed;
-    private bool $with_hide_button;
-    private bool $full_modal;
 
-    public function __construct(FormHandler $form, array $processed, bool $full_modal, bool $with_hide_button) {
-        $this->form = $form;
-        $this->processed = $processed;
-        $this->with_hide_button = $with_hide_button;
-        $this->full_modal = $full_modal;
-    }
+    public function __construct(
+        private FormHandler $form,
+        private array $processed,
+        private bool $full_modal,
+        private bool $with_hide_button,
+    )
+    {}
 
     public function __toString(): string
     {
