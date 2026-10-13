@@ -1485,28 +1485,21 @@ class FormHandler
         $values = [];
         $arr_value_to_import = [];
 
-        foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
-            $field = $row["name"] ?? "";
-            $attr = $row["attributes"] ?? [];
-            if ($field === "" || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
+        foreach ($this->FG_EDIT_FORM_ELEMENTS as $row) {
+            $field = $row->name;
+            if ($field === "" || $row->isDisabled() || !array_key_exists($field, $processed)) {
                 continue;
             }
 
-            if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
+            if ($row instanceof Select && $row->multi && is_array($processed[$field])) {
                 $values[$field] = (int)array_sum($processed[$field]);
             }
 
-            $row["validation_err"] = true;
-            $row["check_empty"] ??= "";
-            if (is_callable($row["validator"] ?? null)) {
-                if ($processed[$field] !== "" || $row["check_empty"] === "") {
-                    $row["validation_err"] = $row["validator"]($processed[$field]);
-                    if ($row["validation_err"] !== true) {
-                        $this->all_fields_valid = false;
-                        $form_action = "ask-add";
-                        continue;
-                    }
-                }
+            $row->validate($processed[$field]);
+            if ($row->validation_err !== true) {
+                $this->all_fields_valid = false;
+                $form_action = "ask-add";
+                continue;
             }
 
             // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
@@ -1518,15 +1511,12 @@ class FormHandler
                 }
                 $arr_value_to_import[$field] = $this->split_ranges($value);
                 $values[$field] = "%check_array%";
-            } elseif ($row["type"] !== "CAPTCHAIMAGE") {
-                if ($processed[$field] === "" && $row["check_empty"] === "NO-NULL") {
-                    $values[$field] = null;
-                } elseif ($processed[$field] !== "") {
-                    $values[$field] ??= $processed[$field];
-                }
+            } elseif ($processed[$field] === "" && ($row instanceof Input && $row->empty_is_null)) {
+                $values[$field] = null;
+            } elseif ($processed[$field] !== "") {
+                $values[$field] ??= $processed[$field];
             }
-        } // endforeach with reference
-        unset ($row);
+        }
 
         if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
@@ -1581,43 +1571,36 @@ class FormHandler
 
     /**
      * Function to edit the fields
-     *
-     * @public
      */
-    public function perform_edit(&$form_action)
+    public function perform_edit(string &$form_action): void
     {
-        $processed = $this->getProcessed();  //$processed['firstname']
+        $processed = $this->getProcessed();
         $this->all_fields_valid = true;
         $values = [];
 
-        foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
-            $field = $row["name"] ?? "";
-            $attr = $row["attributes"] ?? [];
-            if (empty($field) || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
+        foreach ($this->FG_EDIT_FORM_ELEMENTS as $row) {
+            $field = $row->name;
+            if ($field === "" || $row->isDisabled() || !array_key_exists($field, $processed)) {
                 continue;
             }
 
-            if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
+            if ($row instanceof Select && $row->multi && is_array($processed[$field])) {
                 $values[$field] = (int)array_sum($processed[$field]);
             }
-            $row["validation_err"] = true;
-            $row["check_empty"] ??= "";
-            if (is_callable($row["validator"] ?? null)) {
-                $valerr = $row["validator"]($processed[$field]);
-                if (($processed[$field] !== "" || $row["check_empty"] === "") && $valerr !== true) {
-                    $row["validation_err"] = $valerr;
-                    $this->all_fields_valid = false;
-                    $form_action = "ask-edit";
-                    continue;
-                }
+
+            $row->validate($processed[$field]);
+            if ($row->validation_err !== true) {
+                $this->all_fields_valid = false;
+                $form_action = "ask-edit";
+                continue;
             }
-            if ($processed[$field] === "" && $row["check_empty"] === "NO-NULL") {
+
+            if ($processed[$field] === "" && $row instanceof Input && $row->empty_is_null) {
                 $values[$field] = null;
             } else {
                 $values[$field] ??= $processed[$field];
             }
-        } // end foreach with reference
-        unset($row);
+        }
 
         if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
@@ -1746,26 +1729,22 @@ class FormHandler
     public function perform_add_content(string $index, int $id): void
     {
         $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
-        if (empty($entry["table"])) {
+        if (!$entry instanceof HasMany) {
             return;
         }
         $processed = $this->getProcessed();
-        /** @var Builder $table */
-        $table = is_null($entry["pivot_table"])
-            ? $entry["table"]
-            : Connection::getConnection($entry["pivot_table"]);
-        $column = $entry["insert"];
+        $table = is_null($entry->pivot_table)
+            ? $entry->builder
+            : Connection::getConnection($entry->pivot_table);
+        $column = $entry->insert_column;
         $value = $processed["add-content-value"];
-        if (is_callable($entry["validator"] ?? null)) {
-            $result = call_user_func($entry["validator"], $value);
-            if ($result !== true) {
-                $this->all_fields_valid = false;
-                $this->FG_EDIT_FORM_ELEMENTS[$index]["validation_err"] = $result;
+        $entry->validate($value);
+        if ($entry->validation_err !== true) {
+            $this->all_fields_valid = false;
 
-                return;
-            }
+            return;
         }
-        $foreign_key = $entry["foreign_key"];
+        $foreign_key = $entry->foreign_key;
         $table->insert([$column => $value, $foreign_key => $id]);
     }
 
@@ -1776,24 +1755,23 @@ class FormHandler
      * @var string $index the index within $this->FG_EDIT_FORM_ELEMENTS
      * @var int $id the id of the object to be used as foreign key
      */
-    public function perform_del_content(string $index, int $id)
+    public function perform_del_content(string $index, int $id): void
     {
         $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
-        if (empty($entry["table"])) {
+        if (!$entry instanceof HasMany) {
             return;
         }
 
         $processed = $this->getProcessed();
-        if (!empty($entry["pivot_table"])) {
-            $table = Connection::getConnection($entry["pivot_table"]);
-            $column = $entry["insert"];
+        if (!is_null($entry->pivot_table)) {
+            $table = Connection::getConnection($entry->pivot_table);
+            $column = $entry->insert_column;
         } else {
-            /** @var Builder $table */
-            $table = $entry["table"];
+            $table = $entry->builder;
             $column = $table->columns[0];
         }
         $value = $processed["del-content-value"];
-        $foreign_key = $entry["foreign_key"];
+        $foreign_key = $entry->foreign_key;
         $table->where([$column => $value, $foreign_key => $id])->delete();
     }
 

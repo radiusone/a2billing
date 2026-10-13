@@ -80,6 +80,11 @@ abstract class EditElement implements ArrayAccess
         return trim($return);
     }
 
+    public function isDisabled(): bool
+    {
+        return array_key_exists("disabled", $this->attributes);
+    }
+
     public function render(int|string $i, mixed $value): string
     {
         $this->index = $i;

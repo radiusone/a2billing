@@ -11,7 +11,7 @@ use A2billing\Forms\Elements\EditElement;
 class Select extends EditElement
 {
     /** @var bool $multi */
-    private bool $multi;
+    public bool $multi;
 
     /**
      * @param string $label The label text

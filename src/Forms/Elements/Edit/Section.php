@@ -8,6 +8,7 @@ class Section extends EditElement
 {
     public function __construct(string $label)
     {
+        $this->name = "";
         $this->label = $label;
     }
 

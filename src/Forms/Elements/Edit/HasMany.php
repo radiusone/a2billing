@@ -25,13 +25,13 @@ class HasMany extends EditElement
     public function __construct(
         string $label,
         string $name,
-        protected Builder $builder,
-        protected string $insert_column,
-        protected string $foreign_key,
+        public Builder $builder,
+        public string $insert_column,
+        public string $foreign_key,
         mixed $validator = null,
-        protected bool $multiline = false,
-        protected bool $select = false,
-        protected ?string $pivot_table = null,
+        public bool $multiline = false,
+        public bool $select = false,
+        public ?string $pivot_table = null,
     )
     {
         $this->label = $label;
