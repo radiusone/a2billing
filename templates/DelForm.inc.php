@@ -2,6 +2,8 @@
 
 namespace A2billing\Forms;
 
+use A2billing\Forms\Elements\Edit\HasMany;
+
 /**
  * @var FormHandler $form
  * @var array $processed
@@ -56,98 +58,8 @@ namespace A2billing\Forms;
     <input type="hidden" name="form_action" value="ask-del-confirm"/>
     <?php endif ?>
 
-    <?php foreach($form->FG_EDIT_FORM_ELEMENTS as $i => $row): ?>
-        <?php if ($row["type"] === "HAS_MANY") {continue;} ?>
-        <?php if (!empty($row["section_name"])): ?>
-    <div class="row mb-3 border-bottom">
-        <h4><?= $row["section_name"] ?></h4>
-    </div>
-        <?php endif ?>
-        <?php if ($row["type"] === "SECTION") {continue;} ?>
-
-    <div class="row pb-3">
-        <label for="<?= $row["name"] ?>" class="col-3 col-form-label"><?= $row["label"] ?></label>
-        <div class="col">
-            <?php switch($row["type"]): case "INPUT": case "POPUPVALUE": ?>
-            <input
-                class="form-control"
-                readonly="readonly"
-                disabled="disabled"
-                <?= array_html_attr($row["attributes"]) ?>
-                value="<?= $db_data[$i] ?>"
-            />
-                <?php break ?>
-
-            <?php case "TEXTAREA": ?>
-            <textarea
-                class="form-control"
-                readonly="readonly"
-                disabled="disabled"
-                <?= array_html_attr($row["attributes"]) ?>
-            ><?= $db_data[$i] ?></textarea>
-                <?php break ?>
-
-            <?php case "SELECT": ?>
-            <select
-                disabled="disabled"
-                class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                <?= array_html_attr($row["attributes"]) ?>
-            >
-                <?php foreach ($row["first_option"] as $val => $opt): ?>
-                <option value="<?= $val ?>"><?= $opt ?></option>
-                <?php endforeach ?>
-
-                <?php if (empty($row["select_fields"])): ?>
-                <option value=""><?= gettext("No data found!!!") ?></option>
-                <?php endif ?>
-
-                <?php foreach ($row["select_fields"] as $val => $opt): ?>
-                <option
-                    value="<?= $val ?>"
-                    <?php if ($form->all_fields_valid): ?>
-                        <?php if (array_key_exists("multiple", $row["attributes"])): ?>
-                            <?php if (intval($val) & intval($db_data[$i])): ?>
-                    selected="selected"
-                            <?php endif ?>
-                        <?php elseif ($db_data[$i] == $val): ?>
-                    selected="selected"
-                        <?php endif ?>
-                    <?php else: ?>
-                        <?php if (array_key_exists("multiple", $row["attributes"])): ?>
-                            <?php if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
-                    selected="selected"
-                            <?php endif ?>
-                        <?php elseif ($processed[$row["name"]] == $val): ?>
-                    selected="selected"
-                        <?php endif ?>
-                    <?php endif ?>
-                >
-                    <?= $opt ?>
-                </option>
-                <?php endforeach ?>
-            </select>
-                <?php break ?>
-
-            <?php case "RADIOBUTTON": ?>
-                <?php foreach ($row["radio_options"] as $val => $rad): ?>
-                    <?php $check = $form->all_fields_valid && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
-            <div class="form-check">
-                <input
-                    id="<?= $row["name"] ?>_<?= $val ?>"
-                    class="form-check-input"
-                    type="radio"
-                    value="<?= $val ?>"
-                    disabled="disabled"
-                    <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
-                />
-                <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= $rad ?></label>
-            </div>
-                <?php endforeach ?>
-                <?php break ?>
-
-        <?php endswitch ?>
-        </div>
-    </div>
+    <?php foreach (array_filter($form->FG_EDIT_FORM_ELEMENTS, fn ($v) => !$v instanceof HasMany) as $i=>$row):?>
+        <?php $row->attributes["disabled"] = "disabled"; echo $row->render($i, $db_data[$i]) ?>
     <?php endforeach ?>
 
     <div class="row my-4 justify-content-between">
