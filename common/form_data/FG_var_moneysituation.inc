@@ -74,9 +74,9 @@ if (is_agent()) {
         "get_money"
     );
 }
-$HD_Form->AddListValue(_("Invoiced"), Connection::getConnection()->raw("SUM(cc_invoice_item.price * (1 + (cc_invoice_item.vat / 100)))"), "get_money");
-$HD_Form->AddListValue(_("Paid"), Connection::getConnection()->raw("SUM(cc_logpayment.payment)"), "get_money");
-$HD_Form->AddListValue(_("To pay"), "", "sub_money", ["%6", "%7"]);
+$HD_Form->AddListValue(_("Invoiced"), Connection::getConnection()->raw("IFNULL(SUM(cc_invoice_item.price * (1 + (cc_invoice_item.vat / 100))), 0) AS invoiced"), "get_money");
+$HD_Form->AddListValue(_("Paid"), Connection::getConnection()->raw("IFNULL(SUM(cc_logpayment.payment), 0) AS paid"), "get_money");
+$HD_Form->AddListValue(_("To pay"), "", "sub_money", ["%invoiced", "%paid"]);
 
 $HD_Form->AddListActionButton("", _("Invoice"), "", "receipt", "popup-invoice");
 $HD_Form->AddListActionButton("#", _("Payment"), "", "cash-stack", "text-success popup-payment");

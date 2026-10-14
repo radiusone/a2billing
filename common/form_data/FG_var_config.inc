@@ -74,7 +74,7 @@ if ($form_action === "list") {
     $HD_Form->AddListValue(_("Title"), "config_title");
     $HD_Form->AddListValue(_("Key"), "config_key");
     // if config_valuetype is 1, display as yes/no
-    $HD_Form->AddListValue(_("Value"), "config_value", "str_replace_conditional", [[0, 1], [_("No"), _("Yes")], "%X", "%5", 1]);
+    $HD_Form->AddListValue(_("Value"), "config_value", "str_replace_conditional", [[0, 1], [_("No"), _("Yes")], "%X", "%config_valuetype", 1]);
     $HD_Form->AddListValue(_("Description"), "config_description");
     $HD_Form->AddListValue(_("Group"), "group_title");
     $HD_Form->AddListHiddenValue("config_valuetype");

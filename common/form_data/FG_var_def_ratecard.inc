@@ -133,7 +133,7 @@ $HD_Form->list_help_text = create_help(
         : _("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard.")
 );
 
-$HD_Form->AddListValue(_("Destination"), $use_lcr_callplan ? "destination" : "cc_prefix.destination", null, [], false)
+$HD_Form->AddListValue(_("Destination"), $use_lcr_callplan ? "destination" : "cc_prefix.destination", sortable: false)
     ->AddListValue(abbr(_("Prefix"), _("Dialing Prefix")), "dialprefix");
 if (is_admin()) {
     $HD_Form->AddListValue(abbr(_("Buy"), _("Buy Rate")), "buyrate", "get_money_precise");

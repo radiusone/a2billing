@@ -64,7 +64,7 @@ $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id
 
 if ($A2B->config['webui']['link_audio_file'] ?? false) {
     // TODO: figure out how this works, move it into this file with custom button
-    $HD_Form->AddListValue(_("Audio"), "uniqueid", "get_monitorfile_link", [], false);
+    $HD_Form->AddListValue(_("Audio"), "uniqueid", "get_monitorfile_link", sortable: false);
 }
 $HD_Form->list_message_intro = _("Call Logs");
 
