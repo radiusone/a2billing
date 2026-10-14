@@ -550,6 +550,7 @@ class FormHandler
      * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
+     * @param string|null $default_value When adding (not editing), the value of the input
      * @param callable(string):string|null $custom_function A callback to run the value through before displaying it
      * @return void
      */
@@ -561,6 +562,7 @@ class FormHandler
         ?callable $validator = null,
         string $error_message = "",
         string $check_emptyvalue = "",
+        ?string $default_value = "",
         ?callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     ): void
     {
@@ -572,6 +574,7 @@ class FormHandler
             $validator,
             $error_message,
             $check_emptyvalue,
+            $default_value,
             $custom_function,
         );
 

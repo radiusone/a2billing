@@ -56,7 +56,7 @@ abstract class EditElement implements ArrayAccess
      *
      * The `id` attribute will be set to the same as the `name`
      * attribute if it has not been provided. The `value` attribute
-     * for form elements will not be included.
+     * for form elements will not be added.
      */
     protected function attributeString(): string
     {

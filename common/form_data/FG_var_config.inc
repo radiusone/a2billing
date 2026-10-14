@@ -164,11 +164,7 @@ $HD_Form->AddEditElement(
     _("LIST OF VALUES"),
     "config_listvalues",
     _("For selectable lists only, insert the comma separated list of values"),
-    [],
-    null,
-    "",
-    "",
-    fn ($v) => $v === "yes,no" || $v === "no,yes" ? "" : $v
+    custom_function: fn ($v) => $v === "yes,no" || $v === "no,yes" ? "" : $v
 );
 
 $HD_Form->AddEditTextarea(

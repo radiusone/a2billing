@@ -21,6 +21,7 @@ class Input extends EditElement
      * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @param string $error A message to show if validation fails
      * @param string $check_empty If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
+     * @param string|null $default When adding (not editing), the value of the input
      * @param callable(string):string|null $callback A callback to run the value through before displaying it
      * @return void
      */
@@ -32,6 +33,7 @@ class Input extends EditElement
         mixed $validator = null,
         string $error = "",
         string $check_empty = "",
+        ?string $default = null,
         protected mixed $callback = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
     {
@@ -49,6 +51,7 @@ class Input extends EditElement
             $this->check_empty = false;
             $this->empty_is_null = true;
         }
+        $this->default = $default;
     }
 
     public function validate(mixed &$value = null): bool
@@ -76,6 +79,8 @@ class Input extends EditElement
         if (array_key_exists("value", $this->attributes)) {
             $this->value = $this->attributes["value"];
             unset($this->attributes["value"]);
+        } else {
+            $this->value ??= $this->default ?? "";
         }
         $value = $this->value;
         if ($this->callback) {
