@@ -388,7 +388,7 @@ if ($popup_select) {
             _("Group"),
             "id_group",
             Connection::getConnection("cc_card_group", "name", "id")
-                ->when(is_admin(), fn ($q) => $q->where("id_agent", Agent::id())),
+                ->when(is_agent(), fn ($q) => $q->where("id_agent", Agent::id())),
             validator: [Validator::class, "foreignKey"]
         );
 
@@ -564,7 +564,7 @@ if ($popup_select) {
             _("Call plan"),
             "tariff",
             Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id")
-                ->when(is_admin(), function ($q) {
+                ->when(is_agent(), function ($q) {
                     $q->leftJoin("cc_agent_tariffgroup", "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup")
                         ->where("cc_agent_tariffgroup.id_agent", Agent::id());
                 }),
