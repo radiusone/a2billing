@@ -117,7 +117,7 @@ namespace A2billing\Forms;
                     foreach ($column["arguments"] ?? [] as $argument) {
                         if (is_string($argument)) {
                             $argument = preg_replace_callback(
-                                "/%([0-9]+|X)/",
+                                "/%([\w.]+)/",
                                 fn ($m) => $m[1] === "X" ? $record_display : ($row[$m[1]] ?? ""),
                                 $argument
                             );
@@ -154,8 +154,8 @@ namespace A2billing\Forms;
                         $check = true;
                         if (!empty($form->FG_EDIT_BUTTON_CONDITION)) {
                             $condition_eval = preg_replace_callback(
-                                "/\\|col([0-9]+)\\|/i",
-                                fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
+                                "/\\|col([\w.]+)\\|/i",
+                                fn ($m) => $row[$m[1]] ?? "",
                                 // only used in FG_var_invoice.inc and FG_var_receipt.inc
                                 $form->FG_EDIT_BUTTON_CONDITION
                             );
@@ -177,7 +177,7 @@ namespace A2billing\Forms;
                         $check = true;
                         if (!empty($form->FG_DELETE_BUTTON_CONDITION)) {
                             $condition_eval = preg_replace_callback(
-                                "/\\|col([0-9]+)\\|/i",
+                                "/\\|col([\w.]+)\\|/i",
                                 fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
                                 $form->FG_DELETE_BUTTON_CONDITION
                             );
@@ -206,7 +206,7 @@ namespace A2billing\Forms;
                         if ($button["url"] !== "") {
                             $link = str_replace("|param|", $row["instance_primary_key"] ?? "", $button["url"]);
                             $link = preg_replace_callback(
-                                "/\\|col([0-9]+)\\|/i",
+                                "/\\|col([\w.]+)\\|/i",
                                 fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
                                 $link
                             );
