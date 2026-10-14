@@ -211,7 +211,7 @@ class Invoice extends PaymentDocument
         return $result;
     }
 
-    public function insertInvoiceItem(string $desc, float $price, float $VAT, string $date = null): bool
+    public function insertInvoiceItem(string $desc, float $price, float $VAT, ?string $date = null): bool
     {
         if (is_null($this->id)) {
             return false;
@@ -237,10 +237,10 @@ class Invoice extends PaymentDocument
     public static function generateReference(): string
     {
         $year = date("Y");
-        $row = Connection::getConnection("cc_config", "cc_config.id", "config_value")
+        $table = Connection::getConnection("cc_config", "cc_config.id", "config_value")
             ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
-            ->where(["config_key" => "next_number", "group_title" => "invoice"])
-            ->first();
+            ->where(["config_key" => "next_number", "group_title" => "invoice"]);
+        $row = $table->first();
         $conf_id = $row["id"];
         $invoice_num = $row["config_value"];
 
@@ -253,7 +253,7 @@ class Invoice extends PaymentDocument
             fn ($m) => $m[1] . str_pad(intval($m[2]) + 1, 8, "0", STR_PAD_LEFT),
             $invoice_num
         );
-        $table->updateRow(["config_value" => $update], ["id" => $conf_id]);
+        $table->update(["config_value" => $update], ["id" => $conf_id]);
 
         return $invoice_num;
     }
