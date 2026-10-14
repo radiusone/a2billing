@@ -44,7 +44,6 @@ getpost_ifset(["popup_select"]);
 $popup_select ??= "";
 
 $form_action ??= "list";
-$col6_open = sprintf("'|col6|' === '%s'", _("OPEN"));
 
 $HD_Form = new FormHandler(
     "cc_invoice",
@@ -75,10 +74,10 @@ $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
-$HD_Form->FG_EDIT_BUTTON_CONDITION = $col6_open;
+$HD_Form->FG_EDIT_BUTTON_CONDITION = '|status_int| == 0';
 
 $HD_Form->FG_ENABLE_DELETE_BUTTON = !is_customer();
-$HD_Form->FG_DELETE_BUTTON_CONDITION = $col6_open;
+$HD_Form->FG_DELETE_BUTTON_CONDITION = '|status_int| == 0';
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
 
@@ -134,7 +133,8 @@ if (!is_customer()) {
     $HD_Form->AddListMapping(_("PAID STATUS"), "paid_status", $paid_status_list);
 }
 $HD_Form->AddListMapping(_("STATUS"), "status", $status_list);
-$HD_Form->AddListValue(_("AMOUNT INCL VAT"), "total_price", "get_money");
+$HD_Form->AddListValue(_("AMOUNT INCL VAT"), Connection::getConnection()->raw("IFNULL(total_price, 0) AS total_price"), "get_money");
+$HD_Form->AddListHiddenValue("status AS status_int");
 
 if (!$popup_select && !is_customer()) {
     $HD_Form->search_form_enabled = true;

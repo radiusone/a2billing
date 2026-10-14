@@ -101,7 +101,7 @@ if (is_customer()) {
         "status",
         0 // open
     );
-    $HD_Form->FG_EDIT_BUTTON_CONDITION = '"|col4|" == "OPEN"';
+    $HD_Form->FG_EDIT_BUTTON_CONDITION = '"|cc_receipt.status|" == "OPEN"';
 
     $HD_Form->AddListTopButton(null, null, "receipt");
 

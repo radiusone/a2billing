@@ -60,7 +60,7 @@ $HD_Form->AddListValue(gettext("DESCRIPTION"), "group_description");
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_DELETE_BUTTON_CONDITION = 'str_starts_with("|col0|", "agi-conf") && "|col0|" !== "agi-conf1"';
+$HD_Form->FG_DELETE_BUTTON_CONDITION = 'str_starts_with("|group_title|", "agi-conf") && "|group_title|" !== "agi-conf1"';
 
 $HD_Form->AddListActionButton(
     "A2B_entity_config.php?posted_search=1&config_group_id=|param|",

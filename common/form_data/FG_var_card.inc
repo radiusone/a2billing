@@ -237,7 +237,7 @@ foreach ($show_list as $field) {
 }
 $column_count = count($HD_Form->query_builder->getColumns());
 
-// need these in a fixed position for action button links
+// need these with a set name for action button links
 $HD_Form->AddListHiddenValue("cc_card.id AS id_")
     ->AddListHiddenValue("username AS username_")
     ->AddListHiddenValue("useralias AS alias_");
@@ -252,10 +252,9 @@ if ($popup_select) {
     // popup window
     switch ($popup_select) {
         case 1: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')"); break;
-        // username is always first column on popups
-        case 2: $HD_Form->AddListSelectActionButton("javascript:sendValue('|col0|')"); break;
+        case 2: $HD_Form->AddListSelectActionButton("javascript:sendValue('|username|')"); break;
         // populate 2 fields, for A2B_entity_friend.php
-        case 3: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|', '|col0|', 'accountcode')"); break;
+        case 3: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|', '|username|', 'accountcode')"); break;
     }
 } elseif ($form_action === "list") {
     $HD_Form->search_form_enabled = true;
@@ -286,40 +285,37 @@ if ($popup_select) {
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_card.php?id=";
-    $FN_COLUMN_ID = "col" . ($column_count);//get numbers of rows for needed fields
-    $FN_COLUMN_USERNAME = "col" . ($column_count + 1);
-    $FN_COLUMN_ALIAS = "col" . ($column_count + 2);
 
     if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddListActionButton(
-            "A2B_entity_friend.php?voip_type=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|",
+            "A2B_entity_friend.php?voip_type=sip&form_action=add_sip&id_cc_card=|id_|&cardnumber=|username_|&useralias=|alias_|",
             _("Auto Create SIP Config"),
             "data:image/gif;base64,R0lGODlhFwALAKEDAAAAAJycnPPZ3f///yH5BAEAAAMALAAAAAAXAAsAAAItXI6pa+IPozyyWgqBFhrwDWGPNzoe+YgmSHaRWnJmBbs2HVh6mO97YFgIhYMCADs="
         );
     }
     if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddListActionButton(
-            "A2B_entity_friend.php?voip_type=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|",
+            "A2B_entity_friend.php?voip_type=iax&form_action=add_iax&id_cc_card=|id_|&cardnumber=|username_|&useralias=|alias_|",
             _("Auto Create IAX Config"),
             "data:image/gif;base64,R0lGODlhFwALAKEDAAAAAJycnNnz4f///yH5BAEAAAMALAAAAAAXAAsAAAIvXI6pa+IPozyyWgqBFhrwD2GZ45XgIz4et51oIK2mGcLZNrtCavV8XwkYFkTioAAAOw=="
         );
     }
     if (is_admin()) {
         $HD_Form->AddListActionButton(
-            "A2B_entity_payment.php?form_action=ask-add&card_id=|$FN_COLUMN_ID|",
+            "A2B_entity_payment.php?form_action=ask-add&card_id=|id_|",
             _("Add Payment to this Card"),
             "",
             "cash-stack",
             "text-success"
         );
         $HD_Form->AddListActionButton(
-            "A2B_entity_subscriber.php?form_action=ask-add&id=|$FN_COLUMN_ID|",
+            "A2B_entity_subscriber.php?form_action=ask-add&id=|id_|",
             _("Add New Subscription to this Card"),
             "",
             "journal-plus"
         );
         $HD_Form->AddListActionButton(
-            "A2B_mass_mail.php?form_action=ask-add&id=|$FN_COLUMN_ID|",
+            "A2B_mass_mail.php?form_action=ask-add&id=|id_|",
             _("Email to this Customer"),
             "",
             "envelope"

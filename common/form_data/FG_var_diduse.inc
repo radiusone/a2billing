@@ -56,7 +56,7 @@ if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
     $HD_Form->query_builder->whereNull("releasedate");
     $HD_Form->query_builder->where("cc_did_use.activated", 1);
     $HD_Form->AddListActionButton(
-        "A2B_entity_did_use.php?action=ask_release&did=|col5|",
+        "A2B_entity_did_use.php?action=ask_release&did=|id_did|",
         _("Release this did"),
         "",
         "telephone-outbound-fill"

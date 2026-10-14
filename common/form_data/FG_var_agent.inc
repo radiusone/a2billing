@@ -72,7 +72,7 @@ $HD_Form->AddListActionButton(
     "house-gear"
 );
 $HD_Form->AddListActionButton(
-    "A2B_entity_payment_agent.php?form_action=ask-add&agent_id=|col0|",
+    "A2B_entity_payment_agent.php?form_action=ask-add&agent_id=|id|",
     _('Add Payment to this Agent'),
     "",
     "cash-stack",

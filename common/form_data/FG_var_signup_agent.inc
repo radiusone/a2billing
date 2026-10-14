@@ -67,7 +67,7 @@ $HD_Form->AddListSqlMapping(_("Group"), "id_group", Connection::getConnection("c
 
 $url = htmlspecialchars(json_encode($A2B->config["signup"]["urlcustomerinterface"]));
 $HD_Form->AddListActionButton(
-    "javascript:alert($url + 'signup.php?key=|col0|')",
+    "javascript:alert($url + 'signup.php?key=|code|')",
     _("URL"),
     "",
     "link"
