@@ -106,7 +106,7 @@ namespace A2billing\Forms;
             <tbody>
             <?php foreach ($list as $row): ?>
                 <tr>
-                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $column):
+                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $column): // todo: numeric keys in result
                     if ($column["type"] === "list") {
                         $record_display = ($column["options"][$row[$j] ?? ""] ?? null) ?: _("n/a");
                     } else {

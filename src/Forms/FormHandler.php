@@ -513,6 +513,7 @@ class FormHandler
     ): self
     {
         $this->query_builder->addSelect($field);
+        // todo: numeric keys in result
         $map = $table->get()->mapWithKeys(fn ($row) => [$row[0] => $row[1]]);
 
         $this->FG_LIST_TABLE_CELLS[] = [
@@ -990,6 +991,7 @@ class FormHandler
     )
     {
         $name = str_replace(".", "^^", $name);
+        // todo: numeric keys in result
         $options = $table->get()->mapWithKeys(fn ($row) => [$row[1] => $row[0]]);
 
         $this->search_form_elements[] = [

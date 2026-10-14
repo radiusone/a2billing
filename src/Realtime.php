@@ -77,7 +77,7 @@ class Realtime
         }
 
         $list_friend = Connection::getConnection($table_name, ...$cols)->get();
-        // todo: once all queries are associative this won't be needed
+        // todo: numeric keys in result
         array_walk(
             $list_friend,
             fn ($f) => array_filter($f, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY)

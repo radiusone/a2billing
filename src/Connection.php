@@ -71,7 +71,7 @@ class Connection
             ]);
             try {
                 $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
-                // match old defaults for now
+                // todo: numeric keys in result
                 $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
             } catch (ReflectionException) {}
             $conn->setAsGlobal();

@@ -60,7 +60,7 @@ if (empty($_SESSION[$export_session])) {
         }
     }
 
-    // while DB is still returning numeric indices (should be close to done with that)
+    // todo: numeric keys in result
     foreach ($export_data as &$row) {
         $row = array_filter($row, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
     }

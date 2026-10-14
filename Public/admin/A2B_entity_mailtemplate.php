@@ -59,6 +59,7 @@ if ($action === "load") {
         $result = Connection::getConnection("cc_templatemail", "messagetext", "fromemail", "fromname", "subject")
             ->where("id", $id)
             ->first();
+        // todo: numeric keys in result
         $result = array_filter((array)$result, fn ($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
         header("Content-Type: application/json");
         echo json_encode($result);
