@@ -204,7 +204,6 @@ if ($popup_select) {
             ["maxlength" => 20],
             [Validator::class, "percentage"],
             _("Insert the commision"),
-            "NO-NULL"
         );
 
         $HD_Form->AddEditElement(
@@ -224,7 +223,6 @@ if ($popup_select) {
             ["maxlength" => 20],
             [Validator::class, "number"],
             _("Insert the VAT"),
-            "NO-NULL"
         );
 
         $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);

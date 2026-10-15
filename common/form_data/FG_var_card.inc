@@ -641,7 +641,6 @@ if ($popup_select) {
             ["maxlength" => 20],
             [Validator::class, "numeric"],
             _("Insert the credit limit"),
-            "NO-NULL"
         );
     }
 

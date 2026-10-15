@@ -124,7 +124,7 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "min2Chars"],
     _("Insert the tag"),
-    "NO-NULL"
+    "NO",
 );
 
 $HD_Form->AddEditRadio(

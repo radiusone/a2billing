@@ -122,5 +122,4 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "email"],
     _("Insert the email to send the report"),
-    "NO-NULL"
 );
