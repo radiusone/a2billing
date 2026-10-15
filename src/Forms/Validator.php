@@ -109,8 +109,10 @@ class Validator
      * @param string $value
      * @return string|true
      */
-    public static function dateTime(string $value): bool|string
+    public static function dateTime(string &$value): bool|string
     {
+        // html datetime-local input separates date and time with T
+        $value = str_replace("T", " ", $value);
         return (
             preg_match("/^((?:19|20)[0-9]{2})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]) ([01][0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/", $value, $m)
             && \DateTime::createFromFormat("Y-m-d H:i", "$m[1]-$m[2]-$m[3] $m[4]:$m[5]")
