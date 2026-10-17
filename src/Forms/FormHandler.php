@@ -14,6 +14,15 @@ use A2billing\Forms\Elements\Edit\Section;
 use A2billing\Forms\Elements\Edit\Select;
 use A2billing\Forms\Elements\Edit\Textarea;
 use A2billing\Forms\Elements\EditElement;
+use A2billing\Forms\Elements\List\Buttons\ActionButton;
+use A2billing\Forms\Elements\List\Buttons\DeleteButton;
+use A2billing\Forms\Elements\List\Buttons\EditButton;
+use A2billing\Forms\Elements\List\Buttons\InfoButton;
+use A2billing\Forms\Elements\List\Buttons\TopButton;
+use A2billing\Forms\Elements\List\Mapping;
+use A2billing\Forms\Elements\List\SqlMapping;
+use A2billing\Forms\Elements\List\Value;
+use A2billing\Forms\Elements\ListElement;
 use A2billing\Logger;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
@@ -78,7 +87,7 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
-    /** @var array Data used to build the list view table */
+    /** @var ListElement[] Data used to build the list view table */
     public array $FG_LIST_TABLE_CELLS = [];
 
     /** @var bool Whether to place an add button in the list view's action column */
@@ -457,14 +466,7 @@ class FormHandler
         if ($field) {
             $this->query_builder->addSelect($field);
         }
-        $this->FG_LIST_TABLE_CELLS[] = [
-            "type" => "",
-            "header" => $label,
-            "field" => $field,
-            "function" => $callback,
-            "arguments" => $arguments,
-            "sortable" => $sortable,
-        ];
+        $this->FG_LIST_TABLE_CELLS[] = new Value($field, $label, $sortable, $callback, $arguments);
 
         return $this;
     }
@@ -483,13 +485,7 @@ class FormHandler
         if ($field) {
             $this->query_builder->addSelect($field);
         }
-        $this->FG_LIST_TABLE_CELLS[] = [
-            "type" => "list",
-            "header" => $label,
-            "field" => $field,
-            "options" => $map,
-            "sortable" => $sortable,
-        ];
+        $this->FG_LIST_TABLE_CELLS[] = new Mapping($field, $label, $map, $sortable);
 
         return $this;
     }
@@ -516,14 +512,7 @@ class FormHandler
         // todo: numeric keys in result
         $map = $table->get()->mapWithKeys(fn ($row) => [$row[0] => $row[1]]);
 
-        $this->FG_LIST_TABLE_CELLS[] = [
-            "type" => "list",
-            "header" => $label,
-            "field" => $field,
-            "options" => $map,
-            "sortable" => $sortable,
-            "href" => $url,
-        ];
+        $this->FG_LIST_TABLE_CELLS[] = new SqlMapping($field, $label, $table, $url, $sortable);
 
         return $this;
     }
