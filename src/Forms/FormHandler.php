@@ -1807,20 +1807,26 @@ class FormHandler
         }
 
         echo $help . $msg;
+
+        $this->create_actionfinish($form_action);
     }
 
     /**
      * Display a result message after add or delete is complete
-     * I think the only time this is used is if there is a database error when adding from A2B_entity_friend.php ???
+     * @todo: show this on edit as well
      */
     public function create_actionfinish($form_action): void
     {
+        if (empty($_POST)) {
+            return;
+        }
+
         $class = $this->QUERY_RESULT ? "success" : "danger";
-        if ($form_action === "delete") {
+        if (str_ends_with($form_action, "delete")) {
             $msg = $this->QUERY_RESULT
                 ? $this->delete_message_result
                 : $this->delete_message_error;
-        } elseif ($form_action === "add") {
+        } elseif (str_ends_with($form_action, "add")) {
             $msg = $this->QUERY_RESULT
                 ? $this->add_message_result
                 : $this->add_message_error;
