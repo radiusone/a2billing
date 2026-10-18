@@ -146,10 +146,28 @@ class FormHandler
     /** @var string A session variable used to hold export info */
     public string $export_session_key = "export_data";
 
-    /** @var array<array<string,string>> An array containing button definitions for the list entries */
+    /** @var InfoButton|null the list view info button */
+    public ?InfoButton $listInfoButton = null;
+
+    /** @var EditButton|null the list view edit button */
+    public ?EditButton $listEditButton = null;
+
+    /** @var bool if false, edit or ask-edit action is not allowed */
+    public bool $allowEdits = false;
+
+    /** @var DeleteButton|null the list view delete button */
+    public ?DeleteButton $listDeleteButton = null;
+
+    /** @var bool if false, delete or ask-delete action is not allowed */
+    protected bool $allowDeletes = false;
+
+    /** @var bool if false, add or ask-add action is not allowed */
+    protected bool $allowAdds = false;
+
+    /** @var ActionButton[] An array containing button definitions for the list entries */
     public array $list_action_buttons = [];
 
-    /** @var array<array<string,string>> An array containing button definitions for the list view */
+    /** @var TopButton[] An array containing button definitions for the list view */
     public array $list_top_buttons = [];
 
     /** @var string help text shown in all views (can be overridden for individual views) */
@@ -1069,27 +1087,48 @@ class FormHandler
         $this->list_filters[] = compact("column", "label");
     }
 
+    public function AddListInfoButton(string $url): void
+    {
+        $this->listInfoButton = new InfoButton($url, $this->FG_INSTANCE_NAME);
+    }
+
+    public function AddListEditButton(?string $url = null, string $condition = ""): void
+    {
+        $this->allowEdits = true;
+        $url ??= "?form_action=ask-edit&id=";
+        $this->listEditButton = new EditButton($url, $this->FG_INSTANCE_NAME, condition: $condition);
+    }
+
+    public function AddListDeleteButton(?string $url = null, string $condition = ""): void
+    {
+        $this->allowDeletes = true;
+        $url ??= "?form_action=ask-delete&id=";
+        $this->listDeleteButton = new DeleteButton($url, $this->FG_INSTANCE_NAME, condition: $condition);
+    }
+
     /**
      * Add a button to the top of the list view table
      *
      * @param string|null $url
      * @param string|null $label
-     * @param string|null $icon
+     * @param string $icon
      * @return void
      */
-    public function AddListTopButton(?string $url = null, ?string $label = null, ?string $icon = null): void
+    public function AddListTopButton(string $url, string $label, string $icon = ""): void
+    {
+        $this->list_top_buttons[] = new TopButton($url, $label, $icon);
+    }
+
+    public function AddListAddButton(?string $url = null, ?string $label = null, string $icon = ""): void
     {
         $url ??= "?form_action=ask-add";
         $label ??= sprintf(_("Add %s"), $this->FG_INSTANCE_NAME);
-        $this->list_top_buttons[] = compact("url", "label", "icon");
+        $this->allowAdds = true;
+        array_unshift($this->list_top_buttons, new TopButton($url, $label, $icon));
     }
 
     /**
      * Add an action button to the last column of the list view table
-     * When conditionally adding buttons, if $match_index is numeric
-     * the comparison will be done against the outputted text in the table
-     * column. Otherwise the comparison will be done against the database
-     * column value.
      *
      * @param string $url the destination link
      * @param string $label the text (used as alt if image supplied)
@@ -1110,15 +1149,16 @@ class FormHandler
         string $match_value = ""
     ): void
     {
-        $this->list_action_buttons[] = compact(
-            "url",
-            "label",
-            "image",
-            "icon",
-            "class",
-            "match_index",
-            "match_value"
-        );
+        $condition = "";
+        if ($match_index !== "" && $match_value !== "") {
+            $condition = sprintf(
+                "'|%s|' === '%s'",
+                preg_replace("/[\w.]/", "", $match_index),
+                str_replace("'", "\\'", $match_value)
+            );
+        }
+
+        $this->list_action_buttons[] = new ActionButton($url, $icon, $label, $condition, $class, $image);
     }
 
     /**
@@ -1128,16 +1168,11 @@ class FormHandler
      * @param string $label if not specified, defaults to "select"
      * @return void
      */
-    public function AddListSelectActionButton(string $url = "#", string $label = "") {
-        $this->list_action_buttons = [[
-            "url" => $url,
-            "label" => $label ?: _("select"),
-            "image" => "",
-            "icon" => "",
-            "class" => "popup-select-button",
-            "match_index" => "",
-            "match_value" => "",
-        ]];
+    public function AddListSelectActionButton(string $url = "#", string $label = ""): void
+    {
+        $this->list_action_buttons = [
+            new ActionButton($url, "", $label ?: _("select"), "", "popup-select-button")
+        ];
     }
 
     /**
@@ -1238,14 +1273,14 @@ class FormHandler
         switch ($form_action) {
             case "ask-add":
             case "add":
-                if (!$this->FG_ENABLE_ADD_BUTTON) {
+                if (!$this->allowAdds) {
                     header("Location: $self");
                     die();
                 }
                 break;
             case "ask-edit":
             case "edit":
-                if (!$this->FG_ENABLE_EDIT_BUTTON || empty($processed["id"])) {
+                if (!$this->allowEdits || empty($processed["id"])) {
                     header("Location: $self");
                     die();
                 }
@@ -1253,7 +1288,7 @@ class FormHandler
             case "ask-del-confirm":
             case "ask-delete":
             case "delete":
-                if (!$this->FG_ENABLE_DELETE_BUTTON || empty($processed["id"])) {
+                if (!$this->allowDeletes || empty($processed["id"])) {
                     header("Location: $self");
                     die();
                 }
