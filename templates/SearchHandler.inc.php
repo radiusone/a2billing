@@ -95,6 +95,7 @@ use A2billing\Forms\FormHandler;
                                 <option value="1" <?php if (($processed[$item["operator"][0]] ?? 1) == 1): ?> selected="selected"<?php endif ?> aria-label="equal to">=</option>
                                 <option value="2" <?php if (($processed[$item["operator"][0]] ?? 1) == 2): ?> selected="selected"<?php endif ?> aria-label="less than or equal to">&lt;=</option>
                                 <option value="3" <?php if (($processed[$item["operator"][0]] ?? 1) == 3): ?> selected="selected"<?php endif ?> aria-label="less than">&lt;</option>
+                                <option value="6" <?php if (($processed[$item["operator"][0]] ?? 1) == 6): ?> selected="selected"<?php endif ?> aria-label="not equal to">!=</option>
                             </select>
                         </div>
                         <input type="text" name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" value="<?= $processed[$item["input"][0]] ?? "" ?>" class="form-control form-control-sm"/>

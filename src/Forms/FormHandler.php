@@ -1145,75 +1145,57 @@ class FormHandler
      * Adds to the conditions a comparison between a column and a posted value
      *
      * @param string $left_column the column name
-     * @param string $operator post field name of the operator: 1=eq 2=lte 3=lt 4=gt 5=gte
+     * @param string $operator post field name containing the operator: 1=eq 2=lte 3=lt 4=gt 5=gte 6=ne
      * @param string $post_field post field name for the comparison
      * @return void
      */
-    public function do_field_duration(string $left_column, string $operator, string $post_field): void
+    protected function do_field_duration(string $left_column, string $operator, string $post_field): void
     {
         $processed = $this->getProcessed();
+        $val = $processed[$post_field] ?? "";
+        $op = (int)($processed[$operator] ?? 1);
 
-        if (!isset($processed[$post_field]) || $processed[$post_field] === "") {
+        if ($val === "") {
             return;
         }
 
-        $val = $processed[$post_field];
-        switch ($processed[$operator] ?? null) {
-            default:
-                $this->query_builder->where($left_column, $val);
-                break;
-            case 2:
-                $this->query_builder->where($left_column, "<=", $val);
-                break;
-            case 3:
-                $this->query_builder->where($left_column, "<", $val);
-                break;
-            case 4:
-                $this->query_builder->where($left_column, ">", $val);
-                break;
-            case 5:
-                $this->query_builder->where($left_column, ">=", $val);
-                break;
-        }
+        $this->query_builder->where(
+            $left_column,
+            match ($op) {
+                default => "=",
+                2 => "<=",
+                3 => "<",
+                4 => ">",
+                5 => ">=",
+                6 => "!=",
+            },
+            $val
+        );
     }
 
     /**
      * Adds to the conditions a comparison between a column and a posted value
      *
      * @param string $column the column name, also used for the post field name
-     * @param string|null $like_type post field name of the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
+     * @param string|null $like_type post field name containing the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
      * @return void
      */
-    public function do_field(string $column, ?string $like_type = null): void
+    protected function do_field(string $column, string|null $like_type = null): void
     {
         $processed = $this->getProcessed();
+        $val = $processed[$column] ?? "";
+        $op = $like_type ? (int)$processed[$like_type] : 1;
 
-        if (!isset($processed[$column]) || $processed[$column] === "") {
+        if ($val === "") {
             return;
         }
 
-        $op = $processed[$like_type] ?? 1;
-        $val = $processed[$column];
-
-        $LIKE = "LIKE";
-        if (DB_TYPE === "postgres") {
-            $LIKE = "ILIKE";
-        }
-
-        switch ($op ?? null) {
-            case 1:
-                $this->query_builder->where($column, $val);
-                break;
-            case 2:
-                $this->query_builder->whereLike($column, "$val%");
-                break;
-            default:
-                $this->query_builder->whereLike($column, "%$val%");
-                break;
-            case 4:
-                $this->query_builder->whereLike($column, "%$val");
-                break;
-        }
+        $this->query_builder->whereLike($column, match ($op) {
+            default => $val,
+            2 => "$val%",
+            3 => "%$val%",
+            4 => "%$val",
+        });
     }
 
     /**
