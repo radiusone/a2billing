@@ -60,7 +60,7 @@ if (is_customer()) {
             )
             ->where("id_card", Customer::id())
             ->groupBy("cc_receipt.id")
-            ->orderBy("date", "desc")
+            ->latest("cc_receipt.date")
     );
 } else {
     $HD_Form = new FormHandler(
@@ -73,7 +73,7 @@ if (is_customer()) {
                 fn (Builder $q) => $q->leftJoin("cc_receipt_item", "cc_receipt_item.id_receipt", "cc_receipt.id")
             )
             ->groupBy("cc_receipt.id")
-            ->latest("date")
+            ->latest("cc_receipt.date")
     );
 }
 
@@ -113,7 +113,7 @@ if (!is_customer()) {
 $HD_Form->AddListValue(_("Date"), "cc_receipt.date");
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListMapping(_("Status"), "cc_receipt.status", getInvoiceStatusList());
-$HD_Form->AddListValue(_("Amount (incl VAT)"), "SUM(price)", "get_money");
+$HD_Form->AddListValue(_("Amount (incl VAT)"), Connection::getConnection()->raw("SUM(price)"), "get_money");
 
 if (!is_customer()) {
     $HD_Form->AddListAddButton(icon: "receipt");
