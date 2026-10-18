@@ -6,14 +6,14 @@ use A2billing\Forms\Elements\ListButton;
 
 class TopButton extends ListButton
 {
-    public function __construct(string $link, string $label, ?string $icon = null)
+    public function __construct(string $link, string $label, string $icon = "")
     {
         $this->link = $link;
         $this->label = $label;
         $this->icon = $icon;
     }
 
-    public function renderButton(int $id, array $row): string
+    public function renderButton(int $id = 0, array $row = []): string
     {
         $icon = $this->icon
             ? sprintf(
@@ -23,7 +23,7 @@ class TopButton extends ListButton
             : "";
 
         return sprintf(
-            '<div class="col-auto ms-auto"><a href="%s" class="text-decoration-none">%s%s</a></div>',
+            '<div class="col-auto ms-auto"><a href="%s" class="text-decoration-none">%s&nbsp;%s</a></div>',
             htmlspecialchars($this->link),
             htmlspecialchars($this->label),
             $icon

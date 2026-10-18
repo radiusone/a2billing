@@ -7,15 +7,15 @@ use A2billing\Forms\Elements\ListButton;
 class DeleteButton extends ListButton
 {
     public function __construct(
+        string $link,
         string $name,
-        ?string $link = null,
-        string $icon = "bi-trash3-fill",
+        string $icon = "trash3-fill",
         ?string $label = null,
         string $condition = "",
     )
     {
+        $this->link = $link;
         $this->name = $name;
-        $this->link = $link ?? "?form_action=ask-delete&id=";
         $this->icon = $icon;
         $this->condition = $condition;
         $this->label = $label ?? sprintf(_("Delete this %s"), strtolower($this->name));

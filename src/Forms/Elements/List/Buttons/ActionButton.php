@@ -8,17 +8,19 @@ class ActionButton extends ListButton
 {
     public function __construct(
         string $link,
-        string $name,
         string $icon,
         string $label,
+        string $condition =  "",
         protected string $class = "",
+        protected string $image = "",
         protected array $data = [],
     )
     {
         $this->link = $link;
-        $this->name = $name;
+        $this->name = "";
         $this->icon = $icon;
         $this->label = $label;
+        $this->condition = $condition;
     }
 
     public function renderButton(int $id, array $row): string
@@ -29,12 +31,20 @@ class ActionButton extends ListButton
             array_keys($this->data),
             array_values($this->data),
         );
-        $contents = $this->icon
-            ? sprintf(
+        if ($this->icon) {
+            $contents = sprintf(
                 '<span class="bi bi-16 text-body bi-%s" aria-hidden="true"></span>',
                 htmlspecialchars($this->icon)
-            )
-            : $this->label;
+            );
+        } elseif ($this->image) {
+            $contents = sprintf(
+                '<img src="%s" alt="%s"/>',
+                htmlspecialchars($this->image),
+                htmlspecialchars($this->label)
+            );
+        } else {
+            $contents = $this->label;
+        }
 
         if ($this->link) {
             $link = $this->replaceValues($this->link, $id, $row);

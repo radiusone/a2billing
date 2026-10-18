@@ -6,7 +6,7 @@ use A2billing\Forms\Elements\ListButton;
 
 class InfoButton extends ListButton
 {
-    public function __construct(string $link, string $name, string $icon = "bi-search")
+    public function __construct(string $link, string $name, string $icon = "search")
     {
         $this->link = $link;
         $this->name = $name;
@@ -17,7 +17,7 @@ class InfoButton extends ListButton
     public function renderButton(int $id, array $row): string
     {
         return sprintf(
-            '<a href="%s%d" title="%s"><span class="bi bi-16 bi-search bi-%s" aria-hidden="true"></span></a>',
+            '<a href="%s%d" title="%s"><span class="bi bi-16 text-info bi-%s" aria-hidden="true"></span></a>',
             htmlspecialchars($this->link),
             $id,
             htmlspecialchars($this->label),

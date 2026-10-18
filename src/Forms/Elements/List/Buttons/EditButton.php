@@ -7,15 +7,15 @@ use A2billing\Forms\Elements\ListButton;
 class EditButton extends ListButton
 {
     public function __construct(
+        string $link,
         string $name,
-        ?string $link = null,
-        string $icon = "bi-pencil-fill",
+        string $icon = "pencil-fill",
         ?string $label = null,
         protected string $condition = "",
     )
     {
         $this->name = $name;
-        $this->link = $link ?? "?form_action=ask-edit&id=";
+        $this->link = $link;
         $this->icon = $icon;
         $this->label = $label ?? sprintf(_("Edit this %s"), strtolower($this->name));
     }
