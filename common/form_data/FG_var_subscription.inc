@@ -44,8 +44,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_subscription_service")->latest("datecreate")
 );
 
-$HD_Form->AddListTopButton(null, null, "box-seam");
-
 $HD_Form->help_text = create_help(
     _("SUBSCRIPTION FEE - You can bill the user  in a monthly, weekly or any time period for being subscribed on your service. The fee amount is defined here and the period through the cront configuration.")
 );
@@ -62,9 +60,9 @@ $HD_Form->AddListValue(_("Last run"), "datelastrun");
 $HD_Form->AddListValue(_("Cards affected"), "totalcardperform");
 $HD_Form->AddListValue(_("Total credit"), "totalcredit", "get_money");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "box-seam");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("LABEL"),

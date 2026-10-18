@@ -57,10 +57,10 @@ $HD_Form->list_help_text = create_help(_("Here is a list of all configuration gr
 $HD_Form->AddListValue(gettext("TITLE"), "group_title");
 $HD_Form->AddListValue(gettext("DESCRIPTION"), "group_description");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_DELETE_BUTTON_CONDITION = 'str_starts_with("|group_title|", "agi-conf") && "|group_title|" !== "agi-conf1"';
+$HD_Form->AddListAddButton("A2B_entity_config_generate_confirm.php", _("Add new agi-conf"), "boxes");
+$HD_Form->AddListDeleteButton(
+    condition: 'str_starts_with("|group_title|", "agi-conf") && "|group_title|" !== "agi-conf1"'
+);
 
 $HD_Form->AddListActionButton(
     "A2B_entity_config.php?posted_search=1&config_group_id=|param|",
@@ -74,8 +74,6 @@ $HD_Form->add_message_intro = "";
 
 $HD_Form->AddEditElement(_("Title"), "group_title");
 $HD_Form->AddEditElement(_("Description"), "group_description");
-
-$HD_Form->AddListTopButton("A2B_entity_config_generate_confirm.php", _("Add new agi-conf"), "boxes");
 
 function add_agi_confx(string $group_title, ?string $from_conf): void
 {

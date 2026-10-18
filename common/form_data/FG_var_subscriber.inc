@@ -45,8 +45,6 @@ getpost_ifset(["id"]);
 $form_action ??= "list";
 $HD_Form = new FormHandler("cc_card_subscription", _("Subscriber"));
 
-$HD_Form->AddListTopButton(null, null, "box-seam");
-
 $HD_Form->help_text = create_help(_("SUBSCRIBER - You can make customers subscribe for any subscription and for a certain time."));
 
 $HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
@@ -55,9 +53,9 @@ $HD_Form->AddListValue(_("Start date"), "startdate");
 $HD_Form->AddListValue(_("Stop date"), "stopdate");
 $HD_Form->AddListValue(_("Product"), "product_name");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "box-seam");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 
 $HD_Form->AddEditPopup(

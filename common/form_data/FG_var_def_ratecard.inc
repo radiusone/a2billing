@@ -147,10 +147,9 @@ if (!$popup_select && is_admin()) {
         ->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "get_money")
         ->AddListSqlMapping(_("Trunk"), "id_trunk", Connection::getConnection("cc_trunk", "id_trunk", "trunkcode"))
         ->AddListSqlMapping(_("Rate Card"), "idtariffplan", Connection::getConnection("cc_tariffplan", "id", "tariffname"));
-    $HD_Form->AddListTopButton();
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListAddButton();
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 } elseif (!$popup_select && is_agent()) {
     $HD_Form->AddListValue(_("Start"), "startdate");
     $HD_Form->AddListValue(_("Stop"), "stopdate");

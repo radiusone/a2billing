@@ -70,20 +70,15 @@ $HD_Form = new FormHandler(
         ->latest("date")
 );
 
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
-
-$HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
-$HD_Form->FG_EDIT_BUTTON_CONDITION = '|status_int| == 0';
-
-$HD_Form->FG_ENABLE_DELETE_BUTTON = !is_customer();
-$HD_Form->FG_DELETE_BUTTON_CONDITION = '|status_int| == 0';
-
-$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
+$HD_Form->AddListInfoButton("A2B_invoice_view.php?id=");
 
 if (is_customer()) {
     $HD_Form->help_text = _("Invoice history - The section below allows you to see the invoices on your account.");
 } else {
+    $HD_Form->AddListAddButton(icon: "receipt-cutoff");
+    $HD_Form->AddListEditButton(condition: "|status_int| == 0");
+    $HD_Form->AddListDeleteButton(condition: "|status_int| == 0");
+
     $HD_Form->AddListActionButton(
         "A2B_invoice_edit.php?id=",
         _("Edit invoice items"),
@@ -110,8 +105,6 @@ if (is_customer()) {
         "status",
         1 // closed
     );
-
-    $HD_Form->AddListTopButton(null, null, "receipt-cutoff");
 
     $HD_Form->help_text = create_help(
         _("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface")

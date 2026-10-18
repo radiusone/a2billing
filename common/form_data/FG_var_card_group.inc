@@ -46,8 +46,6 @@ $HD_Form = new FormHandler(
 $HD_Form->foreign_keys = ["cc_card" => "id_group"];
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this Customers Group! Please comfirm that you really want to remove this Customers Group ? ");
 
-$HD_Form->AddListTopButton(null, null, "people-fill");
-
 $HD_Form->help_text = create_help(
     _("This page shows a group list.")
     . _("The Group field is used for grouping customers for quick search, batch update and reporting.")
@@ -56,9 +54,9 @@ $HD_Form->help_text = create_help(
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", "0", "50"]);
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "people-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 $HD_Form->FG_DELETION_FORBIDDEN_ID = [1];
 
 $right_list = [

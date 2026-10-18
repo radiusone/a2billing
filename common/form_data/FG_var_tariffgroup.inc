@@ -50,8 +50,6 @@ $HD_Form = new FormHandler(
         ->when($popup_select, fn (Builder $q) => $q->limit(7))
 );
 
-$HD_Form->AddListTopButton(null, null, "tags");
-
 $HD_Form->list_help_text = create_help(
     _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan")
 );
@@ -75,9 +73,9 @@ $HD_Form->AddListMapping(_("Prefix"), "removeinterprefix", $inter_prefix_list_sh
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListAddButton(icon: "tags");
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 }
 
 $HD_Form->AddEditElement(

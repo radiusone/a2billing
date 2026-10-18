@@ -42,8 +42,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_outbound_did_group")->orderBy("group_name")
 );
 
-$HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
-
 $HD_Form->foreign_keys = ["cc_outbound_cid_list" => "outbound_cid_group"];
 $HD_Form->delete_message_confirm_fk = _("You have some CID using this CID Group! Please comfirm that you really want to remove this CID Group ? ");
 
@@ -54,9 +52,9 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("DIDGROUP NAME"), "group_name");
 $HD_Form->AddListValue(_("CREATION DATE"), "creationdate");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "telephone-outbound-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("CIDGROUPNAME"),

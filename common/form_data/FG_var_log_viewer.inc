@@ -63,8 +63,4 @@ $HD_Form->AddSearchPopupInput(_("Administrator"), "iduser", "A2B_entity_user.php
 $HD_Form->AddSearchSelectInput(_("Log level"),"loglevel", [1 => _("Info"), 2 => _("Notice"), 3 => _("Warning")]);
 
 $HD_Form->list_message_empty = _("No log entries found");
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_log_viewer.php?id=";
+$HD_Form->AddListInfoButton("A2B_info_log_viewer.php?id=");

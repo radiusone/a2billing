@@ -42,8 +42,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_alarm")->orderBy("id", "DESC")
 );
 
-$HD_Form->AddListTopButton("A2B_entity_alarm.php?form_action=ask-add", _("Add Alarm"), "bell-fill");
-
 $HD_Form->add_help_text = create_help(
     _("Utility to apply a scheduled monitor on trunks.<br>") .
     _("For example if you want to monitor ASR (answer seize ratio) or ALOC (average length of call) everyday on each single trunk, it can be defined here, the different parameters below will define the rules to apply the alarm.")
@@ -68,11 +66,10 @@ $HD_Form->AddListMapping(_("STATUS"), "status", $actived_list);
 $HD_Form->AddListValue(_("TRUNK"), "id_trunk");
 $HD_Form->AddListValue(_("CREATION DATE"), "datecreate");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_alarm.php?id=";
+$HD_Form->AddListAddButton("A2B_entity_alarm.php?form_action=ask-add", _("Add Alarm"), "bell-fill");
+$HD_Form->AddListInfoButton("A2B_info_alarm.php?id=");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("NAME"),

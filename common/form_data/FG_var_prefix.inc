@@ -50,8 +50,6 @@ $HD_Form = new FormHandler(
         ->when($popup_select, fn (Builder $q) => $q->limit(7))
 );
 
-$HD_Form->AddListTopButton(null, null, "geo-alt-fill");
-
 $HD_Form->help_text = create_help(_("Prefix list with destinations."));
 
 $HD_Form->AddListValue(_("Prefix"), "prefix");
@@ -60,9 +58,9 @@ $HD_Form->AddListValue(_("Destination"), "destination");
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListAddButton(icon: "geo-alt-fill");
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 }
 
 $HD_Form->AddEditElement(

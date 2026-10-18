@@ -60,8 +60,6 @@ $HD_Form = new FormHandler(
         ->orderBy("login")
 );
 
-$HD_Form->AddListTopButton("A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID", null, "person-fill");
-
 $HD_Form->add_help_text = create_help(_("Add administrator."));
 $HD_Form->list_help_text = create_help(_("Administrators - this shows a list of all the Administrators who have access to the Administrator interface."));
 
@@ -74,16 +72,15 @@ if ($popup_select) {
     return;
 }
 
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-
 if (!Admin::allowed(Admin::ACX_MODIFY_ADMINS)) {
     return;
 }
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_admin.php?groupID=$groupID&id=";
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->AddListAddButton("A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID", icon: "person-fill");
+$HD_Form->AddListInfoButton("A2B_info_admin.php?groupID=$groupID&id=");
+$HD_Form->AddListEditButton("?form_action=ask-edit&groupID=$groupID&id=");
+$HD_Form->AddListDeleteButton("?form_action=ask-delete&groupID=$groupID&id=");
+
 
 $HD_Form->AddEditElement(
     _("LOGIN"),

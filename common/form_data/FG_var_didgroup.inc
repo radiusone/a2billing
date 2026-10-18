@@ -42,8 +42,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_didgroup")->orderBy("didgroupname")
 );
 
-$HD_Form->AddListTopButton(null, null,"telephone-inbound-fill");
-
 $HD_Form->foreign_keys = ["cc_card" => "id_didgroup"];
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this DID Group! Please comfirm that you really want to remove this DID Group ? ");
 
@@ -57,9 +55,9 @@ $HD_Form->help_text = create_help(
 $HD_Form->AddListValue(_("NAME"), "didgroupname");
 $HD_Form->AddListValue(_("CREATION DATE"), "creationdate");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "telephone-inbound-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("NAME"),

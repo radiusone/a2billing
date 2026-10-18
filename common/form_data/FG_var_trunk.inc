@@ -56,8 +56,6 @@ $HD_Form = new FormHandler(
 $HD_Form->foreign_keys = ["cc_ratecard" => "id_trunk"];
 $HD_Form->delete_message_confirm_fk = _("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");
 
-$HD_Form->AddListTopButton("A2B_entity_trunk.php?form_action=ask-add", _("Add Trunk"), "hdd-network-fill");
-
 $HD_Form->list_help_text = create_help(
     _("Trunk List.")
     . '<br/>'
@@ -94,9 +92,9 @@ $HD_Form->AddSearchSelectInput(_("Status"), "status", [_("Inactive"), _("Active"
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListAddButton("A2B_entity_trunk.php?form_action=ask-add", _("Add Trunk"), "hdd-network-fill");
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 }
 
 

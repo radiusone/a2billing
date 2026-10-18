@@ -54,8 +54,6 @@ $yesno_list = getYesNoList();
 if (is_customer()) {
     $HD_Form->list_help_text = create_help(_("Enter your voucher number to top up your card."));
 } else {
-    $HD_Form->AddListTopButton(null, null, "postcard-heart");
-
     $HD_Form->list_help_text = create_help(
         _("Listed below are the vouchers created on the system,.<br/>")
         . _("Each row corresponds to a voucher and shows it's status, value and currency..")
@@ -91,21 +89,20 @@ $HD_Form->AddSearchComparisonInput(_("Credit"), "credit");
 $HD_Form->AddSearchSelectInput(_("Available"), "available", $yesno_list);
 $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
-$HD_Form->FG_ENABLE_DELETE_BUTTON = !is_customer();
-$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
-
-$vouch_attr = ["readonly" => "readonly", "maxlength" => 40];
-if ($form_action === "ask-add") {
-    $vouch_attr["value"] = generate_unique_value("cc_voucher", $A2B->config['global']['len_voucher'] ?? 0, "voucher");
+if (!is_customer()) {
+    $HD_Form->AddListAddButton(icon: "postcard-heart");
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 }
+
 $HD_Form->AddEditElement(
     _("VOUCHER"),
     "voucher",
     "",
-    $vouch_attr,
+    ["readonly" => "readonly", "maxlength" => 40],
     [Validator::class, "numeric"],
-    _("Insert the voucher")
+    _("Insert the voucher"),
+    default_value: generate_unique_value("cc_voucher", $A2B->config['global']['len_voucher'] ?? 0, "voucher"),
 );
 
 $HD_Form->AddEditElement(
@@ -132,24 +129,19 @@ $HD_Form->AddEditRadio(
     "available",
     getYesNoList(),
     "1",
-    "",
-    [],
-    _("Choose if voucher is available for use")
+    error_message: _("Choose if voucher is available for use")
 );
 
 $HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list);
 
-$date_attr = ["maxlength" => 40];
-if ($form_action === "ask-add") {
-    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("EXPIRY DATE"),
     "expirationdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    $date_attr,
+    ["type" => "datetime-local"],
     [Validator::class, "dateTime"],
-    _("Insert the expiration date")
+    _("Insert the expiration date"),
+    default_value: (new DateTime("+10 years"))->format("Y-m-d H:i:s")
 );
 
 $HD_Form->edit_message_intro = _("Modify the properties of the selected voucher.");

@@ -90,29 +90,8 @@ class FormHandler
     /** @var ListElement[] Data used to build the list view table */
     public array $FG_LIST_TABLE_CELLS = [];
 
-    /** @var bool Whether to place an add button in the list view's action column */
-    public bool $FG_ENABLE_ADD_BUTTON = false;
-
-    /** @var bool Whether to place a delete button in the list view's action column */
-    public bool $FG_ENABLE_DELETE_BUTTON = false;
-    /** @var string|null The link for the delete button */
-    public ?string $FG_DELETE_BUTTON_LINK = null;
-    /** @var string Code which is eval'd to decide whether to show the delete button */
-    public string $FG_DELETE_BUTTON_CONDITION = '';
     /** @var array Primary key of entries that can't be deleted */
     public array $FG_DELETION_FORBIDDEN_ID = [];
-
-    /** @var bool Whether to place an info button in the list view's action column */
-    public bool $FG_ENABLE_INFO_BUTTON = false;
-    /** @var string The link for the info button */
-    public string $FG_INFO_BUTTON_LINK = '';
-
-    /** @var bool Whether to place an edit button in the list view's action column */
-    public bool $FG_ENABLE_EDIT_BUTTON = false;
-    /** @var string|null The link for the edit button, expected to end with "&id=" */
-    public ?string $FG_EDIT_BUTTON_LINK = null;
-    /** @var string Code which is eval'd to decide whether to show the edit button */
-    public string $FG_EDIT_BUTTON_CONDITION = '';
 
     /** @var int Number of pages in the current list view */
     public int $FG_LIST_VIEW_PAGE_COUNT = 0;
@@ -423,21 +402,11 @@ class FormHandler
      */
     public function init()
     {
-        $processed = $this->getProcessed();
-
         if (class_exists(Console::class)) {
             Console::log('FormHandler -> init');
             Console::logMemory(null, 'FormHandler -> init : Line ' . __LINE__);
             Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
         }
-
-        $qs = array_filter(
-            ["current_page" => $processed["current_page"] ?? null, "order" => $processed["order"] ?? null, "sens" => $processed["sens"] ?? null],
-            fn ($v) => !is_null($v)
-        );
-        $ext_link = "&amp;" . http_build_query($qs, "", "&amp;");
-        $this->FG_EDIT_BUTTON_LINK ??= "?form_action=ask-edit" . $ext_link . "&amp;id=";
-        $this->FG_DELETE_BUTTON_LINK ??= "?form_action=ask-delete" . $ext_link . "&amp;id=";
     }
 
     public function getProcessed(): array
@@ -527,9 +496,6 @@ class FormHandler
     ): self
     {
         $this->query_builder->addSelect($field);
-        // todo: numeric keys in result
-        $map = $table->get()->mapWithKeys(fn ($row) => [$row[0] => $row[1]]);
-
         $this->FG_LIST_TABLE_CELLS[] = new SqlMapping($field, $label, $table, $url, $sortable);
 
         return $this;

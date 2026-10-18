@@ -61,9 +61,5 @@ $HD_Form->AddListValue(_("TOTAL_DURATION"), Connection::getConnection()->raw("SU
 $HD_Form->AddListValue(_("TOTAL_COST"), Connection::getConnection()->raw("SUM(sessionbill) AS t_cost"), "get_money");
 $HD_Form->AddListValue(_("CARDNUMBER"), "username");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;
-
 $HD_Form->AddListFilter("username", _("Card number"));
 $HD_Form->AddListFilter("cc_did.did", _("DID"));

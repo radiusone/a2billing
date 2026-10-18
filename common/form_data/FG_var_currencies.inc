@@ -46,15 +46,13 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_currencies")->orderBy("currency")
 );
 
-$HD_Form->AddListTopButton("A2B_currencies.php?form_action=ask-add", _("Add Rate"), "currency-exchange");
-
 $HD_Form->AddListValue(_("Currency"), "currency");
 $HD_Form->AddListValue(_("Detail"), "name");
 $HD_Form->AddListValue(_("Value"), "value");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton("A2B_currencies.php?form_action=ask-add", _("Add Rate"), "currency-exchange");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     gettext("Name"),

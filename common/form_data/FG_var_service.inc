@@ -42,8 +42,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_service")->latest("datecreate")
 );
 
-$HD_Form->AddListTopButton(null, null, "alarm-fill");
-
 $HD_Form->add_help_text = create_help(
     _("Utility to apply a scheduled action on the account.<br>")
     . _("For example if you want to remove 10 cents everyday on each single account, it can be defined here, alternatively, if you now want to remove 1 credit every week but only 7 times on each account, the different rules/parameters below will define this.")
@@ -92,11 +90,10 @@ $HD_Form->AddListValue(_("Last run"), "datelastrun");
 $HD_Form->AddListValue(_("Cards affected"), "totalcardperform");
 $HD_Form->AddListValue(_("Total credit"), "totalcredit", "get_money");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_service.php?id=";
+$HD_Form->AddListAddButton(icon: "alarm-fill");
+$HD_Form->AddListInfoButton("A2B_info_service.php?id=");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("NAME"),

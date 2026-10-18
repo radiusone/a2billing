@@ -42,8 +42,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_support_component")->orderBy("name")
 );
 
-$HD_Form->AddListTopButton(null, null, "boxes");
-
 $HD_Form->foreign_keys = ["cc_ticket" => "id_component"];
 $HD_Form->delete_message_confirm_fk = _("You have some tickets using this Support Component! Please comfirm that you really want to remove this Support Component? ");
 
@@ -58,9 +56,9 @@ $HD_Form->AddListMapping(_("Activated"), "activated", $activated_list);
 $HD_Form->AddListMapping(_("User type"), "type_user", $user_type);
 $HD_Form->AddListSqlMapping(_("Support box"), "id_support", Connection::getConnection("cc_support", "id", "name"));
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "boxes");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("NAME"),

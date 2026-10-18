@@ -244,9 +244,15 @@ $HD_Form->AddListHiddenValue("cc_card.id AS id_")
 
 $HD_Form->AddListFilter("username", _("Account Number"));
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
-$HD_Form->FG_ENABLE_EDIT_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER) || Customer::allowed(Customer::ACX_PERSONALINFO));
-$HD_Form->FG_ENABLE_DELETE_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_DELETE_CUSTOMER));
+if (!is_customer()) {
+    $HD_Form->AddListAddButton();
+}
+if (!$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER) || Customer::allowed(Customer::ACX_PERSONALINFO))) {
+    $HD_Form->AddListEditButton();
+}
+if (!$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_DELETE_CUSTOMER))) {
+    $HD_Form->AddListDeleteButton();
+}
 
 if ($popup_select) {
     // popup window
@@ -283,8 +289,7 @@ if ($popup_select) {
     $HD_Form->AddSearchSelectInput(_("Account type"), "typepaid", $typepaid_list);
     $HD_Form->AddSearchSqlSelectInput(_("Agent"), "id_agent", Connection::getConnection("cc_agent", Connection::getConnection()->raw("CONCAT(firstname, ' ', lastname)"), "id"));
 
-    $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_card.php?id=";
+    $HD_Form->AddListInfoButton("A2B_info_card.php?id=");
 
     if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddListActionButton(

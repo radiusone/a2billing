@@ -46,8 +46,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_callback_spool")->latest("entry_time")
 );
 
-$HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
-
 $HD_Form->help_text = create_help(
     _("Callback will offer you an easy way to connect any phone to our Asterisk platform. Browse here the pending and completed callbacks. You will see that different parameters determine the callback, the way to reach the user, the time when we need to call him, the result of the last attempts, etc...")
 );
@@ -65,9 +63,9 @@ $HD_Form->AddListValue(_("CHANNEL"), "channel");
 $HD_Form->AddListValue(_("CONTEXT"), "context");
 $HD_Form->AddListSqlMapping(_("SERVER"), "id_server", Connection::getConnection("cc_server_manager", "id", "server_ip"));
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "telephone-outbound-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditSqlSelect(
     _("SERVER GROUP"),

@@ -110,7 +110,7 @@ if (is_customer()) {
 }
 
 if (!is_customer()) {
-    $HD_Form->AddListTopButton("?form_action=ask-add&ticket_type=$ticket_type");
+    $HD_Form->AddListAddButton("?form_action=ask-add&ticket_type=$ticket_type");
     $HD_Form->AddListTopButton(
         "?ticket_type=" . ($ticket_type === "agent" ? "user" : "agent"),
         $ticket_type === "agent" ? _("Show user tickets") : _("Show agent tickets")
@@ -122,7 +122,7 @@ if (!is_customer()) {
         $HD_Form->list_help_text = create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
     }
 } else {
-    $HD_Form->AddListTopButton();
+    $HD_Form->AddListAddButton();
     $HD_Form->list_help_text = create_help(_("On this page, you can open a support ticket and consult the status of your existing ticket."));
 }
 $priority_list = Ticket::getAllPriority();
@@ -165,11 +165,11 @@ if ($ticket_type === "agent") {
 }
 $HD_Form -> AddSearchTextInput(_("Last name"), "lastname");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = is_admin();
-$HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin();
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_ticket.php?id=";
+if (is_admin()) {
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
+}
+$HD_Form->AddListInfoButton("A2B_info_ticket.php?id=");
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "ticket_add"];
 
 if ($ticket_type === "agent") {

@@ -180,10 +180,9 @@ $HD_Form->AddListActionButton(
     "cloud-arrow-down"
 );
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->AddListTopButton();
+$HD_Form->AddListAddButton();
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("Name"),

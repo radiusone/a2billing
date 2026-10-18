@@ -46,8 +46,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_outbound_cid_list")->orderBy("cid", "DESC")
 );
 
-$HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
-
 $HD_Form->list_help_text = create_help(_("Outbound CID list. CID can be added by customers through the customer interface."));
 $HD_Form->help_text = create_help(_("Outbound CID offers customers a number which will be selected randomly for a ratecard for outgoing calls"));
 
@@ -55,9 +53,9 @@ $HD_Form -> AddListValue(_("CID"), "cid");
 $HD_Form -> AddListSqlMapping(_("CIDGROUP"), "outbound_cid_group", Connection::getConnection("cc_outbound_cid_group", "id", "group_name"));
 $HD_Form -> AddListMapping(_("STATUS"), "activated", getActivationList());
 
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "telephone-outbound-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 $HD_Form -> FG_SPLITABLE_FIELDS[] = "cid";
 
 $HD_Form->AddEditTextarea(

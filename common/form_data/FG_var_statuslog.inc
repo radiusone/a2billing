@@ -58,9 +58,6 @@ $HD_Form->AddListValue(_("Date"), "updated_date");
 
 $HD_Form->list_message_empty  = _("THERE IS NO STATUS LOG AVAILABLE!");
 $HD_Form->edit_message_intro = "";
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;
 
 $HD_Form->AddListFilter("username", _("Account number"));
 

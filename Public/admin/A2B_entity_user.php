@@ -46,9 +46,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_user.inc";
 
 $HD_Form->init();
 
-$HD_Form->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&groupID=$groupID&id=";
-$HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&groupID=$groupID&id=";
-
 $form_action ??= "list";
 $action = $action ?? $form_action;
 

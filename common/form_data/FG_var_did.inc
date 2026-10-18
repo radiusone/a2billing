@@ -57,8 +57,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_did")->orderBy("did", "DESC")
 );
 
-$HD_Form->AddListTopButton("A2B_entity_did.php?form_action=ask-add", _("Add DID"), "telephone-inbound-fill");
-
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "add_did_use"];
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = [FormBO::class, "did_use_delete"];
 $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = [FormBO::class, "is_did_in_use"];
@@ -86,9 +84,9 @@ $HD_Form->AddListMapping(abbr(_("Res"), _("Reserved")), "reserved", $yesno);
 $HD_Form->AddListValue(abbr(_("MR"), _("Monthly Rate")), "fixrate");
 $HD_Form->AddListValue(abbr(_("SR"), _("Sell Rate")), "selling_rate");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton("A2B_entity_did.php?form_action=ask-add", _("Add DID"), "telephone-inbound-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 $HD_Form->FG_SPLITABLE_FIELDS = ["did"];
 
 $did_attr = ["maxlength" => 60];

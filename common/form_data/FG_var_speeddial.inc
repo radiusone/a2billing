@@ -67,19 +67,18 @@ $HD_Form->AddListValue(_("Name"), "name");
 if (!is_customer()) {
     $HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
     $HD_Form->AddListValue(_("Date"), "cc_speeddial.creationdate");
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-    $HD_Form->AddListTopButton();
+    $HD_Form->AddListAddButton();
 } else {
     $sd_count = Connection::getConnection("cc_speeddial")
         ->where("id_cc_card", Customer::id())
         ->count();
     if ($sd_count < 10) {
-        $HD_Form->AddListTopButton();
+        $HD_Form->AddListAddButton();
     }
 }
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditSelect(_("SPEED DIAL"), "speeddial", $speeddial_list);
 

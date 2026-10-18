@@ -43,8 +43,6 @@ use A2billing\Forms\Validator;
 
 $HD_Form = new FormHandler("cc_provider", _("Provider"));
 
-$HD_Form->AddListTopButton(null, null, "outlet");
-
 $HD_Form->help_text = create_help(
     _("This section will allow you to create and edit VOIP Providers for reporting purposes. ")
     . _("A provider is the company/person that provides you with termination.")
@@ -57,9 +55,9 @@ $HD_Form->AddListValue(_("Description"), "description");
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListAddButton(icon: "outlet");
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 }
 
 $HD_Form->AddEditElement(

@@ -46,8 +46,7 @@ $HD_Form = new FormHandler(
         ->when(is_agent(), fn (Builder $q) => $q->where("id_agent", Agent::id()))
         ->latest("date")
 );
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_remittance.php?id=";
+$HD_Form->AddListInfoButton("A2B_info_remittance.php?id=");
 
 if (is_admin()) {
     $HD_Form->AddListActionButton(

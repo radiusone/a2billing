@@ -44,8 +44,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_package_offer")->orderBy("label")
 );
 
-$HD_Form->AddListTopButton(null, null, "box-seam");
-
 $HD_Form->help_text = create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."));
 
 $packagetype_list = getPackagesTypeList();
@@ -65,9 +63,9 @@ $HD_Form->AddListValue(
 );
 $HD_Form->AddListHiddenValue("packagetype");
 
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "box-seam");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 $HD_Form->AddListActionButton(
     "A2B_info_package.php?id=|param|",
     _("Add rates")

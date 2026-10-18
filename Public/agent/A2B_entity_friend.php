@@ -115,9 +115,6 @@ if (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_
     $HD_Form->init();
 }
 
-$HD_Form->FG_EDIT_BUTTON_LINK	= "?form_action=ask-edit&voip_type=$voip_type&id=";
-$HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&voip_type=$voip_type&id=";
-
 if (!USE_REALTIME) {
     // CHECK THE ACTION AND SET THE IS_SIP_IAX_CHANGE IF WE ADD/EDIT/REMOVE A RECORD
     if ($form_action === "add" || $form_action === "edit" || $form_action === "delete") {

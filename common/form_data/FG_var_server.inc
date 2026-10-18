@@ -38,8 +38,6 @@ use A2billing\Forms\Validator;
 
 $HD_Form = new FormHandler("cc_server_manager", _("Callback Server"));
 
-$HD_Form->AddListTopButton(null, null, "hdd-network-fill");
-
 $HD_Form->help_text = create_help(
     _("Servers are used by the callback system through the asterisk manager in order to initiate the callback and outbound calls for your customers. You can add/modify the callback server to be used here. The AGI and callback modes need to be installed on those machines.")
 );
@@ -51,9 +49,9 @@ $HD_Form->AddListValue(_("Manager host"), "manager_host");
 $HD_Form->AddListValue(_("Manager username"), "manager_username");
 $HD_Form->AddListValue(_("Last used"), "lasttime_used");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "hdd-network-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditSqlSelect(
     _("SERVER GROUP"),

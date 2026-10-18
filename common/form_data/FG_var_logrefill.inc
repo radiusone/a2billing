@@ -62,10 +62,6 @@ $HD_Form = new FormHandler(
         ->latest("date")
 );
 
-if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
-    $HD_Form->AddListTopButton("A2B_entity_logrefill.php?form_action=ask-add", _("Add Refill"));
-}
-
 $HD_Form->help_text = create_help(
     is_admin()
         ? _("Refill history - The section below allows you to add refills against a customer. Note that this changes the balance on the account")
@@ -91,17 +87,16 @@ if (!$popup_select) {
     $HD_Form->AddSearchTextInput(_("First name"), 'firstname');
     $HD_Form->search_delete_enabled = false;
 
-    $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_refill.php?id=";
-    $HD_Form->FG_ENABLE_ADD_BUTTON = Admin::allowed(Admin::ACX_MODIFY_REFILLS);
+    $HD_Form->AddListInfoButton("A2B_info_refill.php?id=");
 }
 
 $HD_Form->AddListFilter("username", _("Account number"));
 
 // what is the point of this, if editing or deleting a refill doesn't change the card balance?
 if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->AddListAddButton("A2B_entity_logrefill.php?form_action=ask-add", _("Add Refill"));
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 
     $HD_Form->AddEditPopup(
         _("CUSTOMER ID"),

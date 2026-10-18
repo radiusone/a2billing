@@ -57,7 +57,7 @@ $HD_Form = new FormHandler(
 );
 $HD_Form->update_query_conditions = ["id" => Customer::id()];
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->AddListEditButton();
 $HD_Form->help_text = _("Notification settings.") . '<br>' . _("You can update your notification settings here.");
 
 $limits_notify = getLimitNotify_List($A2B);

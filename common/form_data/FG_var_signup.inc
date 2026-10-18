@@ -48,7 +48,6 @@ getpost_ifset(["subscriber_signup", "key"]);
  * @var string|null $key
  */
 $HD_Form = new FormHandler("cc_card", "User");
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $form_action ??= "ask-add";
 $groupid = null;

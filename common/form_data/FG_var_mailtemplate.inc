@@ -46,9 +46,6 @@ getpost_ifset(["from_id"]);
 
 $HD_Form = new FormHandler("cc_templatemail", _("Mail Template"));
 
-$HD_Form->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&id=";
-$HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&id=";
-
 $HD_Form->list_help_text = "";
 $HD_Form->help_text = create_help(
     _("Configure the mail template below.")
@@ -134,11 +131,9 @@ $HD_Form->AddListValue(_("Subject"), "subject");
 if ((int)$popup_select >= 1) {
     $HD_Form->AddListSelectActionButton("javascript:getMailData('|param|')", _("SELECT TEXT"));
 } else {
-    $HD_Form->AddListTopButton("A2B_entity_mailtemplate.php?form_action=ask-add", _("Add MAIL TEMPLATE"), "envelope-open-fill");
-
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->AddListAddButton("A2B_entity_mailtemplate.php?form_action=ask-add", _("Add MAIL TEMPLATE"), "envelope-open-fill");
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 
     $HD_Form->AddListActionButton(
         "A2B_entity_mailtemplate.php?form_action=ask-add&amp;from_id=|param|",

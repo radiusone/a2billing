@@ -97,19 +97,17 @@ $HD_Form->AddListValue(_("Caller ID"), "$table.callerid");
 $HD_Form->AddListValue(_("Context"), "$table.context");
 $HD_Form->AddListValue(_("Default IP"), "$table.defaultip");
 
-$HD_Form->AddListTopButton(
-    "A2B_entity_friend.php?form_action=ask-add&voip_type=$voip_type",
-    $voip_type === "sip" ? _("Add SIP Config") : _("Add IAX Config"),
-    "telephone-fill"
-);
-
 if (($friend_id ?? "all") !== "all") {
     $HD_Form->query_builder->where("$table.name", $friend_id);
 }
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(
+    "A2B_entity_friend.php?form_action=ask-add&voip_type=$voip_type",
+    $voip_type === "sip" ? _("Add SIP Config") : _("Add IAX Config"),
+    "telephone-fill"
+);
+$HD_Form->AddListEditButton("?form_action=ask-edit&voip_type=$voip_type&id=");
+$HD_Form->AddListDeleteButton("?form_action=ask-delete&voip_type=$voip_type&id=");
 
 $adding = ($form_action === "ask-add" || $form_action === "add_sip" || $form_action === "add_iax");
 

@@ -65,7 +65,6 @@ $HD_Form_c = new FormHandler(
         fn (Builder $q) => $q->orderBy("id_cc_card")
     )
 );
-$HD_Form_c->AddListTopButton("A2B_entity_charge.php?form_action=ask-add", null, "cash text-success");
 
 $HD_Form_c->help_text = create_help(
     _("Extra charges allow the billing of one-off or re-occurring monthly charges. These may be used as setup or service charges, etc...")
@@ -87,9 +86,9 @@ $HD_Form_c->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form_c->AddListMapping(_("Charge type"), "chargetype", $chargetype_list);
 $HD_Form_c->AddListValue(_("Description"), "description");
 
-$HD_Form_c->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form_c->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form_c->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form_c->AddListAddButton("A2B_entity_charge.php?form_action=ask-add", null, "cash text-success");
+$HD_Form_c->AddListEditButton();
+$HD_Form_c->AddListDeleteButton();
 
 $HD_Form_c->AddEditPopup(
     _("ID CARD"),

@@ -59,8 +59,9 @@ if (is_admin()) {
     $HD_Form->AddListValue(_("Margin"), Connection::getConnection()->raw("CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin"), "get_percent");
     $HD_Form->AddListValue(_("Markup"), Connection::getConnection()->raw("CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup"), "get_percent");
 }
-$HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin() || (is_agent() && Agent::allowed(Agent::ACX_DELETE_CUSTOMER));
-$HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
+if(is_admin() || (is_agent() && Agent::allowed(Agent::ACX_DELETE_CUSTOMER))) {
+    $HD_Form->AddListDeleteButton("A2B_entity_call.php?form_action=ask-delete&id=");
+}
 
 if ($A2B->config['webui']['link_audio_file'] ?? false) {
     // TODO: figure out how this works, move it into this file with custom button

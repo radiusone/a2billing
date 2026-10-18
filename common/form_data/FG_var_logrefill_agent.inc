@@ -53,7 +53,7 @@ $HD_Form = new FormHandler(
 );
 
 if (is_admin()) {
-    $HD_Form->AddListTopButton("A2B_entity_logrefill_agent.php?form_action=ask-add", _("Add Refill"));
+    $HD_Form->AddListAddButton("A2B_entity_logrefill_agent.php?form_action=ask-add", _("Add Refill"));
 }
 
 $HD_Form->help_text = create_help(
@@ -77,9 +77,7 @@ $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListMapping(_("Type"), "refill_type", $list_refill_type);
 $HD_Form->AddListValue(_("Amount"), "credit", "get_money");
 
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_refill.php?type=agent&id=";
-$HD_Form->FG_ENABLE_ADD_BUTTON = is_admin();
+$HD_Form->AddListInfoButton("A2B_info_refill.php?type=agent&id=");
 
 if (!$popup_select) {
     $HD_Form->search_form_enabled = true;
@@ -93,8 +91,8 @@ if (!$popup_select) {
 }
 
 if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 
     $HD_Form->AddEditPopup(
         _("AGENT ID"),

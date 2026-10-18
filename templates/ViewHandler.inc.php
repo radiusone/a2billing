@@ -10,7 +10,9 @@ namespace A2billing\Forms;
  * @var array<string,mixed> $query_params
  * @var array<string,mixed> $sort_params
  * @var array<string,mixed> $pagination_params
+ * @var string[] $cols
  */
+$cols = array_keys(array_first($list ?? []) ?? []);
 ?>
 
 <?php if (count($form->list_filters) > 0 || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
@@ -51,14 +53,7 @@ namespace A2billing\Forms;
     <?php endif ?>
     <?php if ($popup_select < 1): ?>
     <?php foreach ($form->list_top_buttons as $button): ?>
-    <div class="col-auto ms-auto">
-        <a href="<?= $button["url"] ?>" class="text-decoration-none">
-            <?= htmlspecialchars($button["label"]) ?>
-            <?php if ($button["icon"]): ?>
-            <span class="bi bi-16 bi-<?= $button["icon"] ?>" aria-hidden="true"></span>
-            <?php endif ?>
-        </a>
-    </div>
+        <?= $button->renderButton() ?>
     <?php endforeach ?>
     <?php endif ?>
 </div>
@@ -77,23 +72,12 @@ namespace A2billing\Forms;
             </caption>
             <thead>
                 <tr>
-                    <?php foreach ($form->FG_LIST_TABLE_CELLS as $column): ?>
-                    <th>
-                        <?php if ($column["sortable"]): ?>
+                    <?php foreach ($form->FG_LIST_TABLE_CELLS as $i => $column): ?>
                         <?php
-                            $sort_params["order"] = $column["field"]; //todo: use the column index instead?
-                            $sort_params["sens"] = ($form->query_builder->orders[0]["direction"] ?? "") === "asc" ?  "desc" : "asc";
+                        $sort_params["order"] = $cols[$i];
+                        $sort_params["sens"] = ($form->query_builder->orders[0]["direction"] ?? "") === "asc" ?  "desc" : "asc";
                         ?>
-                        <a
-                            class="sort <?= ($form->query_builder->orders[0]["column"] ?? "") === $column["field"] ? $form->query_builder->orders[0]["direction"] : "" ?>"
-                            href="<?= "?" . http_build_query($sort_params, "", "&amp;") ?>"
-                        >
-                        <?php endif ?>
-                            <?= $column["header"] ?>
-                        <?php if ($column["sortable"]): ?>
-                        </a>
-                        <?php endif?>
-                    </th>
+                        <?= $column->renderHeader(($form->query_builder->orders[0]["column"] ?? "") === $cols[$i], $sort_params) ?>
                     <?php endforeach ?>
                     <?php if ($hasActionButtons): ?>
                     <th>
@@ -106,141 +90,18 @@ namespace A2billing\Forms;
             <tbody>
             <?php foreach ($list as $row): ?>
                 <tr>
-                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $column): // todo: numeric keys in result
-                    if ($column["type"] === "list") {
-                        $record_display = ($column["options"][$row[$j] ?? ""] ?? null) ?: _("n/a");
-                    } else {
-                        $record_display = $row[$j];
-                    }
-
-                    $arg = [];
-                    foreach ($column["arguments"] ?? [] as $argument) {
-                        if (is_string($argument)) {
-                            $argument = preg_replace_callback(
-                                "/%([\w.]+)/",
-                                fn ($m) => $m[1] === "X" ? $record_display : ($row[$m[1]] ?? ""),
-                                $argument
-                            );
-                        }
-                        $arg[] = $argument;
-                    }
-                    ?>
-                    <td>
-                    <?php if (!empty($column["function"]) && is_callable($column["function"])): ?>
-                        <?= call_user_func_array($column["function"], $arg ?: [$record_display]) ?>
-                    <?php elseif (!empty($column["href"])): ?>
-                        <a href="<?= $column["href"] ?><?= str_ends_with($column["href"], "=") ? $row[$j] : "" ?>">
-                            <?= $record_display ?>
-                        </a>
-                    <?php else: ?>
-                        <?= $record_display ?? "" ?>
-                    <?php endif ?>
-                    </td>
-                <?php $row[$j] = $record_display ?>
+                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $column): // todo: numeric keys in result ?>
+                    <?= $column->renderCell($row[$j], $row) ?>
                 <?php endforeach ?>
                 <?php if ($hasActionButtons): ?>
                     <td>
-                    <?php if($form->FG_ENABLE_INFO_BUTTON): ?>
-                        <a
-                            href="<?= $form->FG_INFO_BUTTON_LINK?><?= $row["instance_primary_key"] ?? "" ?>"
-                            title="<?= sprintf(_("About this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
-                            aria-label="<?= sprintf(_("About this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
-                        >
-                            <span class="bi bi-16 bi-search text-info" aria-hidden="true"></span>
-                        </a>
+                    <?= $form->listInfoButton?->renderButton($row["instance_primary_key"], $row) ?>
+                    <?= $form->listEditButton?->renderButton($row["instance_primary_key"], $row) ?>
+                    <?php if(!in_array($row["instance_primary_key"], $form->FG_DELETION_FORBIDDEN_ID)): ?>
+                        <?= $form->listDeleteButton?->renderButton($row["instance_primary_key"], $row) ?>
                     <?php endif ?>
-                    <?php if($form->FG_ENABLE_EDIT_BUTTON): ?>
-                        <?php
-                        $check = true;
-                        if (!empty($form->FG_EDIT_BUTTON_CONDITION)) {
-                            $condition_eval = preg_replace_callback(
-                                "/\\|([\w.]+)\\|/i",
-                                fn ($m) => $row[$m[1]] ?? "",
-                                // only used in FG_var_invoice.inc and FG_var_receipt.inc
-                                $form->FG_EDIT_BUTTON_CONDITION
-                            );
-                            $check = eval("return $condition_eval;");
-                        }
-                        ?>
-                        <?php if($check): ?>
-                        <a
-                            href="<?= $form->FG_EDIT_BUTTON_LINK?><?= $row["instance_primary_key"] ?? "" ?>"
-                            title="<?= sprintf(_("Edit this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
-                            aria-label="<?= sprintf(_("Edit this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
-                        >
-                            <span class="bi bi-16 bi-pencil-fill text-body" aria-hidden="true"></span>
-                        </a>
-                        <?php endif ?>
-                    <?php endif ?>
-                    <?php if($form->FG_ENABLE_DELETE_BUTTON && !in_array($row["instance_primary_key"], $form->FG_DELETION_FORBIDDEN_ID)): ?>
-                        <?php
-                        $check = true;
-                        if (!empty($form->FG_DELETE_BUTTON_CONDITION)) {
-                            $condition_eval = preg_replace_callback(
-                                "/\\|([\w.]+)\\|/i",
-                                fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
-                                $form->FG_DELETE_BUTTON_CONDITION
-                            );
-                            $check = eval("return $condition_eval;");
-                        }
-                        ?>
-                        <?php if ($check): ?>
-                        <a
-                            href="<?= $form->FG_DELETE_BUTTON_LINK?><?= $row["instance_primary_key"] ?? "" ?>"
-                            title="<?= sprintf(_("Delete this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
-                            aria-label="<?= sprintf(_("Delete this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
-                        >
-                            <span class="bi bi-16 bi-trash3-fill text-danger" aria-hidden="true"></span>
-                        </a>
-                        <?php endif ?>
-                    <?php endif ?>
-                    <?php foreach ($form->list_action_buttons as $button):
-                        $check = true;
-                        if (!empty($button["match_index"])) {
-                            $check = $row[$button["match_index"]] == $button["match_value"];
-                        }
-                        if (!$check) {
-                            continue;
-                        }
-                        $link = "";
-                        if ($button["url"] !== "") {
-                            $link = str_replace("|param|", $row["instance_primary_key"] ?? "", $button["url"]);
-                            $link = preg_replace_callback(
-                                "/\\|([\w.]+)\\|/i",
-                                fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
-                                $link
-                            );
-                            if (str_ends_with($link, "=")) {
-                                $link .= $row["instance_primary_key"] ?? "";
-                            }
-                        }
-                        if ($button["icon"]) {
-                            $contents = "<span class=\"bi bi-16 bi-$button[icon]\" aria-hidden=\"true\" aria-label=\"$button[label]\"></span>";
-                        } elseif ($button["image"]) {
-                            $contents = "<img alt=\"$button[label]\" src=\"$button[image]\"/>";
-                        } else {
-                            $contents = $button["label"];
-                        }
-                    ?>
-                        <?php if ($link): ?>
-                        <a
-                            href="<?= $link ?>"
-                            title="<?= $button["label"] ?>"
-                            class="<?= $button["class"] ?? "" ?>"
-                            data-primary-key="<?= $row["instance_primary_key"] ?? "" ?>"
-                            data-popup-select="<?= $popup_select ?>"
-                            <?= $button["image"] ? "aria-label=\"$button[label]\"" : "" ?>
-                        ><?= $contents ?></a>
-                        <?php else: ?>
-                        <button
-                            type="button"
-                            title="<?= $button["label"] ?>"
-                            class="btn align-baseline p-0 <?= $button["class"] ?? "" ?>"
-                            data-primary-key="<?= $row["instance_primary_key"] ?? "" ?>"
-                            data-popup-select="<?= $popup_select ?>"
-                            <?= $button["image"] ? "aria-label=\"$button[label]\"" : "" ?>
-                        ><?= $contents ?></button>
-                        <?php endif ?>
+                    <?php foreach ($form->list_action_buttons as $button): ?>
+                        <?= $button->renderButton($row["instance_primary_key"], $row) ?>
                     <?php endforeach ?>
                     </td>
                 <?php endif ?>

@@ -66,8 +66,6 @@ if ($form_action === "list") {
             ->orderBy("config_key")
             ->limit(25)
     );
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-    $HD_Form->AddListTopButton();
 
     $HD_Form->help_text = create_help(_("Here you can see and edit the different A2Billing settings."));
 
@@ -96,7 +94,8 @@ if ($form_action === "list") {
     }
 }
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->AddListAddButton();
+$HD_Form->AddListEditButton();
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");

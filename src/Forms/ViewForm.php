@@ -56,7 +56,7 @@ readonly class ViewForm
         $pagination_params["current_page"] = "%s";
 
         $hasActionButtons = (
-            $form->FG_ENABLE_DELETE_BUTTON || $form->FG_ENABLE_INFO_BUTTON || $form->FG_ENABLE_EDIT_BUTTON
+            $form->listDeleteButton || $form->listInfoButton || $form->listEditButton
             || count($form->list_action_buttons)
         );
 

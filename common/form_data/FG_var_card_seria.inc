@@ -45,8 +45,6 @@ $HD_Form = new FormHandler(
 $HD_Form->foreign_keys = ["cc_card" => "id_seria"];
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this series! Please comfirm that you really want to remove this series.");
 
-$HD_Form->AddListTopButton(null, null, "card-list");
-
 $HD_Form->help_text = create_help(
     _("This page shows the series list.")
     . '<br>'
@@ -57,9 +55,8 @@ $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", 0, 40]);
 $HD_Form->AddListValue(_("Sequence number"), "value");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->AddListAddButton(icon: "card-list");
+$HD_Form->AddListEditButton();
 
 $HD_Form->AddEditElement(
     _("NAME"),

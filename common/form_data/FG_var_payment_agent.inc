@@ -62,8 +62,7 @@ $HD_Form = new FormHandler(
 );
 
 if (is_admin()) {
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-    $HD_Form->AddListTopButton("A2B_entity_payment_agent.php?form_action=ask-add", _("Add Payment"));
+    $HD_Form->AddListAddButton("A2B_entity_payment_agent.php?form_action=ask-add", _("Add Payment"));
 }
 
 $HD_Form->help_text = create_help(
@@ -86,8 +85,7 @@ $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
 $HD_Form->AddListValue(_("Refill"), "cc_logrefill_agent.id AS refill_id", "get_agent_refill_link");
 
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_payment.php?type=agent&id=";
+$HD_Form->AddListInfoButton("A2B_info_payment.php?type=agent&id=");
 
 $HD_Form->search_form_enabled = !$popup_select;
 $HD_Form->search_session_key = "payment_agent_selection";
@@ -99,8 +97,8 @@ $HD_Form->AddSearchTextInput(_("LASTNAME"), "lastname");
 $HD_Form->AddSearchTextInput(_("FIRSTNAME"), "firstname");
 
 if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 
     $HD_Form->AddEditPopup(
         _("AGENT ID"),

@@ -77,8 +77,7 @@ if (is_customer()) {
     );
 }
 
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
+$HD_Form->AddListInfoButton("A2B_receipt_view.php?id=");
 
 if (is_customer()) {
     $HD_Form->help_text = _("Receipt history - The section below allows you to see the receipt that you received. you can see in them the summary of some withdrawal");
@@ -101,9 +100,6 @@ if (is_customer()) {
         "status",
         0 // open
     );
-    $HD_Form->FG_EDIT_BUTTON_CONDITION = '"|cc_receipt.status|" == "OPEN"';
-
-    $HD_Form->AddListTopButton(null, null, "receipt");
 
     $HD_Form->help_text = create_help(
         _("Receipt history - The section below allows you to see and create receipt against a customer.Only the closed receipt can be see in the customer interface. Receipts are only an information for the user and aren't used in the balance of the system")
@@ -119,9 +115,12 @@ $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListMapping(_("Status"), "cc_receipt.status", getInvoiceStatusList());
 $HD_Form->AddListValue(_("Amount (incl VAT)"), "SUM(price)", "get_money");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
-$HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
-$HD_Form->FG_ENABLE_DELETE_BUTTON = !is_customer();
+if (!is_customer()) {
+    $HD_Form->AddListAddButton(icon: "receipt");
+    $HD_Form->AddListEditButton(condition: '"|cc_receipt.status|" == "OPEN"');
+    $HD_Form->AddListDeleteButton();
+
+}
 
 $HD_Form->AddEditPopup(
     _("CUSTOMER ID"),

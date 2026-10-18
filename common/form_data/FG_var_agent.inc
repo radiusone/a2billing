@@ -57,10 +57,6 @@ $HD_Form = new FormHandler(
 if (is_agent()) {
     $HD_Form->update_query_conditions = ["id" => Agent::id()];
 }
-
-if (is_admin()) {
-    $HD_Form->AddListTopButton("A2B_entity_agent.php?form_action=ask-add&groupID=0");
-}
 $HD_Form->help_text = is_admin()
     ? create_help(_("Agents - this shows a list of all of the Agents who have access to the Agent interface"))
     : create_help(_("Personal information") . "<br/>" . _("You can update your personal information here"));
@@ -121,15 +117,15 @@ if ($popup_select) {
         ->AddListMapping(_("ACTIVE"), "active", $yesno);
 }
 
+$HD_Form->AddListEditButton();
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } elseif (Admin::allowed(Admin::ACX_MODIFY_AGENTS) || Agent::allowed(Agent::ACX_MYACCOUNT)) {
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->AddListEditButton();
     if (is_admin()) {
-        $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-        $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_agent.php?id=";
-        $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-        $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+        $HD_Form->AddListAddButton("A2B_entity_agent.php?form_action=ask-add&groupID=0");
+        $HD_Form->AddListInfoButton("A2B_info_agent.php?id=");
+        $HD_Form->AddListDeleteButton();
 
         $HD_Form->AddEditElement(
             _("LOGIN"),

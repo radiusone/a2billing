@@ -55,8 +55,6 @@ if (is_customer()) {
     $HD_Form->update_query_conditions["id_cc_card"] = Customer::id();
 }
 
-$HD_Form->AddListTopButton("A2B_entity_did_destination.php?form_action=ask-add", _("Add Destination"), "telephone-inbound-fill");
-
 $HD_Form->help_text = create_help(_("DID number list with destinations."));
 
 $activated_list = getActivationList();
@@ -76,9 +74,9 @@ $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
 $HD_Form->AddListValue(_("Minutes Used"), "cc_did_destination.secondusedreal", "get_minute");
 $HD_Form->AddListMapping(_("Validated"), "validated", $validated_list);
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton("A2B_entity_did_destination.php?form_action=ask-add", _("Add Destination"), "telephone-inbound-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("Destination"),

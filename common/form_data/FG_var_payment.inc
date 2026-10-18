@@ -75,9 +75,6 @@ if (is_agent()) {
 } else {
     $HD_Form->help_text = create_help(_("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account."));
 }
-if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
-    $HD_Form->AddListTopButton(null, null, "cash-stack text-success");
-}
 
 $list_refill_type = getRefillType_List();
 
@@ -96,9 +93,8 @@ if (is_customer()) {
     $HD_Form->AddListFilter("username", _("Account number"));
 }
 if (!$popup_select && !is_customer()) {
-    $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_payment.php?id=";
-	$HD_Form->search_form_enabled = true;
+    $HD_Form->AddListInfoButton("A2B_info_payment.php?id=");
+    $HD_Form->search_form_enabled = true;
     $HD_Form->search_session_key = "payment_cust_selection";
     $HD_Form->search_delete_enabled = false;
     $HD_Form->search_form_title = _("Define specific criteria to search for payments created.");
@@ -112,9 +108,9 @@ if (!$popup_select && !is_customer()) {
 }
 
 if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->AddListAddButton(icon: "cash-stack text-success");
+    $HD_Form->AddListEditButton();
+    $HD_Form->AddListDeleteButton();
 
     $HD_Form->AddEditPopup(
         _("CUSTOMER ID"),

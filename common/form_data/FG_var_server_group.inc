@@ -37,8 +37,6 @@ use A2billing\Forms\Validator;
 
 $HD_Form = new FormHandler("cc_server_group", _("Callback Server Group"));
 
-$HD_Form->AddListTopButton(null, null, "hdd-stack-fill");
-
 $HD_Form->help_text = create_help(
     _("Server Groups define the set of servers that are going to be used by the callback system. A callback is bound to a server group which will be used to dispatch the callback requests.")
 );
@@ -47,9 +45,9 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Description"), "description");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "hdd-stack-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("NAME"),

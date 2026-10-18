@@ -38,8 +38,6 @@ use A2billing\Forms\Validator;
 
 $HD_Form = new FormHandler("cc_monitor", _("Monitoring"));
 
-$HD_Form->AddListTopButton(null, null, "diagram-3-fill");
-
 $HD_Form->help_text = create_help(
     _("IVR Monitoring, an extension should be configured for the admin to call and monitor through an IVR some important data from your system.")
 );
@@ -54,9 +52,9 @@ $HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", 0, 70])
 $HD_Form->AddListValue(_("Text"), "text_intro", "substr", ["%X", 0, 70]);
 $HD_Form->AddListMapping(_("ENABLE"), "enable", $actived_list);
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListAddButton(icon: "diagram-3-fill");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("LABEL"),

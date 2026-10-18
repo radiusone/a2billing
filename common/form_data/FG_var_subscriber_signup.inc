@@ -42,8 +42,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_subscription_signup")->orderBy("id", "DESC")
 );
 
-$HD_Form->AddListTopButton(null, null, "box-seam");
-
 $HD_Form->help_text = create_help(_("SIGNUP SUBSCRIBER - You can make create a list of subscribers that the customers can subscribe."));
 
 $activated_list = getActivationList();
@@ -56,9 +54,9 @@ $HD_Form->AddListSqlMapping(_("Call plan"), "id_callplan", Connection::getConnec
 
 $HD_Form->list_message_empty  = _("NO SUBSCRIPTION IN SIGNUP CREATED!");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton(null, null, "box-seam");
+$HD_Form->AddListEditButton();
+$HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("LABEL"),

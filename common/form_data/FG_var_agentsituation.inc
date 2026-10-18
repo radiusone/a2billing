@@ -62,7 +62,3 @@ $HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchTextInput(_("LOGIN"), "login");
 $HD_Form->AddSearchTextInput(_("LASTNAME"), "lastname");
 $HD_Form->AddSearchTextInput(_("FIRSTNAME"), "firstname");
-
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;

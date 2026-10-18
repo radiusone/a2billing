@@ -60,8 +60,7 @@ $HD_Form = new FormHandler(
 );
 
 if (is_admin()) {
-    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-    $HD_Form->AddListTopButton();
+    $HD_Form->AddListAddButton();
 }
 
 $HD_Form->help_text = create_help(

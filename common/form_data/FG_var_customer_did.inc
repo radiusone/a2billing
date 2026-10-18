@@ -55,7 +55,6 @@ $HD_Form->delete_message_intro = sprintf(
     _("If you want to remove this DID from your account, press the %s button"),
     _("Delete")
 );
-$HD_Form->AddListTopButton("A2B_entity_did.php?form_action=ask-add", _("Add DID"), "telephone-inbound-fill");
 
 $HD_Form->list_help_text = create_help(_("Inbound DIDs can be added and removed from your account here. DID destinations can be set separately."));
 
@@ -71,9 +70,8 @@ $HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "get_minute");
 $HD_Form->AddListValue(_("Monthly rate"), "fixrate");
 $HD_Form->AddListValue(_("Per minute rate"), "selling_rate");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->AddListAddButton("A2B_entity_did.php?form_action=ask-add", _("Add DID"), "telephone-inbound-fill");
+$HD_Form->AddListDeleteButton();
 
 if ($form_action === "ask-add" || $form_action === "add") {
     $HD_Form->AddEditSqlSelect(
