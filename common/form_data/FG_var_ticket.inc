@@ -68,35 +68,35 @@ $HD_Form = new FormHandler(
 if ($form_action === "list") {
     $virtual = null;
     if (is_admin()) {
-        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+        $virtual = Connection::getConnection("cc_ticket AS aa", "aa.id")
             ->selectRaw("CASE WHEN MAX(aa.viewed_admin) = 1 OR SUM(bb.viewed_admin) > 0 THEN 1 ELSE 0 END AS viewed")
-            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
+            ->leftJoin("cc_ticket_comment AS bb", "aa.id", "bb.id_ticket")
             ->groupBy("aa.id");
     } elseif (is_agent() && $ticket_type === "agent") {
-        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+        $virtual = Connection::getConnection("cc_ticket AS aa", "aa.id")
             ->selectRaw("CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed")
-            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
+            ->leftJoin("cc_ticket_comment AS bb", "aa.id", "bb.id_ticket")
             ->where("aa.creator", Agent::id())
             ->groupBy("aa.id");
     } elseif (is_agent()) {
-        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+        $virtual = Connection::getConnection("cc_ticket AS aa", "aa.id")
             ->selectRaw("CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed")
-            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
-            ->leftJoin("cc_card dd", "dd.id", "aa.creator")
-            ->leftJoin("cc_card_gorup ee", "dd.id_group", "ee.id")
+            ->leftJoin("cc_ticket_comment AS bb", "aa.id", "bb.id_ticket")
+            ->leftJoin("cc_card AS dd", "dd.id", "aa.creator")
+            ->leftJoin("cc_card_group AS ee", "dd.id_group", "ee.id")
             ->where("ee.id_agent", Agent::id())
             ->groupBy("aa.id");
     } elseif (is_customer()) {
-        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+        $virtual = Connection::getConnection("cc_ticket AS aa", "aa.id")
             ->selectRaw("CASE WHEN MAX(aa.viewed_cust) = 1 OR SUM(bb.viewed_cust) > 0 THEN 1 ELSE 0 END as viewed")
-            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
+            ->leftJoin("cc_ticket_comment AS bb", "aa.id", "bb.id_ticket")
             ->where("aa.creator_type", Ticket::CUSTOMER)
             ->where("aa.creator", Customer::id())
             ->groupBy("aa.id");
     }
     $HD_Form->query_builder->when(
         $virtual,
-        fn (Builder $q) => $q->leftJoinSub($virtual, "v", "cc_ticket_id", "v.id")
+        fn (Builder $q) => $q->leftJoinSub($virtual, "v", "cc_ticket.id", "v.id")
     );
     $HD_Form->query_builder->when(
         $ticket_type === "agent",
