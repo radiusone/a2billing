@@ -34,13 +34,11 @@ $totalbuycost = array_sum(array_column($list_total_day, "buy"));
 $totalsuccess = array_sum(array_column($list_total_day, "success_calls"));
 $widthbar = 0;
 
-$total_tmc = ($resulttype ?? "min") === "min"
-    ? sprintf(
-        "%02d:%02d",
-        intval(($totalminutes / $totalcall) / 60),
-        intval($totalminutes / $totalcall) % 60
-    )
-    : intval($totalminutes / $totalcall);
+$total_tmc = sprintf(
+    "%02d:%02d",
+    intval(($totalminutes / $totalcall) / 60),
+    intval($totalminutes / $totalcall) % 60
+);
 
 $totalminutes = sprintf("%02d:%02d", intval($totalminutes / 60), $totalminutes % 60);
 ?>

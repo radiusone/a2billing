@@ -272,15 +272,7 @@ function get_money(float|int|null $value, ?int $decimals = null, string $currenc
  */
 function get_minute($sessiontime): string
 {
-    // todo: what is this?
-    // see if this came in via post/get
-    getpost_ifset(["resulttype"], $p);
-
-    if (($p["resulttype"] ?? "min") === "min") {
-        $sessiontime = sprintf("%02d:%02d", intval($sessiontime / 60), $sessiontime % 60);
-    }
-
-    return $sessiontime;
+    return sprintf("%02d:%02d", intval($sessiontime / 60), $sessiontime % 60);
 }
 
 /**
