@@ -18,7 +18,7 @@ class Mapping extends ListElement
 
     public function renderCell(mixed &$value, array $row): string
     {
-        $display = $mapped_value = $this->options[$value] ?? _("n/a");
+        $display = $mapped_value = is_null($value) ? _("n/a") : $this->options[$value] ?? _("n/a");
         if (str_ends_with($this->href, "=")) {
             $display = sprintf(
                 "<a href=\"%s%s\">%s</a>",
