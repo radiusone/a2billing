@@ -73,17 +73,14 @@ $HD_Form->AddEditPopup(
     _("Insert the Customer ID")
 );
 
-$date_attr = ["maxlength" => 40];
-if ($form_action === "ask-add"){
-    $date_attr["value"] = date("Y-m-d");
-}
 $HD_Form->AddEditElement(
     _("BILLING DATE"),
     "date",
     "",
-    $date_attr,
-    [Validator::class, "min5Chars"],
-    _("Insert the current date (YYYY-MM-DD)")
+    ["type" => "date"],
+    Validator::date(...),
+    _("Insert the current date"),
+    default_value: (new DateTime())->format("Y-m-d"),
 );
 
 $HD_Form->AddListFilter("username", _("Account number"));

@@ -78,7 +78,7 @@ if ($popup_select) {
     $HD_Form->AddListValue(_("Tech"), "providertech");
     $HD_Form->AddListValue(_("Host"), "providerip");
     $HD_Form->AddListSqlMapping(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "id", "provider_name"));
-    $HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "get_minute");
+    $HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "get_timespan");
     $HD_Form->AddListMapping(_("Status"), "status", getActivationList());
     $HD_Form->AddListValue(_("Max use"), "maxuse");
 }
@@ -171,29 +171,24 @@ $HD_Form->AddEditSqlSelect(
     validator: [Validator::class, "foreignKey"],
 );
 
-$inuse_attr = ["maxlength" => 30];
-if ($form_action === "ask-add") {
-    $inuse_attr["value"] = 0;
-}
 $HD_Form->AddEditElement(
     _("CURRENT CONNECTIONS"),
     "inuse",
     _("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero."),
-    $inuse_attr,
+    ["type" => "number", "min" => "0"],
     [Validator::class, "number"],
-    _("Number of current connections"));
+    _("Number of current connections"),
+    default_value: "0",
+);
 
-$maxuse_attr = ["maxlength" => 30];
-if ($form_action === "ask-add") {
-    $maxuse_attr["value"] = -1;
-}
 $HD_Form->AddEditElement(
     _("MAXIMUM CONNECTIONS"),
     "maxuse",
     _("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels"),
-    $maxuse_attr,
+    ["type" => "number", "min" => "-1"],
     [Validator::class, "number"],
-    _("Number of maximum simultaneous connections")
+    _("Number of maximum simultaneous connections"),
+    default_value: "-1",
 );
 
 $HD_Form->AddEditSelect(

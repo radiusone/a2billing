@@ -89,48 +89,39 @@ $HD_Form->AddListEditButton();
 $HD_Form->AddListDeleteButton();
 $HD_Form->FG_SPLITABLE_FIELDS = ["did"];
 
-$did_attr = ["maxlength" => 60];
-if ($form_action === "purchase") {
-    $did_attr["value"] = $did;
-}
 $HD_Form->AddEditElement(
     _("DID"),
     "did",
     $form_action === "ask-add"
         ? _("Define the DIDs. You can define a range of DID. <br>80412340210-80412340218 would add all DID's between the range, whereas DIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual DID listed.")
         : _("Define the DIDs"),
-    $did_attr,
+    ["maxlength" => "60"],
     [Validator::class, "min1Char"],
-    _("Insert the DID")
+    _("Insert the DID"),
+    default_value: $did,
 );
 
 
 $HD_Form->AddEditSelect(_("BILLING"), "billingtype", getBillingTypeList());
 
-$start_attr = ["maxlength" => 40];
-if ($form_action === "ask-add") {
-    $start_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("START DATE"),
     "startingdate",
-    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    $start_attr,
+    "",
+    ["type" => "datetime-local"],
     [Validator::class, "dateTime"],
-    _("Insert the starting date")
+    _("Insert the starting date"),
+    default_value: (new DateTime())->format("Y-m-d H:i:s"),
 );
 
-$exp_attr = ["maxlength" => 40];
-if ($form_action === "ask-add") {
-    $exp_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("EXPIRY DATE"),
     "expirationdate",
-    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    $exp_attr,
+    "",
+    ["type" => "datetime-local"],
     [Validator::class, "dateTime"],
-    _("Insert the expiration date")
+    _("Insert the expiration date"),
+    default_value: (new DateTime("+10 years"))->format("Y-m-d H:i:s"),
 );
 
 $HD_Form->AddEditSqlSelect(
@@ -158,30 +149,36 @@ $HD_Form->AddEditRadio(
 
 $HD_Form->AddEditSection(_("Retail Prices"));
 
-$rate_attr = ["maxlength" => 20];
-if ($form_action === "purchase") {
-    $rate_attr["value"] = $fixrate;
-} elseif ($form_action === "ask-add") {
-    $rate_attr["value"] = 0;
-}
 $HD_Form->AddEditElement(
     _("MONTHLY RATE"),
     "fixrate",
     _("currency : ") . strtoupper(BASE_CURRENCY),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "0",
+        "max" => "9999999",
+        "value" => $form_action === "purchase" ? $fixrate : "",
+    ],
     [Validator::class, "number"],
-    _("Insert the monthly rate")
+    _("Insert the monthly rate"),
+    default_value: "0",
 );
-
 
 $HD_Form->AddEditElement(
     _("CONNECT CHARGE"),
     "connection_charge",
     _("Apply a connection charge to connect DID together"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "0",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
     _("Insert the connect charge"),
-    "NO"
+    "NO",
+    "0",
 );
    // On Net Charges is where one customer calls another customer without any external carrier being involved in the call
 
@@ -189,9 +186,15 @@ $HD_Form->AddEditElement(
     _("SELLING RATE"),
     "selling_rate",
     _("The retail rate; or the cost per minute to apply to the customer to connect DID together, e.g. 0.02"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "0",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
-    _("Insert the rate")
+    _("Insert the rate"),
+    default_value: "0",
 );
 
 $HD_Form->AddEditSection(_("Peak Hours"));
@@ -210,9 +213,15 @@ $HD_Form->AddEditElement(
     _("CARRIER CONNECTION CHARGE"),
     "aleg_carrier_connect_charge",
     _("The connection charge can be negative or positive"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
-    _("Insert a rate")
+    _("Insert a rate"),
+    default_value: "0",
 );
 
 
@@ -220,10 +229,16 @@ $HD_Form->AddEditElement(
     _("CARRIER COST PER MINUTE"),
     "aleg_carrier_cost_min",
     _("The cost can be negative for Non geographic calls where there is an out-payment"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "NO"
+    "NO",
+    "0"
 );
 
 
@@ -231,7 +246,7 @@ $HD_Form->AddEditElement(
     _("CARRIER MIN DURATION"),
     "aleg_carrier_initblock",
     _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the buyrate init block"),
     "NO"
@@ -242,7 +257,7 @@ $HD_Form->AddEditElement(
     _("CARRIER BILLING BLOCK"),
     "aleg_carrier_increment",
     _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
     "NO"
@@ -253,9 +268,15 @@ $HD_Form->AddEditElement(
     _("RETAIL CONNECTION CHARGE"),
     "aleg_retail_connect_charge",
     _("The connection charge can be negative or positive"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
-    _("Insert a rate")
+    _("Insert a rate"),
+    default_value: "0"
 );
 
 
@@ -263,10 +284,16 @@ $HD_Form->AddEditElement(
     _("RETAIL COST PER MINUTE"),
     "aleg_retail_cost_min",
     _("The cost can be negative where there is an out payment, or more usually, positive"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "NO"
+    "NO",
+    default_value: "0",
 );
 
 
@@ -274,7 +301,7 @@ $HD_Form->AddEditElement(
     _("RETAIL MIN DURATION"),
     "aleg_retail_initblock",
     _("Set the minimum duration to charge the customer (ie 60 seconds)"),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the init block"),
     "NO"
@@ -285,7 +312,7 @@ $HD_Form->AddEditElement(
     _("RETAIL BILLING BLOCK"),
     "aleg_retail_increment",
     _("Set the billing increment in seconds to bill your customer."),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
     "NO"
@@ -297,9 +324,15 @@ $HD_Form->AddEditElement(
     _("CARRIER CONNECTION CHARGE OFF PEAK"),
     "aleg_carrier_connect_charge_offp",
     _("The connection charge can be negative or positive"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
-    _("Insert a rate")
+    _("Insert a rate"),
+    default_value: "0",
 );
 
 
@@ -307,10 +340,16 @@ $HD_Form->AddEditElement(
     _("CARRIER COST PER MINUTE OFF PEAK"),
     "aleg_carrier_cost_min_offp",
     _("The cost can be negative for Non geographic calls where there is an out-payment"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "NO"
+    "NO",
+    default_value: "0",
 );
 
 
@@ -318,7 +357,7 @@ $HD_Form->AddEditElement(
     _("CARRIER MIN DURATION OFF PEAK"),
     "aleg_carrier_initblock_offp",
     _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the buyrate init block"),
     "NO"
@@ -329,7 +368,7 @@ $HD_Form->AddEditElement(
     _("CARRIER BILLING BLOCK OFF PEAK"),
     "aleg_carrier_increment_offp",
     _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
     "NO"
@@ -340,9 +379,15 @@ $HD_Form->AddEditElement(
     _("RETAIL CONNECTION CHARGE OFF PEAK"),
     "aleg_retail_connect_charge_offp",
     _("The connection charge can be negative or positive"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
-    _("Insert a rate")
+    _("Insert a rate"),
+    default_value: "0",
 );
 
 
@@ -350,10 +395,16 @@ $HD_Form->AddEditElement(
     _("RETAIL COST PER MINUTE OFF PEAK"),
     "aleg_retail_cost_min_offp",
     _("The cost can be negative where there is an out payment, or more usually, positive"),
-    $rate_attr,
+    [
+        "type" => "number",
+        "step" => "0.01",
+        "min" => "-9999999",
+        "max" => "9999999",
+    ],
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "NO"
+    "NO",
+    "0",
 );
 
 
@@ -361,10 +412,11 @@ $HD_Form->AddEditElement(
     _("RETAIL MIN DURATION OFF PEAK"),
     "aleg_retail_initblock_offp",
     _("Set the minimum duration to charge the customer (ie 60 seconds)"),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the init block"),
-    "NO"
+    "NO",
+    "0",
 );
 
 
@@ -372,8 +424,9 @@ $HD_Form->AddEditElement(
     _("RETAIL BILLING BLOCK OFF PEAK"),
     "aleg_retail_increment_offp",
     _("Set the billing increment in seconds to bill your customer."),
-    ["maxlength" => 20],
+    ["type" => "number", "min" => "0", "max" => "300"],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
-    "NO"
+    "NO",
+    "0",
 );

@@ -105,20 +105,17 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
         _("Select the Customer ID"),
         $form_action === "ask-add" && !empty($card_id) ? ["value" => $card_id] : [],
         [Validator::class, "numeric"],
-        _("Insert the Customer ID")
+        _("Insert the Customer ID"),
     );
 
-    $date_attr = ["maxlength" => 40];
-    if ($form_action === "ask-add") {
-        $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-    }
     $HD_Form->AddEditElement(
         _("REFILL DATE"),
         "date",
         "",
-        $date_attr,
+        ["type" => "datetime-local"],
         [Validator::class, "dateTime"],
-        _("Insert the current date")
+        _("Insert the current date"),
+        default_value: (new DateTime())->format("Y-m-d H:i:s"),
     );
 
     $HD_Form->AddEditElement(
@@ -146,7 +143,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
         _("Define type for payment and refill,if created.")
     );
 
-	if ($form_action !== "ask-edit" && $form_action !== "edit") {
+    if ($form_action !== "ask-edit" && $form_action !== "edit") {
         $HD_Form->AddEditRadio(
             _("CREATE ASSOCIATE INVOICE"),
             "added_invoice",
@@ -156,8 +153,8 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
             [],
             _("Choose if you want to create an invoice with this refill account")
         );
-	}
+    }
 
-	$HD_Form->add_message_intro = "";
-	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_refill_add"];
+    $HD_Form->add_message_intro = "";
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_refill_add"];
 }

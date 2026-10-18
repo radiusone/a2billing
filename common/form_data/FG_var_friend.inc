@@ -121,17 +121,14 @@ $HD_Form->AddEditPopup(
     _("Insert the card number ID")
 );
 
-$name_attr = ["maxlength" => 40];
-if ($form_action === "ask-add") {
-    $name_attr["value"] = generate_unique_value($table);
-}
 $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    $name_attr,
-    [Validator::class, "min1Char"],
-    _("Insert the name")
+    ["maxlength" => "40"],
+    Validator::min4Chars(...),
+    _("Insert the name"),
+    default_value: $unq_name = generate_unique_value($table),
 );
 
 
@@ -139,9 +136,9 @@ $HD_Form->AddEditElement(
     _("ACCOUNTCODE"),
     "accountcode",
     "",
-    $name_attr,
-    null,
-    _("Insert the accountcode")
+    ["maxlength" => "20"],
+    [Validator::class, "numeric"],
+    _("Insert the accountcode"),
 );
 
 
@@ -184,17 +181,14 @@ $HD_Form->AddEditElement(
     _("Insert the amaflags")
 );
 
-$pass_attr = ["maxlength" => 40];
-if ($form_action === "ask-add") {
-    $pass_attr["value"] = strtr(base64_encode(bin2hex(random_bytes(16))), "+/=", "   ");
-}
 $HD_Form->AddEditElement(
     _("SECRET"),
     "secret",
     "",
-    $pass_attr,
+    ["maxlength" => "40"],
     null,
-    _("Insert the secret")
+    _("Insert the secret"),
+    default_value: generate_random_value("XXXXXXXXXXXXXXXXXXXX"),
 );
 
 
@@ -358,9 +352,10 @@ if ($voip_type === "sip") {
         _("USERNAME"),
         "username",
         "",
-        $name_attr,
-        null,
-        _("Insert the username")
+        ["maxlength" => "40"],
+        [Validator::class, "min4Chars"],
+        _("Insert the username"),
+        default_value: $unq_name ?? "",
     );
 
 

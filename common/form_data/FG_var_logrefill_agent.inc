@@ -104,17 +104,14 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
         _("Insert the AGENT ID "),
     );
 
-    $date_attr = ["maxlength" => 40];
-    if (($form_action ?? "") === "ask-add") {
-        $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-    }
     $HD_Form->AddEditElement(
         _("REFILL DATE"),
         "date",
         "",
-        $date_attr,
+        ["type" => "datetime-local"],
         [Validator::class, "dateTime"],
-        _("Insert the current date")
+        _("Insert the current date"),
+        default_value: (new DateTime())->format("Y-m-d H:i:s"),
     );
 
     $HD_Form->AddEditElement(

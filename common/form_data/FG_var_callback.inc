@@ -143,18 +143,15 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
-$date_attr = ["maxlength" => 20];
-if (($form_action ?? "") === "ask-add") {
-    $date_attr["value"] = date("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("CALLBACK DATE"),
     "callback_time",
-    _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    $date_attr,
+    "",
+    ["type" => "datetime-local"],
     [Validator::class, "dateTime"],
     "Insert the callback time",
     "NO-NULL",
+    (new DateTime())->format("Y-m-d H:i:s"),
     
 );
 

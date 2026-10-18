@@ -170,7 +170,6 @@ if ($A2B->config["signup"]['field_country'] ?? 0)  {
         gettext("COUNTRY"),
         "country",
         Connection::getConnection("cc_country", "countryname", "countrycode"),
-        $form_action === "ask-add" ? "CAN" : ""
     );
     $country_editFG = "country,";
 }

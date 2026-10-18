@@ -88,9 +88,10 @@ $HD_Form->AddEditElement(
     _("STARTING DAY"),
     "startday",
     _("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "),
-    ["maxlength" => 5] + ($form_action === "ask-add" ? ["value" => 1] : []),
+    ["type" => "number", "min" => "1", "max" => "31"],
     [Validator::class, "numeric"],
-    _("Insert the start day")
+    _("Insert the start day"),
+    default_value: "1",
 );
 
 

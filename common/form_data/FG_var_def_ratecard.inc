@@ -473,31 +473,25 @@ if (ADVANCED_MODE) {
 
 $HD_Form->AddEditSection(_("Activity Period"));
 
-$date_attr = ["maxlength" => 40];
-if ($form_action === "ask-add") {
-    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("Start Date"),
     "startdate",
-    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    $date_attr,
-    [Validator::class, "dateTime"],
-    _("Insert the starting date")
+    "",
+    ["type" => "datetime-local"],
+    Validator::dateTime(...),
+    _("Insert the starting date"),
+    default_value: (new DateTime())->format("Y-m-d H:i:s"),
 );
 
-
-if ($form_action === "ask-add") {
-    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("Stop Date"),
     "stopdate",
-    _("Leave empty to apply this rate indefinitely. Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00"),
-    $date_attr,
-    [Validator::class, "dateTime"],
+    _("Leave empty to apply this rate indefinitely."),
+    ["type" => "datetime-local"],
+    Validator::dateTime(...),
     _("Insert the stop date"),
-    "NO-NULL"
+    "NO-NULL",
+    default_value: (new DateTime("+10 years"))->format("Y-m-d H:i:s"),
 );
 
 $HD_Form->AddEditDayTime(
@@ -518,8 +512,8 @@ $HD_Form->AddEditElement(
     _("Duration Rounding"),
     "rounding_calltime",
     _("Set the rounding calltime. All the selling rules will apply over this new calltime."),
-    ["maxlength" => 40],
-    null,
+    ["type" => "number", "min" => "0", "max" => "300"],
+    Validator::numeric(...),
     _("Insert the rounding calltime")
 );
 
@@ -528,8 +522,8 @@ $HD_Form->AddEditElement(
     _("Rounding Threshold"),
     "rounding_threshold",
     _("Set the rounding threshold"),
-    ["maxlength" => 40],
-    null,
+    ["type" => "number", "min" => "0", "max" => "300"],
+    Validator::numeric(...),
     _("Insert the rounding threshold")
 );
 
@@ -538,8 +532,8 @@ $HD_Form->AddEditElement(
     _("Additional Block Charge"),
     "additional_block_charge",
     _("Set the initial block charge"),
-    ["maxlength" => 40],
-    null,
+    ["type" => "number", "step" => "0.01", "min" => "0", "max" => "9999999"],
+    Validator::number(...),
     _("Insert the additional block charge")
 );
 
@@ -548,8 +542,8 @@ $HD_Form->AddEditElement(
     _("Additional Block Charge Time"),
     "additional_block_charge_time",
     _("Set the initial block charge time"),
-    ["maxlength" => 40],
-    null,
+    ["type" => "number", "min" => "0", "max" => "300"],
+    Validator::numeric(...),
     _("Insert the additional block charge time")
 );
 
@@ -558,8 +552,8 @@ $HD_Form->AddEditElement(
     _("Additional Grace Time"),
     "additional_grace",
     _("Set the additional grace time in sec"),
-    ["maxlength" => 40],
-    null,
+    ["type" => "number", "min" => "0", "max" => "300"],
+    Validator::numeric(...),
     _("Insert the additional grace time in sec")
 );
 

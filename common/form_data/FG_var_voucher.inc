@@ -137,7 +137,7 @@ $HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list);
 $HD_Form->AddEditElement(
     _("EXPIRY DATE"),
     "expirationdate",
-    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
     ["type" => "datetime-local"],
     [Validator::class, "dateTime"],
     _("Insert the expiration date"),

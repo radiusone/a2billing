@@ -160,17 +160,14 @@ $HD_Form->AddEditPopup(
     _("Insert the Customer ID")
 );
 
-$date_attr = ["readonly" => "readonly", "maxlength" => 40];
-if ($form_action === "ask-add") {
-    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("INVOICE DATE"),
     "date",
     "",
-    $date_attr,
+    ["readonly" => "readonly", "type" => "datetime-local"],
     [Validator::class, "dateTime"],
-    _("Insert the current date")
+    _("Insert the current date"),
+    default_value: (new DateTime())->format("Y-m-d H:i:s"),
 );
 
 $HD_Form->AddEditElement(

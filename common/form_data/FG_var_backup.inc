@@ -193,20 +193,16 @@ $HD_Form->AddEditElement(
     _("Insert the name of backup")
 );
 
-
-$path_attr = ["maxlength" => 200];
-if ($form_action === "ask-add") {
-    $path_attr["value"] = $A2B->config['backup']['backup_path'] . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz";
-}
 $HD_Form->AddEditElement(
     _("PATH"),
     "path",
     $form_action === "ask-add"
         ? _("Path for the backup file or leave the default path set in a2billing.conf")
         : _("The backup file name"),
-    $path_attr,
+    ["maxlength" => "255"],
     null,
     $form_action === "ask-add"
         ? _("Insert the path for the backup file or leave the default path")
-        : _("The backup file")
+        : _("The backup file"),
+    default_value: $A2B->config['backup']['backup_path'] . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz",
 );

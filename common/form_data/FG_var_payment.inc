@@ -122,17 +122,14 @@ if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
         _("Insert the Customer ID")
     );
 
-    $date_attr = ["maxlength" => 40];
-    if ($form_action === "ask-add") {
-        $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-    }
     $HD_Form->AddEditElement(
         _("PAYMENT DATE"),
         "date",
         "",
-        $date_attr,
+        ["type" => "datetime-local"],
         [Validator::class, "dateTime"],
-        _("Insert the current date")
+        _("Insert the current date"),
+        default_value: (new DateTime())->format("Y-m-d H:i:s"),
     );
 
     $HD_Form->AddEditElement(
@@ -152,7 +149,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
         _("Insert the description")
     );
 
-	if ($form_action !== "ask-edit" && $form_action !== "edit") {
+    if ($form_action !== "ask-edit" && $form_action !== "edit") {
         $HD_Form->AddEditRadio(
             _("CREATE ASSOCIATE REFILL"),
             "added_refill",
@@ -172,7 +169,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
             [],
             _("Choose if you want to create a commission to an agent, if this customer is managed by one")
         );
-	}
+    }
 
     $HD_Form->AddEditSelect(
         _("PAYMENT TYPE"),
@@ -182,6 +179,6 @@ if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
         _("Define type for payment and refill,if created.")
     );
 
-	$HD_Form->add_message_intro = "";
-	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "create_refill_after_payment"];
+    $HD_Form->add_message_intro = "";
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "create_refill_after_payment"];
 }

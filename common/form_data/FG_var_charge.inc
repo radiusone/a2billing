@@ -100,19 +100,16 @@ $HD_Form_c->AddEditPopup(
     _("Insert the Customer ID")
 );
 
-$amt_attr = ["maxlength" => 20];
-if ($form_action === "ask-add" && !empty($id_did)) {
-    $amt_attr["value"] = Connection::getConnection("cc_did")
-        ->where("id", $id_did)
-        ->value("fixrate") ?? 0;
-}
 $HD_Form_c->AddEditElement(
     _("AMOUNT"),
     "amount",
     "",
-    $amt_attr,
+    ["type" => "number", "step" => "0.01", "min" => "0", "max" => "9999999"],
     [Validator::class, "number"],
-    _("Insert the amount")
+    _("Insert the amount"),
+    default_value: empty($id_did) ? "" : Connection::getConnection("cc_did")
+        ->where("id", $id_did)
+        ->value("fixrate") ?? 0
 );
 
 $HD_Form_c->AddEditSelect(

@@ -76,32 +76,26 @@ $HD_Form->AddEditSqlSelect(
     validator: [Validator::class, "foreignKey"],
 );
 
-$date_attr = ["maxlength" => 40];
-if ($form_action === "ask-add") {
-    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("START DATE"),
     "startdate",
-    _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    $date_attr,
+    "",
+    ["type" => "datetime-local"],
     [Validator::class, "dateTime"],
     _("Insert the start date"),
     "NO-NULL",
-    
+    (new DateTime())->format("Y-m-d H:i:s"),
 );
 
-if ($form_action === "ask-add") {
-    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("STOP DATE"),
     "stopdate",
-    _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    $date_attr,
+    "",
+    ["type" => "datetime-local"],
     [Validator::class, "dateTime"],
     _("Insert the stop date"),
-    "NO-NULL"
+    "NO-NULL",
+    (new DateTime("+10 years"))->format("Y-m-d H:i:s")
 );
 
 $HD_Form->AddEditTextarea(

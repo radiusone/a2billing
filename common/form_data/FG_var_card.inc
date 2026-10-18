@@ -332,10 +332,6 @@ if ($popup_select) {
     }
     $array_card_generated = gen_card_with_alias($cardnumber_length);
 
-    $acct_attr = ["readonly" => "readonly"];
-    if ($form_action === "ask-add") {
-        $acct_attr["value"] = $array_card_generated[0];
-    }
     if (!is_customer()) {
         $HD_Form->AddEditSection(_("Customer Information"));
 
@@ -343,41 +339,35 @@ if ($popup_select) {
             _("Account number"),
             "username",
             '',
-            $acct_attr,
+            ["type" => "number", "readonly" => "readonly"],
             [Validator::class, "numeric"],
-            _("Insert the account number")
+            _("Insert the account number"),
+            default_value: $array_card_generated[0],
         );
 
-        $login_attr = ["maxlength" => 40];
-        if ($form_action === "ask-add") {
-            $login_attr["value"] = $array_card_generated[1];
-        }
         $HD_Form->AddEditElement(
             _("Login"),
             "useralias",
             "",
-            $login_attr,
+            ["maxlength" => "40"],
             [Validator::class, "min5Chars"],
-            _("Insert the webui login")
+            _("Insert the webui login"),
+            default_value: $array_card_generated[1],
         );
 
-        $pass_attr = ["maxlength" => 20];
-        if ($form_action === "ask-add") {
-            $pass_attr["value"] = generate_random_value("#####XXXXXXXXXXXXXXX");
-        }
         $HD_Form->AddEditElement(
             _("Password"),
             "uipass",
             _("Password for customer to access to the web interface and view the balance."),
-            $pass_attr,
-            null,
-            _("Insert the password")
+            ["maxlength" => "32"],
+            Validator::min8Chars(...),
+            _("Insert the password"),
+            "no",
+            default_value: generate_random_value("#####XXXXXXXXXXXXXXX"),
         );
 
-        $balance_attr = ["maxlength" => 30];
-        if ($form_action === "ask-add") {
-            $balance_attr["value"] = 0;
-        } else {
+        $balance_attr = ["type" => "number", "step" => "0.01"];
+        if ($form_action !== "ask-add") {
             $balance_attr["readonly"] = "readonly";
         }
         $HD_Form->AddEditElement(
@@ -386,7 +376,8 @@ if ($popup_select) {
             _("currency : ") . strtoupper(BASE_CURRENCY),
             $balance_attr,
             [Validator::class, "number"],
-            _("Insert the number of credit")
+            _("Insert the number of credit"),
+            default_value: 0,
         );
 
         $HD_Form->AddEditSqlSelect(
@@ -464,7 +455,7 @@ if ($popup_select) {
         "",
         ["maxlength" => 40],
         [Validator::class, "min2Chars"],
-        _("Insert the state"),
+        _("Insert the province/state"),
         "NO"
     );
 
@@ -472,7 +463,6 @@ if ($popup_select) {
         _("Country"),
         "country",
         Connection::getConnection("cc_country", "countryname", "countrycode"),
-        $form_action === "ask-add" ? "USA" : ""
     );
 
     $HD_Form->AddEditElement(
@@ -481,7 +471,7 @@ if ($popup_select) {
         "",
         ["maxlength" => 20],
         [Validator::class, "min3Chars"],
-        _("Insert the zipcode"),
+        _("Insert the postal code"),
         "NO"
     );
 
@@ -607,15 +597,11 @@ if ($popup_select) {
         _("Choose if you want to enable the lock on this account")
     );
 
-    $lock_attr = ["maxlength" => 10];
-    if ($form_action === "ask-add") {
-        $lock_attr["value"] = 0;
-    }
     $HD_Form->AddEditElement(
         _("Lock PIN"),
         "lock_pin",
         _("Code required to make the call if the lock is active."),
-        $lock_attr,
+        ["minlength" => "4", "maxlength" => "10", "pattern" => "[0-9]+"],
         [Validator::class, "numeric"],
         "",
         "NO"
@@ -696,32 +682,25 @@ if ($popup_select) {
         _("Select method of expiry for the account.")
     );
 
-    $exp_attr = ["maxlength" => 40];
-    if ($form_action === "ask-add") {
-        $exp_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
-    }
     $HD_Form->AddEditElement(
         _("Expiry date"),
         "expirationdate",
-        _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-        $exp_attr,
+        "",
+        ["type" => "datetime-local"],
         [Validator::class, "dateTime"],
         _("Insert the expiration date"),
         "NO-NULL",
-
+        default_value: (new DateTime("+10 years"))->format("Y-m-d H:i:s"),
     );
 
-    $days_attr = ["maxlength" => 6];
-    if ($form_action === "ask-add") {
-        $days_attr["value"] = 0;
-    }
     $HD_Form->AddEditElement(
         _("Expiry days"),
         "expiredays",
         _("The number of days after which the account will expire."),
-        $days_attr,
+        ["type" => "number", "min" => "0", "max" => "9999"],
         [Validator::class, "numeric"],
-        _("Insert the number of days after which the account will expire")
+        _("Insert the number of days after which the account will expire"),
+        default_value: "0",
     );
 
     if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
@@ -770,17 +749,14 @@ if ($popup_select) {
         _("Choose if you want to enable the autorefill on this account")
     );
 
-    $balance_attr = ["maxlength" => 30];
-    if ($form_action === "ask-add") {
-        $balance_attr["value"] = 0;
-    }
     $HD_Form->AddEditElement(
         _("Initial balance"),
         "initialbalance",
         _("The initial balance is used by autorefill to reset the current balance to this amount"),
-        $balance_attr,
+        ["type" => "number", "min" => "0", "step" => "0.01"],
         [Validator::class, "number"],
-        _("Insert the amount of the initial balance")
+        _("Insert the amount of the initial balance"),
+        default_value: "0",
     );
 
     $HD_Form->AddEditSection(_("Invoice Status"));
@@ -793,17 +769,14 @@ if ($popup_select) {
         _("Define the day of the month when the system will generate the customer invoice.")
     );
 
-    $vat_attr = ["maxlength" => 6];
-    if ($form_action === "ask-add") {
-        $vat_attr["value"] = 0;
-    }
     $HD_Form->AddEditElement(
         _("VAT/GST"),
         "vat",
         _("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
-        $vat_attr,
+        ["type" => "number", "min" => "0", "max" => "100"],
         [Validator::class, "number"],
-        _("Insert the VAT")
+        _("Insert the VAT"),
+        default_value: "0",
     );
 
     $HD_Form->AddEditElement(

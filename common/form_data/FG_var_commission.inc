@@ -104,24 +104,21 @@ $HD_Form->AddEditPopup(
     _("Insert the AGENT ID ")
 );
 
-$pay_attr = ["readonly" => "readonly", "maxlength" => 40];
-if ($form_action === "ask-add") {
-    $pay_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
-}
 $HD_Form->AddEditElement(
     _("PAYMENT DATE"),
     "date",
     "",
-    $pay_attr,
+    ["type" => "datetime-local", "readonly" => "readonly"],
     [Validator::class, "dateTime"],
-    _("Insert the current date")
+    _("Insert the current date"),
+    default_value: (new DateTime())->format("Y-m-d H:i:s"),
 );
 
 $HD_Form->AddEditElement(
     _("COMMISSION AMOUNT"),
     "amount",
     _("Enter the amount in the currency base : ") . BASE_CURRENCY,
-    ["maxlength" => 10],
+    ["type" => "number", "step" => "0.01", "min" => "0", "max" => "9999999"],
     [Validator::class, "number"],
     _("Insert the commission amount")
 );
