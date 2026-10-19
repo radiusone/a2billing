@@ -1161,19 +1161,17 @@ class FormHandler
      * Adds to the conditions a comparison between a column and a posted value
      *
      * @param string $left_column the column name
-     * @param string $operator post field name of the operator: 1=eq 2=lte 3=lt 4=gt 5=gte
-     * @param string $post_field post field name for the comparison
+     * @param string $operator post field name containing the operator: 1=eq 2=lte 3=lt 4=gt 5=gte
+     * @param string $val value for the comparison
      * @return void
      */
-    public function do_field_duration(string $left_column, string $operator, string $post_field): void
+    public function do_field_duration(string $left_column, string $operator, string $val): void
     {
         $processed = $this->getProcessed();
-
-        if (!isset($processed[$post_field]) || $processed[$post_field] === "") {
+        if ($val === "") {
             return;
         }
 
-        $val = $processed[$post_field];
         switch ($processed[$operator] ?? null) {
             default:
                 $this->list_query_conditions[] = ["SUB", [$left_column => $val]];
@@ -1448,19 +1446,23 @@ class FormHandler
                         $this->do_field($input, $el["operator"][$i]);
                         break;
                     case "COMPARISON":
-                        $this->do_field_duration($el["column"], $el["operator"][$i], $input);
+                        $this->do_field_duration($el["column"], $el["operator"][$i], $processed[$input]);
                         break;
                     case "RELATIVEDATE":
                         if (!empty($processed["enable_$input"])) {
                             // add a fake input so we know which enabling checkbox to check
                             $this->_processed["{$orig_input}_relative"] = true;
                             $input = preg_replace("/_relative$/", "", $input);
-                            $this->do_field_duration($el["column"], $el["operator"][$i], $input);
+                            $this->do_field_duration($el["column"], $el["operator"][$i], $processed[$input]);
                         }
                         break;
                     case "DATE":
                         if (!empty($processed["enable_$input"])) {
-                            $this->do_field_duration($el["column"], $el["operator"][$i], $input);
+                            $val = $processed[$input];
+                            if (str_ends_with($input, "_end")) {
+                                $val = $processed[$input] . " 23:59:59";
+                            }
+                            $this->do_field_duration($el["column"], $el["operator"][$i], $val);
                         }
                         break;
                     case "SELECT":
@@ -1506,7 +1508,7 @@ class FormHandler
             if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
                 $values[$field] = (int)array_sum($processed[$field]);
             }
-            
+
             if (!empty($row["validator"])) {
                 if ($processed[$field] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
                     $row["validation_err"] = true;
