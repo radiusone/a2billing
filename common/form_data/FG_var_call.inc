@@ -1,8 +1,6 @@
 <?php
 
-use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,71 +34,39 @@ use A2billing\Forms\Validator;
  *
 **/
 
-getpost_ifset(['id', 'calledstation', 'id_cc_card']);
-
 $HD_Form = new FormHandler("cc_call", _("Call"));
-
-$HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Called station"), "calledstation");
-$HD_Form->AddListSqlMapping(_("Account"), "card_id", Connection::getConnection("cc_card", "username", "id"), "A2B_entity_card.php?form-action=ask-edit&id=");
-
+// there's no list, but this also allows deleting
 $HD_Form->AddListDeleteButton();
 
 $HD_Form->AddEditElement(
     _("CALL ID"),
     "id",
-    "",
-    ["maxlength" => 10],
-    [Validator::class, "phoneNumber"],
 );
 
 $HD_Form->AddEditPopup(
     _("CARD ID"),
     "card_id",
     "A2B_entity_card.php",
-    _("Define the card number ID to use."),
-    [],
-    [Validator::class, "numeric"],
-    _("Insert the Id CardNumber")
 );
 
 $HD_Form->AddEditElement(
     _("CALLED NUMBER"),
     "calledstation",
-    "",
-    ["maxlength" => 30],
-    [Validator::class, "phoneNumber"],
 );
-
 
 $HD_Form->AddEditElement(
     _("Source"),
     "src",
-    "",
-    ["maxlength" => 30],
-    [Validator::class, "phoneNumber"],
 );
 
 $HD_Form->AddEditElement(
     _("Dnid"),
     "dnid",
-    "",
-    ["maxlength" => 30],
-    [Validator::class, "phoneNumber"],
 );
 
 $HD_Form->AddEditElement(
     _("Duration"),
     "sessiontime",
-    "",
-    ["maxlength" => 30],
-    [Validator::class, "timeSeconds"],
-
 );
 
-// Set the filter variables
-$HD_Form->AddListFilter("id", _("Call ID"));
-
-$HD_Form->FG_LOCATION_AFTER_DELETE =
-$HD_Form->FG_LOCATION_AFTER_ADD =
-$HD_Form->FG_LOCATION_AFTER_EDIT = "A2B_report_calls.php?nodisplay=1&posted=1";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "A2B_report_calls.php?nodisplay=1&posted=1";
