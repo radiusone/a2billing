@@ -691,7 +691,7 @@ class FormHandler
         string $form_text_bottom = "",
         array $html_attributes = [],
         string $error_message = "",
-        array $first_option = [],
+        array $first_option = []
     ): void
     {
         $el = [
