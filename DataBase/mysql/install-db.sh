@@ -52,6 +52,11 @@ if ! "${cmd[@]}" < "./data.sql"; then
 	printf "Error installing initial data\n"
 	exit 1
 fi
+for prefix in ./prefixes/*.sql; do
+	if ! "${cmd[@]}" < "$prefix"; then
+		printf "Error installing prefix data %s, continuing\n" "$prefix"
+	fi
+done
 
 printf "Completed database setup, superuser created with username %s and password %s\n", "$su_user", "$su_pass"
 printf "\n"
