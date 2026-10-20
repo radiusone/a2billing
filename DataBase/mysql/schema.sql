@@ -64,11 +64,13 @@ CREATE TABLE `cc_agent_commission` (
     `amount` decimal(15,5) NOT NULL,
     `description` text NOT NULL DEFAULT '',
     `id_agent` bigint DEFAULT NULL,
+    `id_payment` bigint DEFAULT NULL,
     `commission_type` tinyint NOT NULL,
     `commission_percent` decimal(10,4) NOT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_cc_agent_commission_cc_agent` FOREIGN KEY (`id_agent`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT `fk_cc_agent_commission_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT `fk_cc_agent_commission_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_agent_commission_cc_logpayment` FOREIGN KEY (`id_payment`) REFERENCES `cc_logpayment` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -884,6 +886,19 @@ CREATE TABLE `cc_invoice_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Table structure for table `cc_invoice_payment`
+--
+
+DROP TABLE IF EXISTS `cc_invoice_payment`;
+CREATE TABLE `cc_invoice_payment` (
+    `id_invoice` bigint NOT NULL,
+    `id_payment` bigint NOT NULL,
+    PRIMARY KEY (`id_invoice`,`id_payment`),
+    CONSTRAINT `fk_cc_invoice_payment_cc_invoice` FOREIGN KEY (`id_invoice`) REFERENCES `cc_invoice` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_invoice_payment_cc_logpayment` FOREIGN KEY (`id_payment`) REFERENCES `cc_logpayment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
 -- Table structure for table `cc_iso639`
 --
 
@@ -900,7 +915,7 @@ CREATE TABLE `cc_iso639` (
 
 DROP TABLE IF EXISTS `cc_logpayment`;
 CREATE TABLE `cc_logpayment` (
-    `id` int NOT NULL AUTO_INCREMENT,
+    `id` bigint NOT NULL AUTO_INCREMENT,
     `date` datetime NOT NULL DEFAULT current_timestamp(),
     `payment` decimal(15,5) NOT NULL,
     `card_id` bigint DEFAULT NULL,

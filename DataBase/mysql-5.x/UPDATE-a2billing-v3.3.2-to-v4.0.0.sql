@@ -4,10 +4,6 @@ UPDATE cc_version SET version = '4.0.0' LIMIT 1;
 
 DELETE FROM cc_config WHERE config_key = 'cache_enabled' OR config_key = 'cache_path';
 
--- now unused since cc_payment was dropped in 3.3.0
-ALTER TABLE cc_agent_commission DROP COLUMN IF EXISTS id_payment;
-DROP TABLE IF EXISTS cc_invoice_payment;
-
 -- the page said "campaigns" are unused, so lets remove them
 ALTER TABLE cc_card DROP COLUMN IF EXISTS id_campaign;
 ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS id_campaign;
@@ -208,6 +204,9 @@ ALTER TABLE cc_cardgroup_service
     MODIFY id_card_group BIGINT NULL DEFAULT NULL,
     MODIFY id_service BIGINT NULL DEFAULT NULL;
 
+ALTER TABLE cc_logpayment
+    MODIFY id BIGINT NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE cc_notification_admin
     DROP PRIMARY KEY,
     ADD UNIQUE INDEX (id_admin, id_notification),
@@ -293,9 +292,11 @@ ALTER TABLE cc_agent
 
 UPDATE cc_agent_commission SET id_agent = NULL WHERE id_agent = -1;
 UPDATE cc_agent_commission SET id_card = NULL WHERE id_card = -1;
+UPDATE cc_agent_commission SET id_payment = NULL WHERE id_payment = -1;
 ALTER TABLE cc_agent_commission
     ADD CONSTRAINT fk_cc_agent_commission_cc_agent FOREIGN KEY (id_agent) REFERENCES cc_agent(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_agent_commission_cc_card FOREIGN KEY (id_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cc_agent_commission_cc_card FOREIGN KEY (id_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    ADD CONSTRAINT fk_cc_agent_commission_cc_logpayment FOREIGN KEY (id_payment) REFERENCES cc_logpayment(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 UPDATE cc_agent_signup SET id_agent = NULL WHERE id_agent = -1;
 UPDATE cc_agent_signup SET id_group = NULL WHERE id_group = -1;
@@ -427,6 +428,11 @@ ALTER TABLE cc_invoice
 UPDATE cc_invoice_item SET id_ext = NULL WHERE id_ext = -1;
 ALTER TABLE cc_invoice_item
     ADD CONSTRAINT fk_cc_invoice_item_cc_billing_customer FOREIGN KEY (id_ext) REFERENCES cc_billing_customer(id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+DELETE FROM cc_invoice_payment WHERE id_payment < 1 OR id_invoice < 1;
+ALTER TABLE cc_invoice_payment
+    ADD CONSTRAINT fk_cc_invoice_payment_cc_logpayment FOREIGN KEY (id_invoice) REFERENCES cc_invoice(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT fk_cc_invoice_payment_cc_logpayment FOREIGN KEY (id_payment) REFERENCES cc_logpayment(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 UPDATE cc_logpayment SET agent_id = NULL WHERE agent_id = -1;
 UPDATE cc_logpayment SET card_id = NULL WHERE card_id = -1;
