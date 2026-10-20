@@ -44,13 +44,6 @@ use A2billing\Forms\Validator;
  * @var string $popup_formname
  */
 
-getpost_ifset(['id', 'did', 'fixrate']);
-/**
- * @var string $id
- * @var string $did
- * @var string $fixrate
- */
-
 $HD_Form = new FormHandler(
     "cc_did",
     "DID",
@@ -98,7 +91,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => "60"],
     [Validator::class, "min1Char"],
     _("Insert the DID"),
-    default_value: $did,
 );
 
 
@@ -158,7 +150,6 @@ $HD_Form->AddEditElement(
         "step" => "0.01",
         "min" => "0",
         "max" => "9999999",
-        "value" => $form_action === "purchase" ? $fixrate : "",
     ],
     [Validator::class, "number"],
     _("Insert the monthly rate"),

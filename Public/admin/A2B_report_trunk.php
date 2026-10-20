@@ -50,11 +50,11 @@ $HD_Form = new FormHandler(
     Connection::getConnection("cc_call")
         ->leftJoin(
             "cc_call AS answered",
-            fn (JoinClause $j) => $j->on("cc_call.id", "answered.id")->on("answered.terminatecauseid", 1)
+            fn (JoinClause $j) => $j->on("cc_call.id", "answered.id")->where("answered.terminatecauseid", 1)
         )
         ->leftJoin(
             "cc_call AS cic",
-            fn (JoinClause $j) => $j->on("cc_call.id", "cic.id")->on("cic.real_sessiontime", "<", 10)
+            fn (JoinClause $j) => $j->on("cc_call.id", "cic.id")->where("cic.real_sessiontime", "<", 10)
         )
 );
 

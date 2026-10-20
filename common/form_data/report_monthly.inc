@@ -69,7 +69,6 @@ $call_list = $builder
     ->orderBy("month", "desc")
     ->groupBy("month")
     ->get();
-dump($call_list);
 $time_data = [];
 $time_legend = [];
 $profit_data = [];

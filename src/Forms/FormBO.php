@@ -440,7 +440,7 @@ class FormBO
                         Connection::getConnection("cc_agent_commission")
                             ->insert(
                                 [
-                                    "id_payment" => -1,
+                                    "id_payment" => null,
                                     "id_card" => $card_id,
                                     "amount" => $commission * -1,
                                     "description" => $description,
