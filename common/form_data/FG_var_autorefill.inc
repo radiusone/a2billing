@@ -38,7 +38,7 @@ use A2billing\Forms\FormHandler;
 $HD_Form = new FormHandler(
     "cc_autorefill_report",
     "AutoRefill Report",
-    builder: Connection::getConnection("cc_autofill_report")->latest("daterun")
+    builder: Connection::getConnection("cc_autorefill_report")->latest("daterun")
 );
 
 $HD_Form->help_text = create_help(_("Auto Refill report."));

@@ -4,8 +4,6 @@ use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -50,10 +48,30 @@ $HD_Form = new FormHandler(
 $HD_Form->AddListValue(_("Agent"), "cc_agent.id",[Agent::class, "getName"]);
 $HD_Form->AddListValue(_("Credit"), "cc_agent.credit", "get_money");
 $HD_Form->AddListValue(abbr(_("Bal"), _("Commission balance")), "com_balance", "get_money");
-$HD_Form->AddListValue(abbr(_("Total"), _("Total commission accrued")), Connection::getConnection()->raw("SUM(cc_agent_commission.amount)"), "get_money");
-$HD_Form->AddListValue(abbr(_("Refills"), _("Total customer refill amount")), Connection::getConnection()->raw("SUM(cc_logrefill.credit)"), "get_money");
-$HD_Form->AddListValue(abbr(_("Agent refills"), _("Total agent refill amount")), Connection::getConnection()->raw("SUM(cc_logrefill_agent.credit)"), "get_money");
-$HD_Form->AddListValue(abbr(_("Payments"), _("Total payments taken")), Connection::getConnection()->raw("SUM(cc_logpayment_agent.payment)"), "get_money");
+$HD_Form->AddListValue(
+    abbr(_("Total"),
+    _("Total commission accrued")),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_agent_commission.amount), 0)"),
+    "get_money",
+);
+$HD_Form->AddListValue(
+    abbr(_("Refills"),
+    _("Total customer refill amount")),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_logrefill.credit), 0)"),
+    "get_money",
+);
+$HD_Form->AddListValue(
+    abbr(_("Agent refills"),
+    _("Total agent refill amount")),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_logrefill_agent.credit), 0)"),
+    "get_money",
+);
+$HD_Form->AddListValue(
+    abbr(_("Payments"),
+    _("Total payments taken")),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_logpayment_agent.payment), 0)"),
+    "get_money",
+);
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = "agent_situation";

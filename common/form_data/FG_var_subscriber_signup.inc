@@ -83,7 +83,7 @@ $HD_Form->AddEditSqlSelect(
     "id_subscription",
     Connection::getConnection(
         "cc_subscription_service",
-        Connection::getConnection()->raw("CONCAT(label, ' - ', fee, '$CURRENCY'"),
+        Connection::getConnection()->raw("CONCAT(label, ' - ', fee, '$CURRENCY')"),
         "id"
     ),
     "",

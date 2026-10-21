@@ -54,6 +54,7 @@ getpost_ifset(["popup_select", "form_action", "action", "id"]);
  * @var numeric-string|null $id
  */
 
+$action ??= "";
 if ($action === "load") {
     if (!empty($id)) {
         $result = Connection::getConnection("cc_templatemail", "messagetext", "fromemail", "fromname", "subject")

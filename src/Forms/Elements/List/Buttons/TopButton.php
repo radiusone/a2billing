@@ -17,7 +17,7 @@ class TopButton extends ListButton
     {
         $icon = $this->icon
             ? sprintf(
-                '<span class="bi bi-16 bi-search bi-%s" aria-hidden="true"></span>',
+                '<span class="bi bi-16 bi-%s" aria-hidden="true"></span>',
                 htmlspecialchars($this->icon)
             )
             : "";

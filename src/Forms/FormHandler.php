@@ -1314,9 +1314,12 @@ class FormHandler
                 $this->Delete_Selected();
             }
 
-            // clone because setting an offset breaks the call to count()
-            $list = $this->query_builder->clone()->offset($current_page * $this->query_builder->limit)->get()->toArray();
-            $this->FG_LIST_VIEW_ROW_COUNT = $this->query_builder->count();
+            // clone to get a clean offset, and sanitize for count
+            $qbc = $this->query_builder->clone();
+            $list = $qbc->offset($current_page * $this->query_builder->limit)->get()->toArray();
+            $qbc->offset = null;
+            $qbc->orders = null;
+            $this->FG_LIST_VIEW_ROW_COUNT = $qbc->count();
 
             if ($this->FG_LIST_VIEW_ROW_COUNT <= $current_size) {
                 $this->FG_LIST_VIEW_PAGE_COUNT = 1;

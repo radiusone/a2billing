@@ -54,9 +54,9 @@ $HD_Form = new FormHandler(
     _("Refill"),
     "cc_logrefill.id",
     Connection::getConnection("cc_logrefill")
+        ->leftJoin("cc_card", "cc_card.id", "cc_logrefill.card_id")
         ->when(is_agent(), function (Builder $q) {
-            $q->leftJoin("cc_card", "cc_card.id", "cc_logrefill.card_id")
-                ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+            $q->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
                 ->where("cc_card_group.id_agent", Agent::id());
         })
         ->latest("date")
@@ -72,9 +72,9 @@ $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "cc_logrefill.id");
 $HD_Form->AddListValue(_("Account"), "cc_card.username", [Customer::class, "getLinkFromUsername"]);
-$HD_Form->AddListValue(_("Date"), "date");
-$HD_Form->AddListValue(_("Amount"), "credit", "get_money");
-$HD_Form->AddListMapping(_("Type"), "refill_type", $list_refill_type);
+$HD_Form->AddListValue(_("Date"), "cc_logrefill.date");
+$HD_Form->AddListValue(_("Amount"), "cc_logrefill.credit", "get_money");
+$HD_Form->AddListMapping(_("Type"), "cc_logrefill.refill_type", $list_refill_type);
 
 if (!$popup_select) {
     $HD_Form->search_form_enabled = true;

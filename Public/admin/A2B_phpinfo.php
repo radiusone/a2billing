@@ -44,7 +44,7 @@ require_once __DIR__ . "/templates/main.php";
 ob_start();
 phpinfo(INFO_GENERAL | INFO_MODULES | INFO_ENVIRONMENT);
 $html = ob_get_clean();
-
+libxml_use_internal_errors(true);
 $dom = new DOMDocument();
 $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 $css = $dom->getElementsByTagName("style")->item(0)->textContent;

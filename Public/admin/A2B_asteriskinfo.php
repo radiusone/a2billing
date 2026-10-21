@@ -53,7 +53,7 @@ $astman = new AMI();
 $host = $A2B->config['global']['manager_host'] ?? "localhost";
 $user = $A2B->config['global']['manager_username'] ?? "manager";
 $pass = $A2B->config['global']['manager_secret'] ?? "secret";
-$astman_connected = $astman->connect($host, $user, $pass);
+$astman_connected = @$astman->connect($host, $user, $pass);
 
 $modes = [
     "summary" => [
