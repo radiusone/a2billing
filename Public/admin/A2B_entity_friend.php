@@ -223,7 +223,7 @@ if ($form_action === "list") {
 </form>
 
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="row">
+<div class="row pb-3">
     <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
             <?= _("Batch Update") ?>
