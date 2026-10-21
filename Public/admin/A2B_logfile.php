@@ -71,12 +71,15 @@ function array2drop_down(string $name, array $arr_value, string $currentvalue = 
     return $html;
 }
 
-$dir = new DirectoryIterator("/var/log/asterisk/");
-foreach ($dir as $entry) {
-    if ($entry->isFile() && $entry->isReadable()) {
-        $arr_log[] = $entry->getRealPath();
+try {
+    $dir = new DirectoryIterator("/var/log/asterisk/");
+    foreach ($dir as $entry) {
+        if ($entry->isFile() && $entry->isReadable()) {
+            $arr_log[] = $entry->getRealPath();
+        }
     }
-}
+} catch (Throwable) {}
+
 foreach ($A2B->config["log-files"] as $log_file) {
     if (file_exists($log_file) && is_readable($log_file)) {
         $arr_log[] = $log_file;
@@ -115,18 +118,19 @@ $view_log ??= "";
 
 <?php
 
-if (isset($view_log)) {
+if ($view_log) {
     $f = $arr_log[$view_log];
-    $arr = file($f, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $arr = array_reverse($arr);
-    array_splice($arr, $nb);
-    if (!empty($filter)) {
-        $arr = array_filter(
-            $arr,
-            fn ($v) => str_contains(strtolower($v), strtolower($filter))
-        );
+    $arr = [];
+    if (file_exists($f)) {
+        $arr = tail_lines($f, $nb);
+        if (!empty($filter)) {
+            $arr = array_filter(
+                $arr,
+                fn ($v) => str_contains(strtolower($v), strtolower($filter))
+            );
+        }
+        array_walk($arr, fn (&$v) => $v = htmlspecialchars($v));
     }
-    array_walk($arr, fn (&$v) => $v = htmlspecialchars($v));
     printf(
         "<div class='row pb-3'><div class='col'><p>%s (%d Kb, last modified %s)</p><pre class='py-3'>%s</pre></div></div>",
         $f,
