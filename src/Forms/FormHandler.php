@@ -71,6 +71,7 @@ class FormHandler
     public $QUERY_RESULT = false;
 
     /* CONFIG THE VIEWER : CV */
+    public ListView $listView;
 
     /** @var string Message to display if there's no data found for list view */
     public string $list_message_empty = "THERE IS NO RECORD !";
@@ -88,9 +89,6 @@ class FormHandler
 
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
-
-    /** @var ListElement[] Data used to build the list view table */
-    public array $FG_LIST_TABLE_CELLS = [];
 
     /** @var array Primary key of entries that can't be deleted */
     public array $FG_DELETION_FORBIDDEN_ID = [];
@@ -127,29 +125,14 @@ class FormHandler
     /** @var string A session variable used to hold export info */
     public string $export_session_key = "export_data";
 
-    /** @var InfoButton|null the list view info button */
-    public ?InfoButton $listInfoButton = null;
-
-    /** @var EditButton|null the list view edit button */
-    public ?EditButton $listEditButton = null;
-
     /** @var bool if false, edit or ask-edit action is not allowed */
     public bool $allowEdits = false;
-
-    /** @var DeleteButton|null the list view delete button */
-    public ?DeleteButton $listDeleteButton = null;
 
     /** @var bool if false, delete or ask-delete action is not allowed */
     protected bool $allowDeletes = false;
 
     /** @var bool if false, add or ask-add action is not allowed */
     protected bool $allowAdds = false;
-
-    /** @var ActionButton[] An array containing button definitions for the list entries */
-    public array $list_action_buttons = [];
-
-    /** @var TopButton[] An array containing button definitions for the list view */
-    public array $list_top_buttons = [];
 
     /** @var string help text shown in all views (can be overridden for individual views) */
     public string $help_text = "";
@@ -303,6 +286,9 @@ class FormHandler
             Console::logSpeed('FormHandler Class : Line ' . __LINE__);
         }
         self::$Instance = $this;
+
+        $this->listView = new ListView($this);
+
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
         if ($primary_key !== "") {
@@ -465,7 +451,9 @@ class FormHandler
     {
         $field = $this->addColumnAlias($field);
         $this->query_builder->addSelect($field);
-        $this->FG_LIST_TABLE_CELLS[] = new Value($field, $label, $sortable, $callback, $arguments);
+        $this->listView->addColumn(
+            new Value($field, $label, $sortable, $callback, $arguments)
+        );
 
         return $this;
     }
@@ -483,7 +471,9 @@ class FormHandler
     {
         $field = $this->addColumnAlias($field);
         $this->query_builder->addSelect($field);
-        $this->FG_LIST_TABLE_CELLS[] = new Mapping($field, $label, $map, $sortable);
+        $this->listView->addColumn(
+            new Mapping($field, $label, $map, $sortable)
+        );
 
         return $this;
     }
@@ -508,7 +498,9 @@ class FormHandler
     {
         $field = $this->addColumnAlias($field);
         $this->query_builder->addSelect($field);
-        $this->FG_LIST_TABLE_CELLS[] = new SqlMapping($field, $label, $table, $url, $sortable);
+        $this->listView->addColumn(
+            new SqlMapping($field, $label, $table, $url, $sortable)
+        );
 
         return $this;
     }
@@ -1071,39 +1063,49 @@ class FormHandler
     public function AddListFilter(string|Expression $column, string $label): void
     {
         $this->filter ??= new Filter();
-        $this->filter->inputs[] = new FilterInput($column, $label);
+        $this->listView->addFilterInput(
+            new FilterInput($column, $label)
+        );
     }
 
     public function AddListInfoButton(string $url): void
     {
-        $this->listInfoButton = new InfoButton($url, $this->FG_INSTANCE_NAME);
+        $this->listView->addInfoButton(
+            new InfoButton($url, $this->FG_INSTANCE_NAME)
+        );
     }
 
     public function AddListEditButton(?string $url = null, string $condition = ""): void
     {
         $this->allowEdits = true;
         $url ??= "?form_action=ask-edit&id=";
-        $this->listEditButton = new EditButton($url, $this->FG_INSTANCE_NAME, condition: $condition);
+        $this->listView->addEditButton(
+            new EditButton($url, $this->FG_INSTANCE_NAME, condition: $condition)
+        );
     }
 
     public function AddListDeleteButton(?string $url = null, string $condition = ""): void
     {
         $this->allowDeletes = true;
         $url ??= "?form_action=ask-delete&id=";
-        $this->listDeleteButton = new DeleteButton($url, $this->FG_INSTANCE_NAME, condition: $condition);
+        $this->listView->addDeleteButton(
+            new DeleteButton($url, $this->FG_INSTANCE_NAME, condition: $condition)
+        );
     }
 
     /**
      * Add a button to the top of the list view table
      *
-     * @param string|null $url
-     * @param string|null $label
+     * @param string $url
+     * @param string $label
      * @param string $icon
      * @return void
      */
     public function AddListTopButton(string $url, string $label, string $icon = ""): void
     {
-        $this->list_top_buttons[] = new TopButton($url, $label, $icon);
+        $this->listView->addTopButton(
+            new TopButton($url, $label, $icon)
+        );
     }
 
     public function AddListAddButton(?string $url = null, ?string $label = null, string $icon = ""): void
@@ -1111,7 +1113,7 @@ class FormHandler
         $url ??= "?form_action=ask-add";
         $label ??= sprintf(_("Add %s"), $this->FG_INSTANCE_NAME);
         $this->allowAdds = true;
-        array_unshift($this->list_top_buttons, new TopButton($url, $label, $icon));
+        $this->listView->addFirstTopButton(new TopButton($url, $label, $icon));
     }
 
     /**
@@ -1143,7 +1145,9 @@ class FormHandler
             );
         }
 
-        $this->list_action_buttons[] = new ActionButton($url, $icon, $label, $condition, $class);
+        $this->listView->addActionButton(
+            new ActionButton($url, $icon, $label, $condition, $class)
+        );
     }
 
     /**
@@ -1155,9 +1159,9 @@ class FormHandler
      */
     public function AddListSelectActionButton(string $url = "#", string $label = ""): void
     {
-        $this->list_action_buttons = [
+        $this->listView->addActionButton(
             new ActionButton($url, "", $label ?: _("select"), "", "popup-select-button")
-        ];
+        );
     }
 
     /**
@@ -1927,7 +1931,7 @@ class FormHandler
                 break;
 
             case "list":
-                echo new ListView($this, $list);
+                echo $this->listView->render($list);
                 break;
 
             case "delete":

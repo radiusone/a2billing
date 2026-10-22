@@ -2,20 +2,102 @@
 
 namespace A2billing\Forms;
 
-readonly class ListView
+use A2billing\Forms\Elements\List\Buttons\ActionButton;
+use A2billing\Forms\Elements\List\Buttons\DeleteButton;
+use A2billing\Forms\Elements\List\Buttons\EditButton;
+use A2billing\Forms\Elements\List\Buttons\InfoButton;
+use A2billing\Forms\Elements\List\Buttons\TopButton;
+use A2billing\Forms\Elements\List\Filter;
+use A2billing\Forms\Elements\List\FilterInput;
+use A2billing\Forms\Elements\ListElement;
+
+final class ListView
 {
+    /** @var Filter|null $filter */
+    private ?Filter $filter = null;
+
+    /** @var TopButton[] $topButtons */
+    private array $topButtons = [];
+
+    /** @var ListElement[] */
+    private array $columns = [];
+
+    private ?InfoButton $infoButton = null;
+
+    private ?EditButton $editButton = null;
+
+    private ?DeleteButton $deleteButton = null;
+
+    /** @var ActionButton[] */
+    private array $actionButtons = [];
+
     /**
      * @param FormHandler $form
-     * @param array $list the list of database records to be displayed
      */
-    public function __construct(private FormHandler $form, private array $list)
+    public function __construct(readonly private FormHandler $form)
     {}
 
-    public function __toString(): string
+    public function addFilterInput(FilterInput $input): self
+    {
+        $this->filter ??= new Filter();
+        $this->filter->inputs[] = $input;
+
+        return $this;
+    }
+
+    public function addFirstTopButton(TopButton $button): self
+    {
+        array_unshift($this->topButtons, $button);
+
+        return $this;
+    }
+
+    public function addTopButton(TopButton $button): self
+    {
+        $this->topButtons[] = $button;
+
+        return $this;
+    }
+
+    public function addColumn(ListElement $column): self
+    {
+        $this->columns[] = $column;
+
+        return $this;
+    }
+
+    public function addInfoButton(InfoButton $button): self
+    {
+        $this->infoButton = $button;
+
+        return $this;
+    }
+
+    public function addEditButton(EditButton $button): self
+    {
+        $this->editButton = $button;
+
+        return $this;
+    }
+
+    public function addDeleteButton(DeleteButton $button): self
+    {
+        $this->deleteButton = $button;
+
+        return $this;
+    }
+
+    public function addActionButton(ActionButton $button): self
+    {
+        $this->actionButtons[] = $button;
+
+        return $this;
+    }
+
+    public function render(array $list): string
     {
         $form = $this->form;
         $processed = $form->getProcessed();
-        $list = $this->list;
         $popup_select = (int)($processed["popup_select"] ?? 0);
 
         $query_params = [
@@ -53,11 +135,10 @@ readonly class ListView
         }
         $query_params = array_filter($query_params, fn ($v) => !is_null($v) && $v !== "");
         $sort_params = $pagination_params = $query_params;
-        $pagination_params["current_page"] = "%s";
 
         $hasActionButtons = (
-            $form->listDeleteButton || $form->listInfoButton || $form->listEditButton
-            || count($form->list_action_buttons)
+            $this->deleteButton || $this->infoButton || $this->editButton
+            || count($this->actionButtons)
         );
 
         ob_start();

@@ -2,6 +2,7 @@
 namespace A2billing\Forms;
 
 /**
+ * @var ListView $this
  * @var FormHandler $form
  * @var array $processed values from $_GET or $_POST
  * @var array $list the rows from the query
@@ -15,13 +16,13 @@ namespace A2billing\Forms;
 $cols = array_keys(array_first($list ?? []) ?? []);
 ?>
 
-<?php if ($form->filter || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
+<?php if ($this->filter || ($popup_select < 1 && count($this->topButtons) > 0)): ?>
 <div class="row pb-3 align-items-end" id="list-filter-container">
     <?php if(count($list)): ?>
-        <?= $form->filter?->renderForm($processed, $query_params) ?>
+        <?= $this->filter?->renderForm($processed, $query_params) ?>
     <?php endif ?>
     <?php if ($popup_select < 1): ?>
-    <?php foreach ($form->list_top_buttons as $button): ?>
+    <?php foreach ($this->topButtons as $button): ?>
         <?= $button->renderButton() ?>
     <?php endforeach ?>
     <?php endif ?>
@@ -41,7 +42,7 @@ $cols = array_keys(array_first($list ?? []) ?? []);
             </caption>
             <thead>
                 <tr>
-                    <?php foreach ($form->FG_LIST_TABLE_CELLS as $i => $column): ?>
+                    <?php foreach ($this->columns as $i => $column): ?>
                         <?php
                         $sort_params["order"] = $cols[$i];
                         $sort_params["sens"] = ($form->query_builder->orders[0]["direction"] ?? "") === "asc" ?  "desc" : "asc";
@@ -59,17 +60,17 @@ $cols = array_keys(array_first($list ?? []) ?? []);
             <tbody>
             <?php foreach ($list as $row): ?>
                 <tr>
-                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $column): // todo: numeric keys in result ?>
+                <?php foreach($this->columns as $j => $column): // todo: numeric keys in result ?>
                     <?= $column->renderCell($row[$j], $row) ?>
                 <?php endforeach ?>
                 <?php if ($hasActionButtons): ?>
                     <td>
-                    <?= $form->listInfoButton?->renderButton($row["instance_primary_key"], $row) ?>
-                    <?= $form->listEditButton?->renderButton($row["instance_primary_key"], $row) ?>
+                    <?= $this->infoButton?->renderButton($row["instance_primary_key"], $row) ?>
+                    <?= $this->editButton?->renderButton($row["instance_primary_key"], $row) ?>
                     <?php if(!in_array($row["instance_primary_key"], $form->FG_DELETION_FORBIDDEN_ID)): ?>
-                        <?= $form->listDeleteButton?->renderButton($row["instance_primary_key"], $row) ?>
+                        <?= $this->deleteButton?->renderButton($row["instance_primary_key"], $row) ?>
                     <?php endif ?>
-                    <?php foreach ($form->list_action_buttons as $button): ?>
+                    <?php foreach ($this->actionButtons as $button): ?>
                         <?= $button->renderButton($row["instance_primary_key"], $row) ?>
                     <?php endforeach ?>
                     </td>
