@@ -26,7 +26,7 @@ readonly class ViewForm
             "popup_formname" => $processed["popup_formname"] ?? null,
             "popup_fieldname" => $processed["popup_fieldname"] ?? null,
         ];
-        for ($i = 0; $i < count($form->list_filters); $i++) {
+        for ($i = 0; $i < count($form->filter?->inputs ?? []); $i++) {
             $query_params["filterprefix$i"] = $processed["filterprefix$i"] ?? null;
         }
         foreach ($processed as $k => $v) {

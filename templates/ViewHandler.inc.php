@@ -15,41 +15,10 @@ namespace A2billing\Forms;
 $cols = array_keys(array_first($list ?? []) ?? []);
 ?>
 
-<?php if (count($form->list_filters) > 0 || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
+<?php if ($form->filter || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
 <div class="row pb-3 align-items-end" id="list-filter-container">
-    <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && count($form->list_filters) > 0): ?>
-    <form method="get" action="<?= $_SERVER["PHP_SELF"] ?>" class="col">
-        <input type="hidden" name="form_action" value="list"/>
-        <?php foreach ($query_params as $key => $val): ?>
-            <?php if (!empty($key) && !is_array($val)): ?>
-        <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
-            <?php endif ?>
-        <?php endforeach ?>
-        <?php foreach ($processed as $key => $val): ?>
-            <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id' && !is_array($val)): ?>
-        <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
-            <?php endif ?>
-        <?php endforeach ?>
-        <input type="hidden" name="current_page" value="0"/>
-        <div class="row align-items-end">
-            <?php foreach ($form->list_filters as $i => $filter): ?>
-            <div class="col-auto">
-                <input
-                    type="text"
-                    id="filterprefix<?= $i ?>"
-                    name="filterprefix<?= $i ?>"
-                    value="<?= $processed["filterprefix$i"] ?? "" ?>"
-                    class="form-control form-control-sm"
-                    placeholder="<?= $filter["label"] ?>"
-                    aria-label="<?= sprintf(_("Filter on %s"), $filter["label"]) ?>"
-                />
-            </div>
-            <?php endforeach; ?>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary"><?= _("Apply Filter") ?></button>
-            </div>
-        </div>
-    </form>
+    <?php if(count($list)): ?>
+        <?= $form->filter?->renderForm($processed, $query_params) ?>
     <?php endif ?>
     <?php if ($popup_select < 1): ?>
     <?php foreach ($form->list_top_buttons as $button): ?>
