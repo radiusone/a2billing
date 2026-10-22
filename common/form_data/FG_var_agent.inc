@@ -64,13 +64,11 @@ $HD_Form->help_text = is_admin()
 $HD_Form->AddListActionButton(
     "A2B_agent_home.php?id=",
     _("Edit agent homepage"),
-    "",
     "house-gear"
 );
 $HD_Form->AddListActionButton(
     "A2B_entity_payment_agent.php?form_action=ask-add&agent_id=|id|",
     _('Add Payment to this Agent'),
-    "",
     "cash-stack",
     "text-success"
 );

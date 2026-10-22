@@ -85,7 +85,6 @@ if (is_customer()) {
     $HD_Form->AddListActionButton(
         "A2B_receipt_edit.php?id=",
         _("Edit receipt items"),
-        "",
         "receipt",
         "",
         "status",
@@ -94,7 +93,6 @@ if (is_customer()) {
     $HD_Form->AddListActionButton(
         "",
         _("Close this receipt"),
-        "",
         "file-earmark-lock",
         "lock",
         "status",

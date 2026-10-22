@@ -74,7 +74,6 @@ if (is_customer()) {
         $HD_Form->AddListActionButton(
             "A2B_entity_payment.php?form_action=ask-add&card_id=|id_cc_card|",
             _('ADD PAYMENT'),
-            "",
             "cash",
             "text-success"
         );
@@ -82,7 +81,6 @@ if (is_customer()) {
     $HD_Form->AddListActionButton(
         "A2B_entity_logrefill.php?form_action=ask-add&card_id=|id_cc_card|",
         _("ADD REFILL"),
-        "",
         "cash-stack",
         "text-success"
     );

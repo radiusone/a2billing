@@ -64,8 +64,7 @@ $HD_Form->AddListDeleteButton(
 
 $HD_Form->AddListActionButton(
     "A2B_entity_config.php?posted_search=1&config_group_id=|param|",
-    gettext('Show group entries'),
-    "",
+    _('Show group entries'),
     "search"
 );
 

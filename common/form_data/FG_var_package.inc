@@ -69,7 +69,7 @@ $HD_Form->AddListDeleteButton();
 $HD_Form->AddListActionButton(
     "A2B_info_package.php?id=|param|",
     _("Add rates"),
-    icon: "credit-card",
+    "credit-card",
 );
 
 $HD_Form->AddEditElement(

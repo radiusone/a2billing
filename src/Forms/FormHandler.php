@@ -1101,7 +1101,6 @@ class FormHandler
      *
      * @param string $url the destination link
      * @param string $label the text (used as alt if image supplied)
-     * @param string $image an image URL
      * @param string $icon
      * @param string $class an HTML class to add to the button
      * @param string $match_index a column of the database results to compare against
@@ -1111,7 +1110,6 @@ class FormHandler
     public function AddListActionButton(
         string $url,
         string $label,
-        string $image = "",
         string $icon = "",
         string $class = "",
         string $match_index = "",
@@ -1127,7 +1125,7 @@ class FormHandler
             );
         }
 
-        $this->list_action_buttons[] = new ActionButton($url, $icon, $label, $condition, $class, $image);
+        $this->list_action_buttons[] = new ActionButton($url, $icon, $label, $condition, $class);
     }
 
     /**

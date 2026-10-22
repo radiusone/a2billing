@@ -12,7 +12,6 @@ class ActionButton extends ListButton
         string $label,
         string $condition =  "",
         protected string $class = "",
-        protected string $image = "",
         protected array $data = [],
     )
     {
@@ -36,14 +35,8 @@ class ActionButton extends ListButton
                 '<span class="bi bi-16 text-body bi-%s" aria-hidden="true"></span>',
                 htmlspecialchars($this->icon)
             );
-        } elseif ($this->image) {
-            $contents = sprintf(
-                '<img src="%s" alt="%s"/>',
-                htmlspecialchars($this->image),
-                htmlspecialchars($this->label)
-            );
         } else {
-            $contents = $this->label;
+            $contents = sprintf("<small><small>%s</small></small>", htmlspecialchars($this->label));
         }
 
         if ($this->link) {

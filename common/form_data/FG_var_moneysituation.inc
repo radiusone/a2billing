@@ -78,7 +78,7 @@ $HD_Form->AddListValue(_("Invoiced"), Connection::getConnection()->raw("IFNULL(S
 $HD_Form->AddListValue(_("Paid"), Connection::getConnection()->raw("IFNULL(SUM(cc_logpayment.payment), 0) AS paid"), "get_money");
 $HD_Form->AddListValue(_("To pay"), "", "sub_money", ["%invoiced", "%paid"]);
 
-$HD_Form->AddListActionButton("", _("Invoice"), "", "receipt", "popup-invoice");
-$HD_Form->AddListActionButton("#", _("Payment"), "", "cash-stack", "text-success popup-payment");
+$HD_Form->AddListActionButton("", _("Invoice"), "receipt", "popup-invoice");
+$HD_Form->AddListActionButton("#", _("Payment"), "cash-stack", "text-success popup-payment");
 
 $HD_Form->AddListFilter("username", _("Card number"));

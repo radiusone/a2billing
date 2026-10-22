@@ -68,7 +68,6 @@ $url = htmlspecialchars(json_encode($A2B->config["signup"]["urlcustomerinterface
 $HD_Form->AddListActionButton(
     "javascript:alert($url + 'signup.php?key=|code|')",
     _("URL"),
-    "",
     "link"
 );
 

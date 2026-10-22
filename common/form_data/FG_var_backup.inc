@@ -176,7 +176,6 @@ $HD_Form->AddListActionButton(
 $HD_Form->AddListActionButton(
     "?form_action=download&id=",
     _("Download"),
-    "",
     "cloud-arrow-down"
 );
 

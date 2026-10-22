@@ -82,14 +82,12 @@ if (is_customer()) {
     $HD_Form->AddListActionButton(
         "A2B_invoice_edit.php?id=",
         _("Edit invoice items"),
-        "",
         "receipt"
     );
 
     $HD_Form->AddListActionButton(
         "A2B_entity_invoice.php?action=lock&id=",
         _("Close this invoice"),
-        "",
         "file-earmark-lock",
         "lock",
         "status",
@@ -99,7 +97,6 @@ if (is_customer()) {
     $HD_Form->AddListActionButton(
         "A2B_invoice_manage_payment.php?id=",
         _("Manage payments"),
-        "",
         "cash-stack",
         "text-success",
         "status",

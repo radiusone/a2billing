@@ -294,35 +294,30 @@ if ($popup_select) {
     if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddListActionButton(
             "A2B_entity_friend.php?voip_type=sip&form_action=add_sip&id_cc_card=|id_|&cardnumber=|username_|&useralias=|alias_|",
-            _("Auto Create SIP Config"),
-            "data:image/gif;base64,R0lGODlhFwALAKEDAAAAAJycnPPZ3f///yH5BAEAAAMALAAAAAAXAAsAAAItXI6pa+IPozyyWgqBFhrwDWGPNzoe+YgmSHaRWnJmBbs2HVh6mO97YFgIhYMCADs="
+            _("SIP")
         );
     }
     if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddListActionButton(
             "A2B_entity_friend.php?voip_type=iax&form_action=add_iax&id_cc_card=|id_|&cardnumber=|username_|&useralias=|alias_|",
-            _("Auto Create IAX Config"),
-            "data:image/gif;base64,R0lGODlhFwALAKEDAAAAAJycnNnz4f///yH5BAEAAAMALAAAAAAXAAsAAAIvXI6pa+IPozyyWgqBFhrwD2GZ45XgIz4et51oIK2mGcLZNrtCavV8XwkYFkTioAAAOw=="
+            _("IAX")
         );
     }
     if (is_admin()) {
         $HD_Form->AddListActionButton(
             "A2B_entity_payment.php?form_action=ask-add&card_id=|id_|",
             _("Add Payment to this Card"),
-            "",
             "cash-stack",
             "text-success"
         );
         $HD_Form->AddListActionButton(
             "A2B_entity_subscriber.php?form_action=ask-add&id=|id_|",
             _("Add New Subscription to this Card"),
-            "",
             "journal-plus"
         );
         $HD_Form->AddListActionButton(
             "A2B_mass_mail.php?form_action=ask-add&id=|id_|",
             _("Email to this Customer"),
-            "",
             "envelope"
         );
     }

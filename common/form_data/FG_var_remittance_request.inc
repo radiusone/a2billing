@@ -52,7 +52,6 @@ if (is_admin()) {
     $HD_Form->AddListActionButton(
         "",
         _("ACCEPT THIS REQUEST"),
-        "",
         "check-circle-fill",
         "accept_click text-success",
         "status",
@@ -62,7 +61,6 @@ if (is_admin()) {
 $HD_Form->AddListActionButton(
     "",
     _("REFUSE THIS REQUEST"),
-    "",
     "x-circle-fill",
     "text-danger " . (is_admin() ? "refuse_click" : "cancel_click"),
     "status",
