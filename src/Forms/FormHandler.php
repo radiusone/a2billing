@@ -1927,7 +1927,7 @@ class FormHandler
                 break;
 
             case "list":
-                echo new ViewForm($this, $list);
+                echo new ListView($this, $list);
                 break;
 
             case "delete":

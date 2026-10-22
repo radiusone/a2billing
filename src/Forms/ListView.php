@@ -2,7 +2,7 @@
 
 namespace A2billing\Forms;
 
-readonly class ViewForm
+readonly class ListView
 {
     /**
      * @param FormHandler $form
@@ -61,7 +61,7 @@ readonly class ViewForm
         );
 
         ob_start();
-        require(__DIR__ . "/../../templates/ViewHandler.inc.php");
+        require(__DIR__ . "/../../templates/ListView.inc.php");
 
         $output = ob_get_clean() ?: "Template error!";
 
