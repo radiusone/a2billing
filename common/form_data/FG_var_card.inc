@@ -310,11 +310,13 @@ if ($popup_select) {
             "cash-stack",
             "text-success"
         );
-        $HD_Form->AddListActionButton(
-            "A2B_entity_subscriber.php?form_action=ask-add&id=|id_|",
-            _("Add New Subscription to this Card"),
-            "journal-plus"
-        );
+        if (Connection::getConnection("cc_subscription_service")->count()) {
+            $HD_Form->AddListActionButton(
+                "A2B_entity_subscriber.php?form_action=ask-add&id=|id_|",
+                _("Add New Subscription to this Card"),
+                "journal-plus"
+            );
+        }
         $HD_Form->AddListActionButton(
             "A2B_mass_mail.php?form_action=ask-add&id=|id_|",
             _("Email to this Customer"),
