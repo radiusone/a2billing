@@ -375,6 +375,9 @@ class FormHandler
             $builder->wheres = [];
             $builder->bindings["where"] = [];
         }
+        $builder->offset = null;
+        $builder->limit = null;
+        $builder->reorder();
 
         return $builder;
     }
@@ -434,6 +437,14 @@ class FormHandler
         return $this->_processed;
     }
 
+    public function addColumnAlias(string|Expression $column): string|Expression
+    {
+        if (is_string($column) && str_contains($column, ".") && !str_contains($column, " AS ")) {
+            $column .= " AS " . str_replace(".", "^", $column);
+        }
+        return $column;
+    }
+
     // ----------------------------------------------
     // RECIPIENT METHODS
     // ----------------------------------------------
@@ -452,9 +463,8 @@ class FormHandler
      */
     public function AddListValue(string $label, string|Expression $field, ?callable $callback = null, array $arguments = [], bool $sortable = true): self
     {
-        if ($field) {
-            $this->query_builder->addSelect($field);
-        }
+        $field = $this->addColumnAlias($field);
+        $this->query_builder->addSelect($field);
         $this->FG_LIST_TABLE_CELLS[] = new Value($field, $label, $sortable, $callback, $arguments);
 
         return $this;
@@ -471,9 +481,8 @@ class FormHandler
      */
     public function AddListMapping(string $label, string $field, array $map, bool $sortable = true): self
     {
-        if ($field) {
-            $this->query_builder->addSelect($field);
-        }
+        $field = $this->addColumnAlias($field);
+        $this->query_builder->addSelect($field);
         $this->FG_LIST_TABLE_CELLS[] = new Mapping($field, $label, $map, $sortable);
 
         return $this;
@@ -497,6 +506,7 @@ class FormHandler
         bool $sortable = true
     ): self
     {
+        $field = $this->addColumnAlias($field);
         $this->query_builder->addSelect($field);
         $this->FG_LIST_TABLE_CELLS[] = new SqlMapping($field, $label, $table, $url, $sortable);
 
@@ -512,6 +522,7 @@ class FormHandler
      */
     public function AddListHiddenValue(string|Expression $field): self
     {
+        $field = $this->addColumnAlias($field);
         $this->query_builder->addSelect($field);
 
         return $this;
@@ -541,6 +552,7 @@ class FormHandler
         ?callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     ): void
     {
+        $fieldname = $this->addColumnAlias($fieldname);
         $el = new Input(
             $label_text,
             $fieldname,
@@ -571,6 +583,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
+        $fieldname = $this->addColumnAlias($fieldname);
         $el = new DayTime(
             $label_text,
             $fieldname,
@@ -614,6 +627,7 @@ class FormHandler
         ?callable $validator = null
     ): void
     {
+        $fieldname = $this->addColumnAlias($fieldname);
         $options = $table->get()
             ->when(
                 $callback !== null,
@@ -664,6 +678,7 @@ class FormHandler
         ?callable $validator = null,
     ): void
     {
+        $fieldname = $this->addColumnAlias($fieldname);
         $el = new Select(
             $label_text,
             $fieldname,
@@ -703,6 +718,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
+        $fieldname = $this->addColumnAlias($fieldname);
         $el = new Radio(
             $label_text,
             $fieldname,
@@ -740,6 +756,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
+        $fieldname = $this->addColumnAlias($fieldname);
         $el = new Popup(
             $label_text,
             $fieldname,
@@ -783,7 +800,7 @@ class FormHandler
         ?string $pivot_table = null
     ): void
     {
-        $index = $table->from . "." . $insert_column;
+        $index = $table->from . "^" . $insert_column;
         $el = new HasMany(
             $label,
             $index,
@@ -823,6 +840,7 @@ class FormHandler
         ?callable $validator = null
     ): void
     {
+        $fieldname = $this->addColumnAlias($fieldname);
         $el = new Textarea(
             $label_text,
             $fieldname,
@@ -1316,11 +1334,9 @@ class FormHandler
             }
 
             // clone to get a clean offset, and sanitize for count
-            $qbc = $this->query_builder->clone();
-            $list = $qbc->offset($current_page * $this->query_builder->limit)->get()->toArray();
-            $qbc->offset = null;
-            $qbc->orders = null;
+            $qbc = $this->cloneQueryBuilder();
             $this->FG_LIST_VIEW_ROW_COUNT = $qbc->count();
+            $list = $this->query_builder->offset($current_page * $this->query_builder->limit)->get()->toArray();
 
             if ($this->FG_LIST_VIEW_ROW_COUNT <= $current_size) {
                 $this->FG_LIST_VIEW_PAGE_COUNT = 1;
@@ -2068,13 +2084,8 @@ class FormHandler
         $this->export_session_key = $session_key;
         $this->export_enable_csv = $export_csv;
         $this->export_enable_xml = $export_xml;
-        $qb = $this->query_builder->clone();
-        if ($columns) {
-            $qb->select($columns);
-        }
-        $qb->limit = null;
+        $qb = $this->cloneQueryBuilder()->select($columns ?? ["*"]);
         $sql = $qb->toRawSql();
-
         $_SESSION[$this->export_session_key] = $sql;
     }
 
