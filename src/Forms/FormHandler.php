@@ -1167,18 +1167,16 @@ class FormHandler
      * Adds to the conditions a comparison between a column and a posted value
      *
      * @param string $left_column the column name
-     * @param string $operator post field name containing the operator: 1=eq 2=lte 3=lt 4=gt 5=gte 6=ne
+     * @param numeric-string $operator the comparison operator: 1=eq 2=lte 3=lt 4=gt 5=gte 6=ne
      * @param string $val value for the comparison
      * @return void
      */
-    protected function do_field_duration(string $left_column, string $operator, string $val): void
+    protected function do_field_duration(string $left_column, string $operator = "1", string $val = ""): void
     {
-        $processed = $this->getProcessed();
-        $op = (int)($processed[$operator] ?? 1);
-
         if ($val === "") {
             return;
         }
+        $op = (int)$operator;
 
         $this->query_builder->where(
             $left_column,
@@ -1198,18 +1196,16 @@ class FormHandler
      * Adds to the conditions a comparison between a column and a posted value
      *
      * @param string $column the column name, also used for the post field name
-     * @param string|null $like_type post field name containing the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
+     * @param numeric-string $like_type the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
+     * @param string $val value for the comparison
      * @return void
      */
-    protected function do_field(string $column, string|null $like_type = null): void
+    protected function do_field(string $column, string $like_type = "1", string $val = ""): void
     {
-        $processed = $this->getProcessed();
-        $val = $processed[$column] ?? "";
-        $op = $like_type ? (int)$processed[$like_type] : 1;
-
         if ($val === "") {
             return;
         }
+        $op = (int)$like_type;
 
         $this->query_builder->whereLike($column, match ($op) {
             default => $val,
@@ -1427,23 +1423,24 @@ class FormHandler
                     continue;
                 }
                 $search[$input] = $processed[$input];
-                if (!empty($el["operator"][$i])) {
-                    $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
+                $op = $el["operator"][$i] ?? "";
+                if (!empty($op)) {
+                    $search[$op] = $processed[$op];
                 }
                 switch ($el["type"]) {
                     case "TEXT":
                     case "SINGLEDATE":
-                        $this->do_field($input, $el["operator"][$i]);
+                        $this->do_field($input, $processed[$op], $processed[$input]);
                         break;
                     case "COMPARISON":
-                        $this->do_field_duration($el["column"], $el["operator"][$i], $processed[$input]);
+                        $this->do_field_duration($el["column"], $processed[$op], $processed[$input]);
                         break;
                     case "RELATIVEDATE":
                         if (!empty($processed["enable_$input"])) {
                             // add a fake input so we know which enabling checkbox to check
                             $this->_processed["{$orig_input}_relative"] = true;
                             $input = preg_replace("/_relative$/", "", $input);
-                            $this->do_field_duration($el["column"], $el["operator"][$i], $processed[$input]);
+                            $this->do_field_duration($el["column"], $processed[$op], $processed[$input]);
                         }
                         break;
                     case "DATE":
@@ -1452,12 +1449,12 @@ class FormHandler
                             if (str_ends_with($input, "_end")) {
                                 $val .= " 23:59:59";
                             }
-                            $this->do_field_duration($el["column"], $el["operator"][$i], $val);
+                            $this->do_field_duration($el["column"], $processed[$op], $val);
                         }
                         break;
                     case "SELECT":
                     case "POPUP":
-                        $this->do_field($input);
+                        $this->do_field($input, val: $processed[$input]);
                         break;
                 }
             }
