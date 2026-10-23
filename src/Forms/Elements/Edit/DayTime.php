@@ -23,7 +23,6 @@ class DayTime extends EditElement
         $this->help_text = $help_text;
         $this->default = $default;
         $this->error = $error;
-        $this->type = "DAYTIME";
     }
 
     /**

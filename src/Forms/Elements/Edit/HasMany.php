@@ -37,7 +37,6 @@ class HasMany extends EditElement
         $this->label = $label;
         $this->name = $name;
         $this->validator = $validator;
-        $this->type = "HAS_MANY";
     }
 
     protected function renderElement(): string

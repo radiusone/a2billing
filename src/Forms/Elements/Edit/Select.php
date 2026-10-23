@@ -45,7 +45,6 @@ class Select extends EditElement
         $this->error = $error;
         $this->validator = $validator;
         $this->multi = array_key_exists("multiple", $this->attributes);
-        $this->type = "LIST";
     }
 
     protected function renderElement(): string

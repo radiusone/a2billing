@@ -33,7 +33,6 @@ class Textarea extends EditElement
         $this->error = $error;
         $this->default = $default;
         $this->validator = $validator;
-        $this->type = "TEXTAREA";
     }
 
     protected function attributeString(): string

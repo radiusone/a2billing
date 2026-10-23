@@ -2,12 +2,10 @@
 
 namespace A2billing\Forms\Elements;
 
-use ArrayAccess;
-
 /**
  * @template-covariant TValue
  */
-abstract class EditElement implements ArrayAccess
+abstract class EditElement
 {
     /** @var string The label text */
     public string $label;
@@ -32,8 +30,6 @@ abstract class EditElement implements ArrayAccess
     public true|string $validation_err = true;
     /** @var int|string The index of the input in FormHander::$FG_EDIT_FORM_ELEMENTS */
     public int|string $index = 0;
-    /** @var string The type, for backward compatibility during testing */
-    public string $type = "";
 
     public function validate(mixed &$value = null): bool
     {
@@ -119,29 +115,6 @@ abstract class EditElement implements ArrayAccess
             </div>
         </div>
         HTML;
-    }
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return property_exists($this, $offset);
-    }
-
-    public function offsetGet(mixed $offset): mixed
-    {
-        return property_exists($this, $offset) && isset($this->$offset)
-            ? $this->$offset
-            : null;
-    }
-
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        if (property_exists($this, $offset)) {
-            $this->$offset = $value;
-        }
-    }
-
-    public function offsetUnset(mixed $offset): void
-    {
     }
 
     abstract protected function renderElement(): string;

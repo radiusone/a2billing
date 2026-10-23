@@ -17,7 +17,7 @@ use A2billing\Forms\Elements\Edit\HasMany;
     <?= $form->csrf_inputs() ?>
 
 <?php foreach (array_filter($form->FG_EDIT_FORM_ELEMENTS, fn ($v) => !$v instanceof HasMany) as $i=>$row):?>
-    <?= $row->render($i, $processed[$row["name"] ?? ""] ?? null) ?>
+    <?= $row->render($i, $processed[$row->name ?? ""] ?? null) ?>
 <?php endforeach ?>
 
     <div class="row my-4 justify-content-between">

@@ -25,7 +25,6 @@ class Popup extends Input
     )
     {
         parent::__construct($label, $name, $help_text, $attributes, $validator, $error);
-        $this->type = "POPUPVALUE";
     }
 
     protected function renderElement(): string

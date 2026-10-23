@@ -43,7 +43,6 @@ class Input extends EditElement
         $this->attributes = $attributes;
         $this->validator = $validator;
         $this->error = $error;
-        $this->type = "INPUT";
         if ($check_empty === "NO") {
             $this->check_empty = false;
         }
