@@ -1338,7 +1338,7 @@ class FormHandler
             }
 
             // clone to get a clean offset, and sanitize for count
-            $qbc = $this->cloneQueryBuilder();
+            $qbc = $this->cloneQueryBuilder(joins: true);
             $this->FG_LIST_VIEW_ROW_COUNT = $qbc->count();
             $list = $this->query_builder->offset($current_page * $this->query_builder->limit)->get()->toArray();
 
