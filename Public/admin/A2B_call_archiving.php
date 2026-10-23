@@ -200,8 +200,7 @@ if ($posted_search === true && $posted_archive === false) {
     $HD_Form->AddSearchButton(
         "Archive Displayed Calls",
         "posted_archive",
-        "true", "btn-secondary",
-        "return confirm('This action will archive the selected calls. Are you sure?')"
+        "true"
     );
 }
 
@@ -214,5 +213,15 @@ if ($archive_message) {
 
 $list = $HD_Form->perform_action($form_action);
 $HD_Form->create_form($form_action, $list) ;
-
+?>
+<script>
+document.getElementById("posted_archive")?.addEventListener("click", function (e) {
+    if (!confirm('This action will archive the selected calls. Are you sure?')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+});
+</script>
+<?php
 require_once __DIR__ . "/templates/footer.php";

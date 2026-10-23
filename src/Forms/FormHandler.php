@@ -1047,7 +1047,7 @@ class FormHandler
         ];
     }
 
-    public function AddSearchButton(string $label, string $name, string $value = '1', string $class = 'btn-secondary', string $onclick = ''): void
+    public function AddSearchButton(string $label, string $name, string $value = '1', string $class = 'btn-secondary'): void
     {
         $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
@@ -1055,7 +1055,6 @@ class FormHandler
             "value" => $value,
             "label" => $label,
             "class" => $class,
-            "onclick" => $onclick,
             "type" => "BUTTON",
         ];
     }

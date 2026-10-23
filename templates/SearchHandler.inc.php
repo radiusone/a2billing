@@ -282,9 +282,9 @@ use A2billing\Forms\FormHandler;
             <button
                 type="submit"
                 name="<?= $button["input"][0] ?>"
+                id="<?= $button["input"][0] ?>"
                 value="<?= $button["value"] ?>"
                 class="btn <?= $button["class"] ?>"
-                onclick="<?= $button["onclick"] ?>"
             ><?= $button["label"] ?></button>
             <?php endforeach ?>
             <button type="submit" class="btn btn-primary"><?= _("Search") ?></button>
