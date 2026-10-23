@@ -287,7 +287,13 @@ if ($popup_select) {
     $HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", Connection::getConnection("cc_card_group", "name", "id"));
     $HD_Form->AddSearchSelectInput(_("Currency"), "cc_card.currency", getCurrenciesList());
     $HD_Form->AddSearchSelectInput(_("Account type"), "typepaid", $typepaid_list);
-    $HD_Form->AddSearchSqlSelectInput(_("Agent"), "id_agent", Connection::getConnection("cc_agent", Connection::getConnection()->raw("CONCAT(firstname, ' ', lastname)"), "id"));
+    $HD_Form->AddSearchSqlSelectInput(
+        _("Agent"),
+        "id_agent",
+        Connection::getConnection("cc_agent")
+            ->selectRaw("CONCAT(firstname, ' ', lastname) AS agentname")
+            ->addSelect("id")
+    );
 
     $HD_Form->AddListInfoButton("A2B_info_card.php?id=");
 
@@ -816,7 +822,8 @@ if ($popup_select) {
 
     $HD_Form->AddEditHasMany(
         _("Customer history"),
-        Connection::getConnection("cc_card_history", "id", Connection::getConnection()->raw("CONCAT('(', datecreated, ') ', description)")),
+        Connection::getConnection("cc_card_history", "id")
+            ->selectRaw("CONCAT('(', datecreated, ') ', description)"),
         "description",
         "id_cc_card",
         [Validator::class, "min3Chars"],

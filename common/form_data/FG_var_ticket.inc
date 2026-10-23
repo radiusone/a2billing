@@ -136,9 +136,9 @@ if (is_admin() || (is_agent() && $ticket_type === "user")) {
         "creator",
         Connection::getConnection(
             $ticket_type === "agent" ? "cc_agent" : "cc_card",
-            "id",
-            Connection::getConnection()->raw("CONCAT(firstname, ' ', lastname)")
+            "id"
         )
+            ->selectRaw("CONCAT(firstname, ' ', lastname) AS creatorname")
     );
     $HD_Form->AddListValue(_("Account number"), "creator", [Customer::class, "getUsername"]);
 }

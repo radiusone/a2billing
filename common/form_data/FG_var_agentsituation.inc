@@ -51,25 +51,25 @@ $HD_Form->AddListValue(abbr(_("Bal"), _("Commission balance")), "com_balance", "
 $HD_Form->AddListValue(
     abbr(_("Total"),
     _("Total commission accrued")),
-    Connection::getConnection()->raw("IFNULL(SUM(cc_agent_commission.amount), 0)"),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_agent_commission.amount), 0) AS total_amount"),
     "get_money",
 );
 $HD_Form->AddListValue(
     abbr(_("Refills"),
     _("Total customer refill amount")),
-    Connection::getConnection()->raw("IFNULL(SUM(cc_logrefill.credit), 0)"),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_logrefill.credit), 0) AS total_credit"),
     "get_money",
 );
 $HD_Form->AddListValue(
     abbr(_("Agent refills"),
     _("Total agent refill amount")),
-    Connection::getConnection()->raw("IFNULL(SUM(cc_logrefill_agent.credit), 0)"),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_logrefill_agent.credit), 0) AS total_refill"),
     "get_money",
 );
 $HD_Form->AddListValue(
     abbr(_("Payments"),
     _("Total payments taken")),
-    Connection::getConnection()->raw("IFNULL(SUM(cc_logpayment_agent.payment), 0)"),
+    Connection::getConnection()->raw("IFNULL(SUM(cc_logpayment_agent.payment), 0) AS total_payment"),
     "get_money",
 );
 

@@ -39,43 +39,33 @@ use Illuminate\Database\Query\Builder;
 **/
 
 $form_action ??= "list";
-if (is_customer()) {
-    $HD_Form = new FormHandler(
-        "cc_receipt",
-        _("Receipt"),
-        "cc_receipt.id",
-        Connection::getConnection("cc_receipt")
-            ->when(
-                $form_action === "list",
-                fn (Builder $q) => $q->leftJoin("cc_card", "cc_card.id", "cc_receipt.id_card")
-                    ->leftJoinSub(
-                        Connection::getConnection("cc_receipt")
-                            ->select("id_receipt")
-                            ->selectRaw("SUM(price) AS total_price")
-                            ->groupBy("id_receipt"),
-                        "items",
-                        "cc_receipt.id",
-                        "items.id_receipt"
-                    )
-            )
-            ->where("id_card", Customer::id())
-            ->groupBy("cc_receipt.id")
-            ->latest("cc_receipt.date")
-    );
-} else {
-    $HD_Form = new FormHandler(
-        "cc_receipt",
-        _("Receipt"),
-        "cc_receipt.id",
-        Connection::getConnection("cc_receipt")
-            ->when(
-                $form_action === "list",
-                fn (Builder $q) => $q->leftJoin("cc_receipt_item", "cc_receipt_item.id_receipt", "cc_receipt.id")
-            )
-            ->groupBy("cc_receipt.id")
-            ->latest("cc_receipt.date")
-    );
-}
+$HD_Form = new FormHandler(
+    "cc_receipt",
+    _("Receipt"),
+    "cc_receipt.id",
+    Connection::getConnection("cc_receipt")
+        ->when(
+            $form_action === "list",
+            fn (Builder $q) => $q
+                ->leftJoinSub(
+                    Connection::getConnection("cc_receipt_item")
+                        ->select("id_receipt")
+                        ->selectRaw("SUM(price) AS total_price")
+                        ->groupBy("id_receipt"),
+                    "items",
+                    "cc_receipt.id",
+                    "items.id_receipt"
+                )
+        )
+        ->when(
+            is_customer(),
+            fn (Builder $q) => $q
+                ->leftJoin("cc_card", "cc_card.id", "cc_receipt.id_card")
+                ->where("id_card", Customer::id())
+        )
+        ->groupBy("cc_receipt.id")
+        ->latest("cc_receipt.date")
+);
 
 $HD_Form->AddListInfoButton("A2B_receipt_view.php?id=");
 
@@ -111,7 +101,7 @@ if (!is_customer()) {
 $HD_Form->AddListValue(_("Date"), "cc_receipt.date");
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListMapping(_("Status"), "cc_receipt.status", getInvoiceStatusList());
-$HD_Form->AddListValue(_("Amount (incl VAT)"), Connection::getConnection()->raw("SUM(price)"), "get_money");
+$HD_Form->AddListValue(_("Amount (incl VAT)"), Connection::getConnection()->raw("IFNULL(total_price, 0) AS total_price"), "get_money");
 
 if (!is_customer()) {
     $HD_Form->AddListAddButton(icon: "receipt");

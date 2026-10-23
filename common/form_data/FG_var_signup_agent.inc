@@ -76,11 +76,9 @@ if (is_admin()) {
     $HD_Form->AddEditSqlSelect(
         _("Agent"),
         "id_agent",
-        Connection::getConnection(
-            "cc_agent",
-            Connection::getConnection()->raw("CONCAT(login, IF(lastname IS NULL, '', CONCAT(' - ', lastname, IF(firstname IS NULL, '', CONCAT(', ', firstname)))))"),
-            "id"
-        ),
+        Connection::getConnection("cc_agent")
+            ->selectRaw("CONCAT(login, IF(lastname IS NULL, '', CONCAT(' - ', lastname, IF(firstname IS NULL, '', CONCAT(', ', firstname))))) AS agentname")
+            ->addSelect("id"),
         $id_agent,
         ["" => _("Select agent")],
         "",

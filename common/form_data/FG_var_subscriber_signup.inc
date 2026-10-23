@@ -81,11 +81,9 @@ $CURRENCY = strtoupper(BASE_CURRENCY);
 $HD_Form->AddEditSqlSelect(
     _("SUBSCRIPTION OPTIONS"),
     "id_subscription",
-    Connection::getConnection(
-        "cc_subscription_service",
-        Connection::getConnection()->raw("CONCAT(label, ' - ', fee, '$CURRENCY')"),
-        "id"
-    ),
+    Connection::getConnection("cc_subscription_service")
+        ->selectRaw("CONCAT(label, ' - ', fee, '$CURRENCY') AS service")
+        ->addSelect("id"),
     "",
     ["" => _("NONE")],
     validator: [Validator::class, "foreignKey"],
