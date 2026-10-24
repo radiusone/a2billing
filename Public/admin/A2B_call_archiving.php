@@ -106,59 +106,6 @@ $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", getDialStatusList
 $HD_Form->AddListMapping(_("IAX/SIP"), "sipiax", getYesNoList());
 $HD_Form->AddListValue(_("Cost"), "sessionbill", "get_money_precise");
 
-// TODO: this shouldn't be necessary; $HD_Form->perform_list_subselection() should
-// populate $HD_Form->list_query_conditions from the search form, but it seems to
-// be unreliable
-if (!empty($src)) {
-    $op = "LIKE";
-    switch ($srctype) {
-        case "1": $op = "="; break;
-        case "2": $src = "$src%"; break;
-        case "3": $src = "%$src%"; break;
-        case "4": $src = "%$src"; break;
-    }
-    $HD_Form->query_builder->where("src", $op, $src);
-}
-if (!empty($dst)) {
-    $op = "LIKE";
-    switch ($dsttype) {
-        case "1": $op = "="; break;
-        case "2": $dst = "$dst%"; break;
-        case "3": $dst = "%$dst%"; break;
-        case "4": $dst = "%$dst"; break;
-    }
-    $HD_Form->query_builder->where("calledstation", $op, $dst);
-}
-
-if (($enable_starttime_start && !empty($starttime_start)) || ($enable_starttime_end && !empty($starttime_end))) {
-    if ($enable_starttime_start && !empty($starttime_start)) {
-        $HD_Form->query_builder->where("starttime", ">=", $starttime_start);
-    }
-    if ($enable_starttime_end && !empty($starttime_end)) {
-        $HD_Form->query_builder->where("starttime", "<=", $starttime_end);
-    }
-} elseif ($enable_starttime_end_relative && !empty($starttime_end_relative)) {
-    $HD_Form->query_builder->where("starttime", "<=", "$starttime_end_relative 23:59:59");
-}
-
-if (!empty($card_id)) {
-    $HD_Form->query_builder->where("card_id", $card_id);
-}
-if (is_admin()) {
-    if ($id_provider > 0) {
-        $HD_Form->query_builder->where("id_provider", $id_provider);
-    }
-    if ($id_trunk > 0) {
-        $HD_Form->query_builder->where("id_trunk", $id_trunk);
-    }
-    if ($id_tariffgroup > 0) {
-        $HD_Form->query_builder->where("id_tariffgroup", $id_tariffgroup);
-    }
-    if ($id_ratecard > 0) {
-        $HD_Form->query_builder->where("id_ratecard", $id_ratecard);
-    }
-}
-
 if (($calltype ?? "answered") === "answered") {
     $HD_Form->query_builder->where("terminatecauseid", 1);
 }
@@ -194,7 +141,7 @@ $HD_Form->AddSearchPopupInput(_("Rate"), "id_ratecard", "A2B_entity_def_ratecard
 $HD_Form->AddSearchTextInput(_("Destination"), "dst");
 $HD_Form->AddSearchTextInput(_("Source"), "src");
 
-$HD_Form->AddSearchSelectInput(_("Disposition"), "calltype", ["answered" => _("Answered Only"), "all" => _("All Calls")]);
+$HD_Form->AddSearchSelectInput(_("Disposition"), "calltype", ["answered" => _("Answered Only"), "all" => _("All Calls")], process: false);
 
 if ($posted_search === true && $posted_archive === false) {
     $HD_Form->AddSearchButton(
