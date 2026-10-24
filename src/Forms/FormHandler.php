@@ -68,7 +68,7 @@ class FormHandler
     public Builder $query_builder;
 
     /** @var bool|int The result of a non-select query (bool for update and delete, inserted ID for insert) */
-    public $QUERY_RESULT = false;
+    public int|bool $QUERY_RESULT = false;
 
     /* CONFIG THE VIEWER : CV */
     public ListView $listView;
@@ -191,6 +191,9 @@ class FormHandler
 
     /** @var string Error text for the add page */
     public string $add_message_error;
+
+    /** @var string Error text for the edit page */
+    public string $edit_message_error;
 
     /** @var string Error text for the delete page */
     public string $delete_message_error;
@@ -337,6 +340,7 @@ class FormHandler
         $this->add_message_intro = sprintf(_("Creating new %s"), $inst);
         $this->add_message_result = sprintf(_("Your new %s has been created."), $inst);
         $this->add_message_error = sprintf(_("There was an error creating your %s."), $inst);
+        $this->edit_message_error = sprintf(_("There was an error editing your %s."), $inst);
         $this->delete_message_error = sprintf(_("There was an error deleting your %s."), $inst);
 
         $this->search_form_title = _("Define the search criteria");
@@ -388,7 +392,7 @@ class FormHandler
      *
      * @todo: why isn't this just done in the constructor instead of manually calling it 100 times?
      */
-    public function init()
+    public function init(): void
     {
         if (class_exists(Console::class)) {
             Console::log('FormHandler -> init');
@@ -1297,7 +1301,10 @@ class FormHandler
 
             try {
                 $list = $this->query_builder->select($cols)->get()->toArray();
-            } catch (Throwable) {
+                $this->QUERY_RESULT = true;
+            } catch (Throwable $e) {
+                $this->edit_message_error .= " " . $e->getMessage();
+                $this->QUERY_RESULT = false;
             }
 
             // don't display the hashed password in the text box
@@ -1415,7 +1422,7 @@ class FormHandler
      * Function to delete all pre selected records,
      * This Function Gets the selected records and delete them from DB
      ******************************************/
-    public function Delete_Selected()
+    public function Delete_Selected(): void
     {
         try {
             $this->query_builder->delete();
@@ -1589,7 +1596,7 @@ class FormHandler
      *
      * @public
      */
-    public function perform_delete()
+    public function perform_delete(): void
     {
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->all_fields_valid = true;
@@ -1621,10 +1628,10 @@ class FormHandler
      * Redirect to a location after add/edit/delete, appending current page state
      *
      * @param string $location
-     * @param string|int|null $id
+     * @param int|string|null $id
      * @return void
      */
-    private function gotoLocation(string $location, $id = null): void
+    private function gotoLocation(string $location, int|string|null $id = null): void
     {
         if (empty($location)) {
             return;
@@ -1771,19 +1778,17 @@ class FormHandler
      */
     public function create_actionfinish($form_action): void
     {
-        if (empty($_POST)) {
-            return;
-        }
-
         $class = $this->QUERY_RESULT ? "success" : "danger";
-        if (str_ends_with($form_action, "delete")) {
+        if (!empty($_POST) && str_ends_with($form_action, "delete")) {
             $msg = $this->QUERY_RESULT
                 ? $this->delete_message_result
                 : $this->delete_message_error;
-        } elseif (str_ends_with($form_action, "add")) {
+        } elseif (!empty($_POST) && str_ends_with($form_action, "add")) {
             $msg = $this->QUERY_RESULT
                 ? $this->add_message_result
                 : $this->add_message_error;
+        } elseif (str_ends_with($form_action, "edit") && !$this->QUERY_RESULT) {
+            $msg = $this->edit_message_error;
         } else {
             return;
         }
@@ -1796,14 +1801,14 @@ class FormHandler
      *
      * @public        TODO : maybe is better to allow use a string as parameter
      */
-    public function create_custom($form_action)
+    public function create_custom($form_action): void
     {
         $msg = "$form_action " . _("Done");
         $html = "<div class='row pb-3 align-items-center' id='create_custom'><div class='col'><strong>$msg</strong></div></div>";
         echo $html;
     }
 
-    public function create_search_form(bool $full_modal = false, bool $with_hide_button = true)
+    public function create_search_form(bool $full_modal = false, bool $with_hide_button = true): void
     {
         if (class_exists(Console::class)) {
             Console::logSpeed('Time taken to get to line ' . __LINE__);
@@ -1835,7 +1840,7 @@ class FormHandler
      *
      * @todo make this return a string, not echo
      */
-    public function create_form(string $form_action, array $list)
+    public function create_form(string $form_action, array $list): void
     {
         if (class_exists(Console::class)) {
             Console::logSpeed('Time taken to get to line ' . __LINE__);

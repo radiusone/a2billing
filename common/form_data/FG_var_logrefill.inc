@@ -120,7 +120,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
 
     $HD_Form->AddEditElement(
         _("REFILL AMOUNT"),
-        "credit",
+        "cc_logrefill.credit",
         _("Enter the amount in the currency base : ") . BASE_CURRENCY,
         ["maxlength" => 10],
         [Validator::class, "number"],
