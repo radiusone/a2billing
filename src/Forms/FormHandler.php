@@ -2084,8 +2084,10 @@ class FormHandler
         $this->export_session_key = $session_key;
         $this->export_enable_csv = $export_csv;
         $this->export_enable_xml = $export_xml;
-        $qb = $this->cloneQueryBuilder()->select($columns ?? ["*"]);
-        $sql = $qb->toRawSql();
+        $column = implode(", ", $columns ?? ["*"]);
+        $qb = $this->cloneQueryBuilder(joins: true);
+        $qb->columns = null;
+        $sql = $qb->selectRaw($column)->toRawSql();
         $_SESSION[$this->export_session_key] = $sql;
     }
 
