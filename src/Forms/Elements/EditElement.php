@@ -85,28 +85,33 @@ abstract class EditElement
     {
         $this->index = $i;
         $this->value = $value;
+        $label = htmlspecialchars($this->label);
         $el = $this->renderElement();
         $err = $help = "";
         if (!$this->valid) {
             $err = sprintf(
                 "<div class=\"form-text invalid-feedback\">%s%s%s</div>",
-                $this->error,
+                htmlspecialchars($this->error),
                 $this->error ? " - " : "",
-                $this->validation_err
+                htmlspecialchars($this->validation_err)
             );
         }
         if ($this->help_text) {
-            $help = sprintf("<div class=\"form-text\">%s</div>", $this->help_text);
+            $help = sprintf(
+                "<div class=\"form-text\">%s</div>",
+                htmlspecialchars($this->help_text),
+            );
         }
         $for = "";
         if ($this->attributes["id"] ?? "") {
-            $for = "for=\"{$this->attributes["id"]}\"";
+            $for = htmlspecialchars($this->attributes["id"]);
         }
+        $label_id = htmlspecialchars("item{$i}_label");
 
         return <<< HTML
         <div class="row mb-3">
-            <label id="item{$i}_label" for="$for" class="col-3 col-form-label">
-                $this->label
+            <label id="$label_id" for="$for" class="col-3 col-form-label">
+                $label
             </label>
             <div class="col">
                 $el
