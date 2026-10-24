@@ -1332,9 +1332,7 @@ class FormHandler
                 $this->Delete_Selected();
             }
 
-            // clone to get a clean offset, and sanitize for count
-            $qbc = $this->cloneQueryBuilder(joins: true);
-            $this->FG_LIST_VIEW_ROW_COUNT = $qbc->count();
+            $this->FG_LIST_VIEW_ROW_COUNT = $this->query_builder->getCountForPagination();
             $list = $this->query_builder->offset($current_page * $this->query_builder->limit)->get()->toArray();
 
             if ($this->FG_LIST_VIEW_ROW_COUNT <= $current_size) {
