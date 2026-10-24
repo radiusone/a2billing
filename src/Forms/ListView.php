@@ -10,6 +10,8 @@ use A2billing\Forms\Elements\List\Buttons\TopButton;
 use A2billing\Forms\Elements\List\Filter;
 use A2billing\Forms\Elements\List\FilterInput;
 use A2billing\Forms\Elements\ListElement;
+use A2billing\Forms\Elements\Search;
+use A2billing\Forms\Elements\SearchElement;
 
 final class ListView
 {
@@ -18,6 +20,9 @@ final class ListView
 
     /** @var TopButton[] $topButtons */
     private array $topButtons = [];
+
+    /** @var SearchElement[] */
+    private array $searches = [];
 
     /** @var ListElement[] */
     private array $columns = [];
@@ -57,6 +62,31 @@ final class ListView
         $this->topButtons[] = $button;
 
         return $this;
+    }
+
+    public function addSearchElement(SearchElement $search): self
+    {
+        $this->searches[] = $search;
+
+        return $this;
+    }
+
+    /**
+     * @param class-string<SearchElement>[] $only
+     * @param class-string<SearchElement>[] $except
+     * @return SearchElement[]
+     */
+    public function getSearchElements(array $only = [], array $except = []): array
+    {
+        if (!$this->searches) {
+            return [];
+        } elseif (!$only && !$except) {
+            return $this->searches;
+        } elseif ($only) {
+            return array_filter($this->searches, fn ($v) => in_array($v::class, $only));
+        } else {
+            return array_filter($this->searches, fn ($v) => !in_array($v::class, $except));
+        }
     }
 
     public function addColumn(ListElement $column): self
@@ -116,26 +146,59 @@ final class ListView
                 $query_params[$k] ??= $v;
             }
         }
-        foreach ($form->search_form_elements as $search) {
+        foreach ($this->searches as $search) {
             // array_filter will remove empty search items but
             // this ensures the matching operator columns are also removed
-            foreach ($search["operator"] ?? [] as $i => $op) {
-                $in = $search["input"][$i];
+            // also don't include date fields that aren't enabled
+            $opkeys = match($search::class) {
+                Search\Text::class,
+                Search\Date::class,
+                Search\Popup::class,
+                Search\Radio::class,
+                Search\Select::class => ["{$search->column}_type"],
+                Search\Comparison::class => ["{$search->column}_0_type", "{$search->column}_1_type"],
+                Search\DateRange::class => ["{$search->column}_start_type", "{$search->column}_end_type"],
+                Search\DateRelative::class => ["{$search->column}_start_relative_type", "{$search->column}_end_relative_type"],
+            };
+
+            $valkeys = match($search::class) {
+                Search\Text::class,
+                Search\Date::class,
+                Search\Popup::class,
+                Search\Radio::class,
+                Search\Select::class => [$search->column],
+                Search\Comparison::class => ["{$search->column}_0", "{$search->column}_1"],
+                Search\DateRange::class => ["{$search->column}_start", "{$search->column}_end"],
+                Search\DateRelative::class => ["{$search->column}_start_relative", "{$search->column}_end_relative"],
+            };
+
+            foreach ($opkeys as $i => $op) {
+                $in = $valkeys[$i];
                 if (
                     ($processed[$in] ?? "") === ""
-                    || (str_ends_with($search["type"] ?? "", "DATE") && !array_key_exists("enable_$in", $processed))
-                ) {
-                    unset($query_params[$in], $query_params[$op]);
-                }
-                [$in, $op] = str_replace("^^", ".", [$in, $op]);
-                if (
-                    ($processed[$in] ?? "") === ""
-                    || (str_ends_with($search["type"] ?? "", "DATE") && !array_key_exists("enable_$in", $processed))
+                    || (
+                        in_array($search::class, [Search\DateRange::class, Search\DateRelative::class])
+                        && !array_key_exists("enable_$in", $processed)
+                    )
                 ) {
                     unset($query_params[$in], $query_params[$op]);
                 }
             }
-            // also don't include date fields that aren't enabled
+
+            foreach ($opkeys as $i => $op) {
+                $in = $valkeys[$i];
+                $op = $search->sanitizeColumn($op);
+                $in = $search->sanitizeColumn($in);
+                if (
+                    ($processed[$in] ?? "") === ""
+                    || (
+                        in_array($search::class, [Search\DateRange::class, Search\DateRelative::class])
+                        && !array_key_exists("enable_$in", $processed)
+                    )
+                ) {
+                    unset($query_params[$in], $query_params[$op]);
+                }
+            }
         }
         foreach($form->CV_FOLLOWPARAMETERS as $k => $v) {
             $query_params[$k] = $v;

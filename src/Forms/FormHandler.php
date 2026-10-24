@@ -24,7 +24,7 @@ use A2billing\Forms\Elements\List\FilterInput;
 use A2billing\Forms\Elements\List\Mapping;
 use A2billing\Forms\Elements\List\SqlMapping;
 use A2billing\Forms\Elements\List\Value;
-use A2billing\Forms\Elements\ListElement;
+use A2billing\Forms\Elements\Search;
 use A2billing\Logger;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
@@ -103,9 +103,6 @@ class FormHandler
 
     /** @var bool Whether to show a search popup at the top of the list view */
     public bool $search_form_enabled = false;
-
-    /** @var array List of elements to be added to the search form */
-    public array $search_form_elements = [];
 
     /** @var string The text for the top of the search dialog */
     public string $search_form_title = "";
@@ -404,6 +401,8 @@ class FormHandler
     {
         $vars = array_merge($_GET, $_POST);
         foreach ($vars as $key => $value) {
+            // post fields can't contain . so they are replaced with ^^ at render time
+            // todo: find out if there's a reason both versions are kept
             if (str_contains($key, "^^")) {
                 $this->_processed[$key] ??= $value;
                 $key = str_replace("^^", ".", $key);
@@ -871,18 +870,11 @@ class FormHandler
      * @param string $fieldname the name of the database column, also used for HTML element names
      * @return void
      */
-    public function AddSearchDateInput(string $label, string $fieldname)
+    public function AddSearchDateInput(string $label, string $fieldname): void
     {
-        $column = $fieldname;
-        $fieldname = str_replace(".", "^^", $fieldname);
-        $inputnames = ["{$fieldname}_start", "{$fieldname}_end"];
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => $inputnames,
-            "operator" => ["{$fieldname}_start_type", "{$fieldname}_end_type"],
-            "column" => $column,
-            "type" => "DATE",
-        ];
+        $this->listView->addSearchElement(
+            new Search\DateRange($fieldname, $label)
+        );
     }
 
     /**
@@ -898,18 +890,9 @@ class FormHandler
      */
     public function AddSearchRelativeDateInput(string $label, string $fieldname, bool $start = false, bool $months = true): void
     {
-        $column = $fieldname;
-        $fieldname .= $start ? "_start_relative" : "_end_relative";
-        $fieldname = str_replace(".", "^^", $fieldname);
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => [$fieldname],
-            "operator" => ["{$fieldname}_type"],
-            "column" => $column,
-            "type" => "RELATIVEDATE",
-            "start" => $start,
-            "months" => $months,
-        ];
+        $this->listView->addSearchElement(
+            new Search\DateRelative($fieldname, $label, $start, $months)
+        );
     }
 
     /**
@@ -917,15 +900,11 @@ class FormHandler
      * @param string $fieldname the name of the database column, also used for HTML element names
      * @return void
      */
-    public function AddSearchSingleDateInput(string $label, string $fieldname) {
-        $fieldname = str_replace(".", "^^", $fieldname);
-        $fieldvar = $fieldname . "_type";
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => [$fieldname],
-            "operator" => [$fieldvar],
-            "type" => "SINGLEDATE",
-        ];
+    public function AddSearchSingleDateInput(string $label, string $fieldname): void
+    {
+        $this->listView->addSearchElement(
+            new Search\Date($fieldname, $label)
+        );
     }
 
     /**
@@ -934,16 +913,11 @@ class FormHandler
      * @public
      * @ $displayname , $fieldname, $fieldvar
      */
-    public function AddSearchTextInput($displayname, $fieldname)
+    public function AddSearchTextInput($displayname, $fieldname): void
     {
-        $fieldname = str_replace(".", "^^", $fieldname);
-        $fieldvar = $fieldname . "_type";
-        $this->search_form_elements[] = [
-            "label" => $displayname,
-            "input" => [$fieldname],
-            "operator" => [$fieldvar],
-            "type" => "TEXT",
-        ];
+        $this->listView->addSearchElement(
+            new Search\Text($fieldname, $displayname)
+        );
     }
 
     /**
@@ -953,15 +927,11 @@ class FormHandler
      * @param string $fieldname
      * @return void
      */
-    public function AddSearchComparisonInput(string $label, string $fieldname)
+    public function AddSearchComparisonInput(string $label, string $fieldname): void
     {
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => ["{$fieldname}0", "{$fieldname}1"],
-            "operator" => ["{$fieldname}0_type", "{$fieldname}1_type"],
-            "column" => $fieldname,
-            "type" => "COMPARISON",
-        ];
+        $this->listView->addSearchElement(
+            new Search\Comparison($fieldname, $label)
+        );
     }
 
     /**
@@ -972,23 +942,13 @@ class FormHandler
      * @param Builder $table a database object; first 2 columns will be used for content and value
      * @return void
      */
-    public function AddSearchSqlSelectInput(
-        string $label,
-        string $name,
-        Builder $table
-    )
+    public function AddSearchSqlSelectInput(string $label, string $name, Builder $table): void
     {
-        $name = str_replace(".", "^^", $name);
         // todo: numeric keys in result
         $options = $table->get()->mapWithKeys(fn ($row) => [$row[1] => $row[0]]);
-
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => [$name],
-            "options" => $options,
-            "process" => true,
-            "type" => "SELECT",
-        ];
+        $this->listView->addSearchElement(
+            new Search\Select($name, $label, $options)
+        );
     }
 
     /**
@@ -1001,17 +961,11 @@ class FormHandler
      * @param bool $process if false, this element will NOT be used in the database query
      * @return void
      */
-    public function AddSearchSelectInput(string $label, string $name, array $options = [], $default = null, bool $process = true)
+    public function AddSearchSelectInput(string $label, string $name, array $options = [], int|string $default = "", bool $process = true): void
     {
-        $name = str_replace(".", "^^", $name);
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => [$name],
-            "options" => $options,
-            "default" => $default,
-            "process" => $process,
-            "type" => "SELECT",
-        ];
+        $this->listView->addSearchElement(
+            new Search\Select($name, $label, $options, $default, !$process)
+        );
     }
 
     /**
@@ -1021,42 +975,28 @@ class FormHandler
      * @param string $name the name of the element, and also the database column queried
      * @param array<array-key,string> $options options for the element; key is used for value attribute, value used for content
      * @param bool $process if false, this element will NOT be used in the database query
+     * @param string $default which value will be the default, if any
      * @return void
      */
-    public function AddSearchRadioInput(string $label, string $name, array $options = [], bool $process = true)
+    public function AddSearchRadioInput(string $label, string $name, array $options = [], bool $process = true, string $default = ""): void
     {
-        $name = str_replace(".", "^^", $name);
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => [$name],
-            "options" => $options,
-            "process" => $process,
-            "type" => "RADIO",
-        ];
+        $this->listView->addSearchElement(
+            new Search\Radio($name, $label, $options, $default, !$process)
+        );
     }
 
     public function AddSearchPopupInput(string $label, string $name, string $href, int $select = 1): void
     {
-        $name = str_replace(".", "^^", $name);
-        $this->search_form_elements[] = [
-            "label" => $label,
-            "input" => [$name],
-            "href" => $href,
-            "select" => $select,
-            "type" => "POPUP",
-        ];
+        $this->listView->addSearchElement(
+            new Search\Popup($name, $label, $href, $select)
+        );
     }
 
     public function AddSearchButton(string $label, string $name, string $value = '1', string $class = 'btn-secondary'): void
     {
-        $name = str_replace(".", "^^", $name);
-        $this->search_form_elements[] = [
-            "input" => [$name],
-            "value" => $value,
-            "label" => $label,
-            "class" => $class,
-            "type" => "BUTTON",
-        ];
+        $this->listView->addSearchElement(
+            new Search\Button($name, $label, $value, $class)
+        );
     }
 
     public function AddListFilter(string|Expression $column, string $label): void
@@ -1410,51 +1350,61 @@ class FormHandler
 
         $search = [];
 
-        foreach ($this->search_form_elements as $el) {
-            if (($el["process"] ?? true) === false) {
+        foreach ($this->listView->getSearchElements() as $el) {
+            if ($el->local) {
                 continue;
             }
-            foreach ($el["input"] as $i => $input) {
-                $orig_input = $input;
-                $input = str_replace("^^", ".", $input);
-                if (!isset($processed[$input])) {
-                    continue;
-                }
-                $search[$input] = $processed[$input];
-                $op = $el["operator"][$i] ?? "";
-                if (!empty($op)) {
-                    $search[$op] = $processed[$op];
-                }
-                switch ($el["type"]) {
-                    case "TEXT":
-                    case "SINGLEDATE":
-                        $this->do_field($input, $processed[$op], $processed[$input]);
+            switch ($el::class) {
+                case Search\Text::class:
+                case Search\Date::class:
+                case Search\Popup::class:
+                case Search\Radio::class:
+                case Search\Select::class:
+                    $col = $el->column;
+                    if (empty($processed[$col])) {
                         break;
-                    case "COMPARISON":
-                        $this->do_field_duration($el["column"], $processed[$op], $processed[$input]);
-                        break;
-                    case "RELATIVEDATE":
-                        if (!empty($processed["enable_$input"])) {
-                            // add a fake input so we know which enabling checkbox to check
-                            $this->_processed["{$orig_input}_relative"] = true;
-                            $input = preg_replace("/_relative$/", "", $input);
-                            $this->do_field_duration($el["column"], $processed[$op], $processed[$input]);
+                    }
+                    $opkey = "{$col}_type";
+                    $val = $processed[$col];
+                    $search[$opkey] = $processed[$opkey] ?? "";
+                    $search[$col] = $processed[$col];
+                    $this->do_field($el->column, $processed[$opkey] ?? "", $val);
+                    break;
+                case Search\Comparison::class:
+                    $suffixes = ["0", "1"];
+                    $processed["enable_{$el->column}_0"] = true;
+                    $processed["enable_{$el->column}_1"] = true;
+                    // fallthrough
+                case Search\DateRange::class:
+                    $suffixes ??= ["start", "end"];
+                    foreach ($suffixes as $i) {
+                        $col = "{$el->column}_$i";
+                        if (empty($processed["enable_$col"]) || empty($processed[$col])) {
+                            continue;
                         }
+                        $opkey = "{$col}_type";
+                        $val = $processed[$col] . match($i) {"start" => " 00:00:00", "end" => " 23:59:59", default => ""};
+                        $search[$opkey] = $processed[$opkey] ?? "";
+                        $search["enable_$col"] = "true";
+                        $search[$col] = $processed[$col];
+                        $this->do_field_duration($el->column, $processed[$opkey], $val);
+                    }
+                    unset($suffixes);
+                    break;
+                case Search\DateRelative::class:
+                    $col = $el->column . ($el->start ? "_start" : "_end") . "_relative";
+                    if (empty($processed["enable_$col"]) || empty($processed[$col])) {
                         break;
-                    case "DATE":
-                        if (!empty($processed["enable_$input"])) {
-                            $val = $processed[$input];
-                            if (str_ends_with($input, "_end")) {
-                                $val .= " 23:59:59";
-                            }
-                            $this->do_field_duration($el["column"], $processed[$op], $val);
-                        }
-                        break;
-                    case "SELECT":
-                    case "POPUP":
-                        $this->do_field($input, val: $processed[$input]);
-                        break;
-                }
+                    }
+                    $opkey = "{$col}_type";
+                    $val = $processed[$col];
+                    if (!str_contains(":", $val)) {
+                        $val .= ($el->start ? " 00:00:00" : " 23:59:59");
+                    }
+                    $search[$opkey] = $processed[$opkey];
+                    $search["enable_$col"] = "true";
+                    $this->do_field_duration($el->column, $processed[$opkey], $val);
+                    break;
             }
         }
 
