@@ -123,7 +123,14 @@ final class ListView
                 $in = $search["input"][$i];
                 if (
                     ($processed[$in] ?? "") === ""
-                    || (($search["type"] ?? "") === "DATE" && !array_key_exists("enable_$in", $processed))
+                    || (str_ends_with($search["type"] ?? "", "DATE") && !array_key_exists("enable_$in", $processed))
+                ) {
+                    unset($query_params[$in], $query_params[$op]);
+                }
+                [$in, $op] = str_replace("^^", ".", [$in, $op]);
+                if (
+                    ($processed[$in] ?? "") === ""
+                    || (str_ends_with($search["type"] ?? "", "DATE") && !array_key_exists("enable_$in", $processed))
                 ) {
                     unset($query_params[$in], $query_params[$op]);
                 }
@@ -135,6 +142,7 @@ final class ListView
         }
         $query_params = array_filter($query_params, fn ($v) => !is_null($v) && $v !== "");
         $sort_params = $pagination_params = $query_params;
+        $pagination_params["current_page"] = "%s";
 
         $hasActionButtons = (
             $this->deleteButton || $this->infoButton || $this->editButton
