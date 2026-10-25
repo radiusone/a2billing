@@ -24,7 +24,10 @@ abstract class SearchElement extends Element
         return sprintf(
             '<label class="col-4 col-form-label col-form-label-sm" for="%s">%s</label>',
             $this->column,
-            htmlspecialchars($this->label)
+            // the only special case where we expect HTML
+            preg_match("/<abbr title=\".+?\">.+?<\/abbr>/", $this->label)
+                ? $this->label
+                : htmlspecialchars($this->label),
         );
     }
 
