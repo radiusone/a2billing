@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Payments\Enums\PaidStatus;
 use A2billing\Payments\Invoice;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -97,7 +98,7 @@ require_once __DIR__ . "/templates/main.php";
 <table class="table table-sm">
     <tr>
         <th scope="row"><?= _("Paid status") ?></th>
-        <td class="<?= $invoice->paid_status === Invoice::PAIDSTATUS_UNPAID ? "text-danger" : "text-success" ?>">
+        <td class="<?= $invoice->paid_status === PaidStatus::Unpaid ? "text-danger" : "text-success" ?>">
             <?= $invoice->getPaidStatusDisplay() ?>
             <button class="btn btn-primary badge" id="changestatus"><?= _("Change status") ?></button>
         </td>
@@ -139,7 +140,7 @@ require_once __DIR__ . "/templates/main.php";
 document.addEventListener("DOMContentLoaded", function() {
     let id = <?= json_encode($id) ?>;
     let card = <?= json_encode($invoice->getCard()) ?>;
-    let status = <?= ($invoice->getPaidStatus() + 1) % 2 ?>; // converts 0 to 1 and 1 to 0
+    let status = <?= $invoice->getPaidStatus() === PaidStatus::Paid ? PaidStatus::Unpaid->value : PaidStatus::Paid->value ?>; // converts 0 to 1 and 1 to 0
     let popup = "scrollbars=yes,resizable=yes,width=700,height=500";
     document.getElementById("addpayment").addEventListener("click", function() {
         window.open(`A2B_entity_payment_invoice.php?popup_select=1&invoice=${id}&card=${card}`, '', popup)

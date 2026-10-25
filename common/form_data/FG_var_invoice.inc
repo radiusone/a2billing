@@ -5,7 +5,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Payments\Invoice;
+use A2billing\Payments\Enums\PaidStatus;
 use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -65,7 +65,7 @@ $HD_Form = new FormHandler(
         ->when(
             is_customer(),
             fn (Builder $q) => $q->where("id_card", Customer::id())
-                ->where("status", Invoice::PAIDSTATUS_PAID)
+                ->where("status", PaidStatus::Paid)
         )
         ->latest("date")
 );

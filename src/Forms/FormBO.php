@@ -9,9 +9,11 @@ use A2billing\Customer;
 use A2billing\Mail;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
+use A2billing\Payments\Enums\ItemType;
+use A2billing\Payments\Enums\PaidStatus;
+use A2billing\Payments\Enums\Status;
 use A2billing\Payments\Invoice;
 use A2billing\Payments\InvoiceItem;
-use A2billing\Payments\PaymentDocument;
 use A2billing\Payments\Receipt;
 use A2billing\Payments\ReceiptItem;
 use A2billing\Realtime;
@@ -303,11 +305,11 @@ class FormBO
             );
 
             //CREATE INVOICE If a new card then just an invoice item in the last invoice
-            $invoice = Invoice::create($id_card, $description, $title, $reference, PaymentDocument::STATUS_CLOSED);
+            $invoice = Invoice::create($id_card, $description, $title, $reference, Status::Closed);
             if ($invoice->save()) {
                 $description = "Subscription service";
                 $date = $start->format("Y-m-d H:i:s");
-                $item = InvoiceItem::create($invoice, $description, $date, $amount, 0, "SUBSCR", $id_card_subscription);
+                $item = InvoiceItem::create($invoice, $description, $date, $amount, 0, ItemType::Subscription, $id_card_subscription);
                 $item->save();
             }
 
@@ -496,7 +498,7 @@ class FormBO
         $title = sprintf(_("%s REFILL"), $refills[$type] ?? "");
         $description = gettext("Invoice for refill");
 
-        $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_OPEN, Invoice::PAIDSTATUS_UNPAID, $date);
+        $invoice = Invoice::create($card_id, $description, $title, $reference, Status::Open, PaidStatus::Unpaid, $date);
         //load vat of this card
         if ($invoice->save()) {
             $description = $processed['description'];
@@ -653,14 +655,14 @@ class FormBO
             ->leftJoinSub(
                 Connection::getConnection("cc_invoice_item", "id_invoice")
                     ->selectRaw("ROUND(SUM(price), 2) AS total_price")
-                    ->where("type_ext", "POSTPAID")
+                    ->where("type_ext", ItemType::Postpaid)
                     ->groupBy("id_invoice"),
                 "items",
                 "cc_invoice.id",
                 "items.id_invoice"
             )
             ->where("cc_billing_customer.id_card", $card_id)
-            ->where("cc_invoice.paid_status", Invoice::PAIDSTATUS_UNPAID)
+            ->where("cc_invoice.paid_status", PaidStatus::Unpaid)
             ->where("cc_billing_customer.id", "!=", $new_billing)
             ->orderBy("cc_invoice.date", "DESC")
             ->value("total") ?? 0;
@@ -672,9 +674,9 @@ class FormBO
             /// create receipt
             $title = _("SUMMARY OF CALLS");
             $description = _("Summary of the calls charged since the last billing");
-            $receipt = Receipt::create($card_id, $description, $title, PaymentDocument::STATUS_CLOSED);
+            $receipt = Receipt::create($card_id, $description, $title, Status::Closed);
             if ($receipt->save()) {
-                $item = ReceiptItem::create($receipt, $desc_billing, $amount_calls, $date, "CALLS", $new_billing);
+                $item = ReceiptItem::create($receipt, $desc_billing, $amount_calls, $date, ItemType::Calls, $new_billing);
                 $item->save();
             }
         }
@@ -684,10 +686,10 @@ class FormBO
         if (count($charges)) {
             $title = _("SUMMARY OF CHARGES");
             $description = _("Summary of the charge charged since the last billing.");
-            $receipt = Receipt::create($card_id, $description, $title, PaymentDocument::STATUS_CLOSED);
+            $receipt = Receipt::create($card_id, $description, $title, Status::Closed);
             if ($receipt->save()) {
                 foreach ($charges as $charge) {
-                    $item = ReceiptItem::create($receipt, $charge["description"], $charge["amount"], $charge["creationdate"], "CHARGE", $charge["id"]);
+                    $item = ReceiptItem::create($receipt, $charge["description"], $charge["amount"], $charge["creationdate"], ItemType::Charge, $charge["id"]);
                     $item->save();
                 }
             }
@@ -704,10 +706,10 @@ class FormBO
             $reference = Invoice::generateReference();
             $title = _("BILLING CHARGES");
             $description = _("This invoice is for some charges unpaid since the last billing.")." ".$desc_billing_postpaid;
-            $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_CLOSED);
+            $invoice = Invoice::create($card_id, $description, $title, $reference, Status::Closed);
             if ($invoice->save()) {
                 foreach ($charges as $charge) {
-                    $item = InvoiceItem::create($invoice, $charge["description"], $date, $charge["amount"], $vat, "CHARGE", $charge["id"]);
+                    $item = InvoiceItem::create($invoice, $charge["description"], $date, $charge["amount"], $vat, ItemType::Charge, $charge["id"]);
                     $item->save();
                     $total += round($charge["amount"], 2);
                     $total_vat += round($charge["amount"] + ($charge["amount"] * $vat / 100), 2);
@@ -723,7 +725,7 @@ class FormBO
                 $reference = Invoice::generateReference();
                 $title = gettext("BILLING POSTPAID");
                 $description = gettext("Invoice for POSTPAID");
-                $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_CLOSED);
+                $invoice = Invoice::create($card_id, $description, $title, $reference, Status::Closed);
                 $invoice->save();
             }
 
@@ -732,7 +734,7 @@ class FormBO
                 $amount = abs($card_result["credit"] + $lastpostpaid_amount);
                 $total += $amount;
                 $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                $item = InvoiceItem::create($invoice, $description, $date, $amount, $vat, "POSTPAID", $new_billing);
+                $item = InvoiceItem::create($invoice, $description, $date, $amount, $vat, ItemType::Postpaid, $new_billing);
                 $item->save();
             }
         }
@@ -821,7 +823,7 @@ class FormBO
             $title = sprintf(_("%s REFILL"), $refills[$refill_type] ?? "");
             $reference = Invoice::generateReference();
             $description = gettext("Invoice for refill");
-            $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_CLOSED, Invoice::PAIDSTATUS_PAID, $date);
+            $invoice = Invoice::create($card_id, $description, $title, $reference, Status::Closed, PaidStatus::Paid, $date);
             if ($invoice->save()) {
                 //add payment to this invoice
                 Connection::getConnection("cc_invoice_payment")

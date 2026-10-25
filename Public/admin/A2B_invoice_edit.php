@@ -4,6 +4,8 @@ use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\Validator;
+use A2billing\Payments\Enums\PaidStatus;
+use A2billing\Payments\Enums\Status;
 use A2billing\Payments\Invoice;
 use A2billing\Payments\InvoiceItem;
 
@@ -66,7 +68,7 @@ $invoice = new Invoice((int)$id);
 switch ($action) {
     case "add":
     case "update":
-        if (Validator::dateTime($date) !== true) {
+        if (Validator::date($date) !== true && Validator::dateTime($date) !== true) {
             $error_msg .= _("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).");
         }
         if (Validator::number($vat) !== true) {
@@ -125,13 +127,13 @@ require_once __DIR__ . "/templates/main.php";
         </div>
         <div class="row">
             <div class="col-4 fw-bold"><?= _("Status:") ?></div>
-            <div class="col <?= $invoice->status === Invoice::STATUS_OPEN ? "text-success" : "text-danger" ?>">
+            <div class="col <?= $invoice->status === Status::Open ? "text-success" : "text-danger" ?>">
                 <?= $invoice->getStatusDisplay() ?>
             </div>
         </div>
         <div class="row">
             <div class="col-4 fw-bold"><?= _("Paid Status:") ?></div>
-            <div class="col <?= $invoice->paid_status === Invoice::PAIDSTATUS_PAID ? "text-success" : "text-danger" ?>">
+            <div class="col <?= $invoice->paid_status === PaidStatus::Paid ? "text-success" : "text-danger" ?>">
                 <?= $invoice->getPaidStatusDisplay() ?>
             </div>
         </div>

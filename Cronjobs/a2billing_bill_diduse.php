@@ -5,6 +5,7 @@ use A2billing\A2Billing;
 use A2billing\A2bMailException;
 use A2billing\Connection;
 use A2billing\Mail;
+use A2billing\Payments\Enums\ItemType;
 use A2billing\Payments\Invoice;
 use A2billing\ProcessHandler;
 use Illuminate\Database\Query\Builder;
@@ -206,7 +207,7 @@ foreach ($result as $mydids) {
                         $description = "DID number (" . $mydids["did"] . ")";
                         $amount = $mydids["fixrate"];
                         $vat = 0;
-                        $values = ["date" => $date, "id_invoice" => $last_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $mydids["id_did"], "type_ext" => "DID"];
+                        $values = ["date" => $date, "id_invoice" => $last_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $mydids["id_did"], "type_ext" => ItemType::Did];
                         if ($verbose_level >= 1) {
                             echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
                         }

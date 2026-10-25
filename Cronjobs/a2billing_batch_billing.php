@@ -4,6 +4,7 @@ use A2billing\A2Billing;
 use A2billing\A2bMailException;
 use A2billing\Connection;
 use A2billing\Mail;
+use A2billing\Payments\Enums\ItemType;
 use A2billing\Payments\Invoice;
 use A2billing\ProcessHandler;
 
@@ -201,7 +202,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             ->selectRaw("SUM(items.total_price) as total")
             ->leftJoin("cc_invoice", "cc_billing_customer.id_invoice", "cc_invoice.id")
             ->joinSub(
-                $db->table("cc_invoice_item")->select("id_invoice")->selectRaw("SUM(price) AS total_price")->where("type_ext", "POSTPAID")->groupBy("id_invoice"),
+                $db->table("cc_invoice_item")->select("id_invoice")->selectRaw("SUM(price) AS total_price")->where("type_ext", ItemType::Postpaid)->groupBy("id_invoice"),
                 "items",
                 "items.id_invoice",
                 "cc_invoice.id"
@@ -236,7 +237,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             if (!empty ($id_receipt) && is_numeric($id_receipt)) {
                 $description = $desc_billing;
-                $values = ["id_receipt" => $id_receipt, "price" => $amount_calls, "description" => $description, "id_ext" => $id_billing, "type_ext" => "CALLS"];
+                $values = ["id_receipt" => $id_receipt, "price" => $amount_calls, "description" => $description, "id_ext" => $id_billing, "type_ext" => ItemType::Calls];
                 $db->table("cc_receipt_item")->insert($values);
                 if ($verbose_level >= 2)
                     echo "\n Add Receipt Items for the call of the last period :> " . json_encode($values);
@@ -260,7 +261,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 foreach ($result as $charge) {
                     $description = gettext("CHARGE :") . $charge['description'];
                     $amount = $charge['amount'];
-                    $values = ["date" => $charge["creationdate"], "id_receipt" => $id_receipt, "price" => $amount, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
+                    $values = ["date" => $charge["creationdate"], "id_receipt" => $id_receipt, "price" => $amount, "description" => $description, "id_ext" => $charge["id"], "type_ext" => ItemType::Charge];
                     $db->table("cc_receipt_item")->insert($values);
                     if ($verbose_level >= 2) {
                         echo "\n Add Receipt Items for the charges already paid :> " . json_encode($values);
@@ -293,7 +294,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $amount = $charge['amount'];
                     $total = $total + $amount;
                     $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                    $values = ["date" => $charge["creationdate"], "id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
+                    $values = ["date" => $charge["creationdate"], "id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $charge["id"], "type_ext" => ItemType::Charge];
                     $db->table("cc_invoice_item")->insert($values);
                     if ($verbose_level >= 2) {
                         echo "\n Add Invoice Items for the unpaid charges :> " . json_encode($values);
@@ -326,7 +327,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 $amount = abs($Customer['credit']+$lastpostpaid_amount);
                 $total = $total + $amount;
                 $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                $values = ["id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $id_billing, "type_ext" => "POSTPAID"];
+                $values = ["id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $id_billing, "type_ext" => ItemType::Postpaid];
                 $db->table("cc_invoice_item")->insert($values);
                 if ($verbose_level >= 2) {
                     echo "\n Add Invoice Item :> " . json_encode($values);

@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Payments\Enums\PaidStatus;
+use A2billing\Payments\Enums\Status;
 
 /**
  * @return string[]
@@ -106,8 +108,8 @@ function getPaidTypeList(): array
 function getInvoiceStatusList(): array
 {
     return [
-        _('OPEN'),
-        _('CLOSED'),
+        Status::Open->value => Status::Open->label(),
+        Status::Closed->value => Status::Closed->label(),
     ];
 }
 
@@ -117,8 +119,8 @@ function getInvoiceStatusList(): array
 function getInvoicePaidStatusList(): array
 {
     return [
-        _('UNPAID'),
-        _('PAID'),
+        PaidStatus::Unpaid->value => PaidStatus::Unpaid->label(),
+        PaidStatus::Paid->value => PaidStatus::Paid->label(),
     ];
 }
 

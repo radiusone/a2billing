@@ -2,11 +2,10 @@
 
 namespace A2billing\Payments;
 
+use A2billing\Payments\Enums\Status;
+
 abstract class PaymentDocument
 {
-    public const STATUS_OPEN = 0;
-    public const STATUS_CLOSED = 1;
-
     public ?int $id = null;
 
     public string $title = "";
@@ -17,7 +16,7 @@ abstract class PaymentDocument
 
     public string $date = "";
 
-    public int $status = self::STATUS_OPEN;
+    public Status $status = Status::Open;
 
     public string $username = "";
 
@@ -59,21 +58,14 @@ abstract class PaymentDocument
         return $this->username;
     }
 
-    public function getStatus(): int
+    public function getStatus(): Status
     {
         return $this->status;
     }
 
     public function getStatusDisplay(): string
     {
-        switch ($this->status) {
-            case self::STATUS_OPEN:
-                return _("OPEN");
-            case self::STATUS_CLOSED:
-                return _("CLOSED");
-            default:
-                return "";
-        }
+        return $this->status->label();
     }
 
     public function getTotalPrice(): float
@@ -88,9 +80,9 @@ abstract class PaymentDocument
 
     /**
      * @param bool $array
-     * @return array|float
+     * @return ($array is true ? array : float)
      */
-    public function getTotalVat(bool $array = true)
+    public function getTotalVat(bool $array = true): float|array
     {
         $total = 0.00;
         $categories = [];

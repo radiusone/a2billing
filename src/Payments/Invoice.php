@@ -2,15 +2,15 @@
 namespace A2billing\Payments;
 
 use A2billing\Connection;
+use A2billing\Payments\Enums\ItemType;
+use A2billing\Payments\Enums\PaidStatus;
+use A2billing\Payments\Enums\Status;
 use DateTime;
 use Illuminate\Database\Query\Builder;
 
 class Invoice extends PaymentDocument
 {
-    public const PAIDSTATUS_UNPAID = 0;
-    public const PAIDSTATUS_PAID = 1;
-
-    public int $paid_status = self::PAIDSTATUS_UNPAID;
+    public PaidStatus $paid_status = PaidStatus::Unpaid;
     public string $reference = "";
     protected string $table = "cc_invoice";
 
@@ -22,7 +22,7 @@ class Invoice extends PaymentDocument
      * @param string|null $title
      * @param string|null $reference
      * @param int|null $status
-     * @param int|null $paid_status
+     * @param PaidStatus|null $paid_status
      * @param string|null $date
      */
     public function __construct(
@@ -31,7 +31,7 @@ class Invoice extends PaymentDocument
         ?string $title = null,
         ?string $reference = null,
         ?int    $status = null,
-        ?int    $paid_status = null,
+        ?PaidStatus $paid_status = null,
         ?string $date = null
     )
     {
@@ -40,13 +40,13 @@ class Invoice extends PaymentDocument
         }
         $value = Connection::getConnection("cc_invoice", "id", "id_card", "description", "title", "status", "paid_status", "date", "reference")
             ->where("id", $id)
-            ->first();
+            ->firstOrFail();
         $this->id = (int)$value["id"];
         $this->card = (int)$value["id_card"];
         $this->description = $description ?? $value["description"];
         $this->title = $title ?? $value["title"];
-        $this->status = $status ?? (int)$value["status"];
-        $this->paid_status = $paid_status ?? (int)$value["paid_status"];
+        $this->status = $status ?? Status::from((int)$value["status"]);
+        $this->paid_status = $paid_status ?? PaidStatus::from((int)$value["paid_status"]);
         $this->date = $date ?? $value["date"];
         $this->reference = $reference ?? $value["reference"] ?? "";
         $this->items = $this->loadItems();
@@ -57,8 +57,8 @@ class Invoice extends PaymentDocument
         string  $description = "",
         string  $title = "",
         ?string $reference = null,
-        int     $status = self::STATUS_OPEN,
-        int     $paid_status = self::PAIDSTATUS_UNPAID,
+        Status  $status = Status::Open,
+        PaidStatus $paid_status = PaidStatus::Unpaid,
         ?string $date = null
     ): self
     {
@@ -94,7 +94,7 @@ class Invoice extends PaymentDocument
         return $this->reference;
     }
 
-    public function getPaidStatus(): int
+    public function getPaidStatus(): PaidStatus
     {
         return $this->paid_status;
     }
@@ -116,7 +116,7 @@ class Invoice extends PaymentDocument
         $result = [];
         foreach ($this->items as $value) {
             /** @var PaymentDocumentItem $value */
-            if (empty($value->getExtId()) || $value->getExtType() !== "CALLS") {
+            if (empty($value->getExtId()) || $value->getExtType() !== ItemType::Calls) {
                 $result[] = $value;
                 continue;
             }
@@ -143,7 +143,8 @@ class Invoice extends PaymentDocument
                     $call['starttime'],
                     $call["sessionbill"],
                     $value["VAT"],
-                    true // why is this true?
+                    ItemType::Calls,
+                    $call["id"]
                 );
                 $result[] = $item;
             }
@@ -196,7 +197,7 @@ class Invoice extends PaymentDocument
             ->update(["paid_status" => $status]);
         if ($this->paid_status !== $status) {
             foreach ($this->items as $item) {
-                if ($item->getExtType() === "DID" && $item->getExtId()) {
+                if ($item->getExtType() === ItemType::Did && $item->getExtId()) {
                     Connection::getConnection("cc_did_use")
                         ->where(["id_did" => $item->getExtId(), "activated" => 1])
                         ->when(
@@ -224,14 +225,7 @@ class Invoice extends PaymentDocument
 
     public function getPaidStatusDisplay(): string
     {
-        switch ($this->paid_status) {
-            case self::PAIDSTATUS_UNPAID:
-                return _("UNPAID");
-            case self::PAIDSTATUS_PAID:
-                return _("PAID");
-            default:
-                return "";
-        }
+        return $this->paid_status->label();
     }
 
     public static function generateReference(): string

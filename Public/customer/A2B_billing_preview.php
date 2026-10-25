@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Customer;
+use A2billing\Payments\Enums\ItemType;
 use A2billing\Payments\Invoice;
 use A2billing\Payments\InvoiceItem;
 use A2billing\Payments\Receipt;
@@ -85,7 +86,7 @@ $invoice = Invoice::create($card_id, _("This invoice is for some charges unpaid 
 
 // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
 if ($calls_price) {
-    $receipt->items[] = ReceiptItem::create(null, $desc_billing, floatval($calls_price), $now, 'CALLS');
+    $receipt->items[] = ReceiptItem::create(0, $desc_billing, floatval($calls_price), $now, ItemType::Calls);
 }
 
 $result = $table_charge->get();
@@ -93,7 +94,7 @@ foreach ($result as $charge) {
     if ((int)$charge["charged_status"] === 1) {
         // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
         $receipt->items[] = ReceiptItem::create(
-            null,
+            0,
             gettext("CHARGE :") . $charge['description'],
             floatval($charge['amount']),
             $charge['creationdate'],
@@ -101,7 +102,7 @@ foreach ($result as $charge) {
     } elseif ((int)$charge["charged_status"] === 0 && (int)$charge["invoiced_status"] === 0) {
         // GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
         $invoice->items[] = InvoiceItem::create(
-            null,
+            0,
             gettext("CHARGE :") . $charge['description'],
             $charge['creationdate'],
             floatval($charge['amount']),
@@ -114,12 +115,12 @@ if ((int)$typepaid === 1 && $credit < 0) {
     //GENERATE AN INVOICE TO COMPLETE THE BALANCE
     $amount = abs($credit);
     $invoice->items[] = InvoiceItem::create(
-        null,
+        0,
         $desc_billing_postpaid,
         Customer::date($now)->format("Y-m-d H:i:s"),
         floatval($amount),
         floatval($vat),
-        'POSTPAID'
+        ItemType::Postpaid
     );
 }
 

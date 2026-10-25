@@ -2,6 +2,7 @@
 namespace A2billing\Payments;
 
 use A2billing\Connection;
+use A2billing\Payments\Enums\ItemType;
 use DateTime;
 
 class ReceiptItem extends PaymentDocumentItem
@@ -14,7 +15,7 @@ class ReceiptItem extends PaymentDocumentItem
         ?string $desc = null,
         ?string $date = null,
         ?float  $price = null,
-        ?string $type_ext = null,
+        ?ItemType $type_ext = null,
         ?int    $id_ext = null
     )
     {
@@ -23,17 +24,24 @@ class ReceiptItem extends PaymentDocumentItem
         }
         $result = Connection::getConnection("cc_receipt_item")
             ->where("id", $id)
-            ->first();
+            ->firstOrFail();
         $this->id = $id;
         $this->receipt_id = (int)$result["id_receipt"];
         $this->description = $desc ?? $result["description"];
         $this->date = $date ?? $result["date"];
         $this->price = $price ?? (float)$result["price"];
         $this->id_ext = $id_ext ?? $result["id_ext"];
-        $this->type_ext = $type_ext ?? $result["type_ext"];
+        $this->type_ext = $type_ext ?? ItemType::tryFrom($result["type_ext"]) ?? ItemType::Other;
     }
 
-    public static function create($receipt, string $desc, float $price, ?string $date = null, ?string $type_ext = null, ?int $id_ext = null): self
+    public static function create(
+        Receipt|int $receipt,
+        string $desc,
+        float $price,
+        ?string $date = null,
+        ItemType $type_ext = ItemType::Other,
+        ?int $id_ext = null
+    ): self
     {
         $instance = new self();
         $instance->receipt_id = $receipt instanceof Receipt ? $receipt->id : $receipt;

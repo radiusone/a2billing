@@ -2,6 +2,8 @@
 namespace A2billing\Payments;
 
 use A2billing\Connection;
+use A2billing\Payments\Enums\ItemType;
+use A2billing\Payments\Enums\Status;
 use DateTime;
 use Illuminate\Database\Query\Builder;
 
@@ -23,7 +25,7 @@ class Receipt extends PaymentDocument
         $this->date = $value["date"];
         $this->description = $desc ?? $value["description"];
         $this->title = $title ?? $value["title"];
-        $this->status = (int)$value["status"];
+        $this->status = Status::from((int)$value["status"]);
         $this->username = $value["username"];
         $this->items = $this->loadItems();
     }
@@ -32,7 +34,7 @@ class Receipt extends PaymentDocument
         int     $card,
         string  $description = "",
         string  $title = "",
-        int     $status = self::STATUS_OPEN,
+        Status  $status = Status::Open,
         ?string $date = null
     ): self
     {
@@ -84,7 +86,7 @@ class Receipt extends PaymentDocument
         }
         $result = [];
         foreach ($this->items as $value) {
-            if (empty($value->getExtId()) || $value->getExtType() !== "CALLS") {
+            if (empty($value->getExtId()) || $value->getExtType() !== ItemType::Calls) {
                 $result[] = $value;
                 continue;
             }
@@ -115,7 +117,8 @@ class Receipt extends PaymentDocument
                     sprintf(_("Call to: %s, duration: %s"), $call['calledstation'], $duration),
                     $call["sessionbill"],
                     $call['starttime'],
-                    true // what does true mean? original code was just copied from invoice.php including fields that don't exist here :(
+                    ItemType::Calls,
+                    $call["id"]
                 );
                 $result[] = $item;
             }

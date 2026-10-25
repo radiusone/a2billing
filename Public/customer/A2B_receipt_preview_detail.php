@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Customer;
+use A2billing\Payments\Enums\ItemType;
 use A2billing\Payments\ReceiptItem;
 use Illuminate\Database\Query\Builder;
 
@@ -69,10 +70,12 @@ function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb =
         ->get();
     foreach ($return_calls as $call) {
         $result[] = ReceiptItem::create(
-            null,
+            0,
             sprintf(_("Call to %s for %s"), format_phone_number($call['calledstation']), get_timespan($call["sessiontime"])),
             floatval($call["sessionbill"]),
             $call["itemdate"],
+            ItemType::Calls,
+            $call["id"],
         );
     }
 
@@ -83,11 +86,11 @@ function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb =
         ->get();
     foreach ($return_charges as $charge) {
         $result[] = ReceiptItem::create(
-            null,
+            0,
             sprintf(_("Charge: %s"), $charge['description']),
             $charge['itemdate'],
             floatval($charge['amount']),
-            'CHARGE'
+            ItemType::Charge
         );
     }
     //sort r�sult by date

@@ -2,6 +2,8 @@
 
 namespace A2billing\Payments;
 
+use A2billing\Payments\Enums\ItemType;
+
 abstract class PaymentDocumentItem
 {
     public ?int $id = null;
@@ -16,7 +18,7 @@ abstract class PaymentDocumentItem
 
     public ?int $id_ext = null;
 
-    public ?string $type_ext = null;
+    public ItemType $type_ext = ItemType::Other;
 
     use Database;
 
@@ -55,7 +57,7 @@ abstract class PaymentDocumentItem
         return substr($this->date, 0, 10);
     }
 
-    public function getExtType(): ?string
+    public function getExtType(): ItemType
     {
         return $this->type_ext;
     }

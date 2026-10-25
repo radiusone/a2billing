@@ -5,6 +5,7 @@ use A2billing\A2Billing;
 use A2billing\A2bMailException;
 use A2billing\Connection;
 use A2billing\Mail;
+use A2billing\Payments\Enums\ItemType;
 use A2billing\Payments\Invoice;
 use A2billing\ProcessHandler;
 use Illuminate\Database\Query\Builder;
@@ -287,7 +288,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                             "vat" => $vat,
                             "description" => $description,
                             "id_ext" => $subscription["card_subscription_id"],
-                            "type_ext" => "SUBSCR"
+                            "type_ext" => ItemType::Subscription
                         ];
                         if ($verbose_level >= 1) {
                             echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
