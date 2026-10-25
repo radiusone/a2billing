@@ -15,7 +15,7 @@ class Input extends EditElement
 
     /**
      * @param string $label The label text
-     * @param string $name The form input name
+     * @param string $column The database column, used to create the form input name
      * @param string $help_text Text to display below the form input
      * @param array<string,mixed> $attributes HTML attributes for the input
      * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
@@ -23,11 +23,10 @@ class Input extends EditElement
      * @param string $check_empty If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
      * @param string|null $default When adding (not editing), the value of the input
      * @param callable(string):string|null $callback A callback to run the value through before displaying it
-     * @return void
      */
     public function __construct(
         string $label,
-        string $name,
+        string $column,
         string $help_text = "",
         array $attributes = [],
         mixed $validator = null,
@@ -37,8 +36,9 @@ class Input extends EditElement
         protected mixed $callback = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
     {
+        $this->column = $column;
         $this->label = $label;
-        $this->name = $name;
+        $this->name = $this->sanitizeColumn();
         $this->help_text = $help_text;
         $this->attributes = $attributes;
         $this->validator = $validator;

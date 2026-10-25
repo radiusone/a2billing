@@ -2,9 +2,8 @@
 
 namespace A2billing\Forms\Elements;
 
-abstract class SearchElement
+abstract class SearchElement extends Element
 {
-    public string $column;
     protected string $label = "";
     protected string $default = "";
     protected array $attributes = [];
@@ -27,24 +26,6 @@ abstract class SearchElement
             $this->column,
             htmlspecialchars($this->label)
         );
-    }
-
-    /**
-     * @param string[]|string|null $col
-     * @return ($col is array ? array : string)
-     */
-    public function sanitizeColumn(array|string|null $col = null): array|string
-    {
-        return str_replace(".", "^^", $col ?? $this->column);
-    }
-
-    /**
-     * @param string[]|string|null $col
-     * @return ($col is array ? array : string)
-     */
-    public function normalizeColumn(array|string|null $col = null): array|string
-    {
-        return str_replace("^^", ".", $col ?? $this->column);
     }
 
     abstract protected function renderElement(array $data): string;

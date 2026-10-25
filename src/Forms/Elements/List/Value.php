@@ -16,6 +16,7 @@ class Value extends ListElement
     public function __construct(string|Expression $column, string $header, bool $sortable = true, callable|null $callback = null, array $args = [])
     {
         $this->column = $column;
+        $this->sanitizeColumn();
         $this->header = $header;
         $this->sortable = $sortable;
         $this->callback = $callback;

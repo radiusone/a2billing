@@ -9,7 +9,7 @@ class SqlSelect extends Select
 {
     /**
      * @param string $label The label text
-     * @param string $name The form input name
+     * @param string $column The database column, used to create the form input name
      * @param Builder $builder The table to check
      * @param string|int $default When adding (not editing), the value of the selected item
      * @param array $first_option array containing a value and label (k/v) for the first options in the list
@@ -24,7 +24,7 @@ class SqlSelect extends Select
      */
     public function __construct(
         string $label,
-        string $name,
+        string $column,
         Builder $builder,
         string|int $default = "",
         array $first_option = [],
@@ -44,7 +44,7 @@ class SqlSelect extends Select
 
         parent::__construct(
             $label,
-            $name,
+            $column,
             $options,
             $default,
             $help_text,

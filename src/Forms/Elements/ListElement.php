@@ -4,9 +4,8 @@ namespace A2billing\Forms\Elements;
 
 use Illuminate\Database\Query\Expression;
 
-abstract class ListElement
+abstract class ListElement extends Element
 {
-    public string|Expression $column = "";
     public string $header = "";
     public bool $sortable = false;
 

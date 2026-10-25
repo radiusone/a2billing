@@ -10,7 +10,6 @@ use A2billing\Forms\Elements\Edit\HasMany;
  * @var array $list
  * @var array $db_data
  */
-
 ?>
 <form action="" method="post" name="myForm" id="editForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
@@ -25,7 +24,7 @@ use A2billing\Forms\Elements\Edit\HasMany;
         <?php if ($row instanceof HasMany): ?>
         <?= $row->render($i, $processed["id"]) ?>
         <?php else: ?>
-        <?= $row->render($i, $form->all_fields_valid ? $db_data[$i] ?? null : $processed[$row->name] ?? null) ?>
+        <?= $row->render($i, $form->all_fields_valid ? $db_data[$row->name] ?? null : $processed[$row->name] ?? null) ?>
         <?php endif ?>
     <?php endforeach ?>
 

@@ -6,7 +6,7 @@ class Popup extends Input
 {
     /**
      * @param string $label The label text
-     * @param string $name The form input name
+     * @param string $column The database column, used to create the form input name
      * @param string $url The address of the popup
      * @param string $help_text Text to display below the form input
      * @param array $attributes HTML attributes for the input
@@ -16,7 +16,7 @@ class Popup extends Input
      */
     public function __construct(
         string $label,
-        string $name,
+        string $column,
         protected string $url,
         string $help_text = "",
         array $attributes = [],
@@ -24,7 +24,7 @@ class Popup extends Input
         string $error = "",
     )
     {
-        parent::__construct($label, $name, $help_text, $attributes, $validator, $error);
+        parent::__construct($label, $column, $help_text, $attributes, $validator, $error);
     }
 
     protected function renderElement(): string

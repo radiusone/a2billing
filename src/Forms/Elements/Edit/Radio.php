@@ -8,7 +8,7 @@ class Radio extends EditElement
 {
     /**
      * @param string $label The label text
-     * @param string $name The form input name
+     * @param string $column The database column, used to create the form input name
      * @param array $options An array of labels (indexed by value) to build radio buttons
      * @param string $default When adding (not editing), the value of the selected item
      * @param string $help_text Text to display below the form input
@@ -18,7 +18,7 @@ class Radio extends EditElement
      */
     public function __construct(
         string $label,
-        string $name,
+        string $column,
         public array $options,
         mixed $default,
         string $help_text,
@@ -26,8 +26,9 @@ class Radio extends EditElement
         string $error,
     )
     {
+        $this->column = $column;
         $this->label = $label;
-        $this->name = $name;
+        $this->name = $this->sanitizeColumn();
         $this->default = $default;
         $this->help_text = $help_text;
         $this->attributes = $attributes;

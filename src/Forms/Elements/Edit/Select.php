@@ -15,7 +15,7 @@ class Select extends EditElement
 
     /**
      * @param string $label The label text
-     * @param string $name The form input name
+     * @param string $column The database column, used to create the form input name
      * @param array $options An array of options to build the select element with
      * @param string|int $default When adding (not editing) the value of the selected item
      * @param string $help_text Text to display below the form input
@@ -27,7 +27,7 @@ class Select extends EditElement
      */
     public function __construct(
         string $label,
-        string $name,
+        string $column,
         public iterable $options,
         string|int $default = "",
         string $help_text = "",
@@ -37,8 +37,9 @@ class Select extends EditElement
         mixed $validator = null,
     )
     {
+        $this->column = $column;
         $this->label = $label;
-        $this->name = $name;
+        $this->name = $this->sanitizeColumn();
         $this->default = $default;
         $this->help_text = $help_text;
         $this->attributes = $attributes;

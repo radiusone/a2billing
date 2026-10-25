@@ -5,7 +5,7 @@ namespace A2billing\Forms\Elements;
 /**
  * @template-covariant TValue
  */
-abstract class EditElement
+abstract class EditElement extends Element
 {
     /** @var string The label text */
     public string $label;

@@ -12,14 +12,15 @@ class DayTime extends EditElement
      */
     public function __construct(
         string $label,
-        string $name,
+        string $column,
         string $help_text = "",
         string $default = "",
         string $error = "",
     )
     {
+        $this->column = $column;
         $this->label = $label;
-        $this->name = $name;
+        $this->name = $this->sanitizeColumn();
         $this->help_text = $help_text;
         $this->default = $default;
         $this->error = $error;

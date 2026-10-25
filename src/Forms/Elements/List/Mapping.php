@@ -12,6 +12,7 @@ class Mapping extends ListElement
     public function __construct(string $column, string $header, protected array|ArrayAccess $options, bool $sortable = true)
     {
         $this->column = $column;
+        $this->sanitizeColumn();
         $this->header = $header;
         $this->sortable = $sortable;
     }
