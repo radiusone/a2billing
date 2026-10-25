@@ -15,7 +15,11 @@ abstract class ListButton
         return preg_replace_callback(
             "/\\|([\w.]+)\\|/i",
             fn ($m) => $row[$m[1]] ?? "",
-            str_replace("|param|", $id, $string)
+            str_replace(
+                "|param|",
+                $id,
+                str_ends_with($string, "id=") ? "$string$id" : $string
+            )
         );
     }
 
