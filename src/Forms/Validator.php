@@ -61,8 +61,8 @@ class Validator
     public static function date(string $value): bool|string
     {
         return (
-            preg_match("/^(19|20)[0-9]{2}(\\b)(0[1-9]|1[0-2])\\2(0[1-9]|[12][0-9]|3[01])$/", $value, $m)
-            && \DateTime::createFromFormat("Y-m-d", "$m[1]-$m[3]-$m[4]")
+            preg_match("/^(19|20[0-9]{2})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/", $value, $m)
+            && \DateTime::createFromFormat("Y-m-d", "$m[1]-$m[2]-$m[3]")
         )
             ?: _("(must be a date in YYYY-MM-DD format)");
     }

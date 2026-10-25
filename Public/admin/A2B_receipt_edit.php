@@ -66,7 +66,7 @@ $receipt = new Receipt((int)$id);
 switch ($action) {
     case "add":
     case "update":
-        if (Validator::dateTime($date) !== true) {
+        if (Validator::date($date) !== true && Validator::dateTime($date) !== true) {
             $error_msg .= _("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).");
         }
         if (Validator::number($price) !== true) {

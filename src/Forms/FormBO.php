@@ -27,10 +27,10 @@ class FormBO
     /**
      * Run before DID deletion
      *
-     * @param numeric-string|int $did_id
+     * @param int|numeric-string $did_id
      * @return void
      */
-    public static function is_did_in_use($did_id)
+    public static function is_did_in_use(int|string $did_id): void
     {
         $form = FormHandler::GetInstance();
         $id_cc_card = Connection::getConnection("cc_did_use")
@@ -63,10 +63,10 @@ class FormBO
     /**
      * Run after DID deletion
      *
-     * @param numeric-string|int $did_id
+     * @param int|numeric-string $did_id
      * @return void
      */
-    public static function did_use_delete($did_id): void
+    public static function did_use_delete(int|string $did_id): void
     {
         Connection::getConnection("cc_did_use")
             ->where(["id_did" => $did_id, "releasedate" => null])
@@ -77,10 +77,10 @@ class FormBO
     /**
      * Run after DID creation
      *
-     * @param numeric-string|int $did_id
+     * @param int|numeric-string $did_id
      * @return void
      */
-    public static function add_did_use($did_id)
+    public static function add_did_use(int|string $did_id): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -111,10 +111,10 @@ class FormBO
     /**
      * Run after ticket creation
      *
-     * @param numeric-string|int $ticket_id
+     * @param int|numeric-string $ticket_id
      * @return void
      */
-    public static function ticket_add($ticket_id): void
+    public static function ticket_add(int|string $ticket_id): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -201,7 +201,7 @@ class FormBO
      *
      * @return void
      */
-    public static function add_agent_refill()
+    public static function add_agent_refill(): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -217,10 +217,10 @@ class FormBO
     /**
      * Run after creation of an agent
      *
-     * @param numeric-string|int $agent_id
+     * @param int|numeric-string $agent_id
      * @return void
      */
-    public static function creation_agent_refill($agent_id)
+    public static function creation_agent_refill(int|string $agent_id): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -236,11 +236,11 @@ class FormBO
     /**
      * Run after user self-signup
      *
-     * @param numeric-string|int $id_card
+     * @param int|numeric-string $id_card
      * @return void
      * @throws A2bMailException
      */
-    public static function processing_card_signup($id_card)
+    public static function processing_card_signup(int|string $id_card): void
     {
         global $A2B;
 
@@ -332,7 +332,7 @@ class FormBO
             $mail -> replaceInEmail(Mail::$SUBSCRIPTION_LABEL,$product_name);
             try {
                 $mail -> send();
-            } catch (A2bMailException $e) {
+            } catch (A2bMailException) {
             }
         }
 
@@ -350,10 +350,10 @@ class FormBO
     /**
      * Run after agent commission added
      *
-     * @param numeric-string|int $agent_commission_id
+     * @param int|numeric-string $agent_commission_id
      * @return void
      */
-    public static function processing_commission_add($agent_commission_id)
+    public static function processing_commission_add(int|string $agent_commission_id): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -379,10 +379,10 @@ class FormBO
     /**
      * Run after card creation by admin
      *
-     * @param numeric-string|int $card_id
+     * @param int|numeric-string $card_id
      * @return void
      */
-    public static function processing_card_add($card_id)
+    public static function processing_card_add(int|string $card_id): void
     {
         self::create_sipiax_friends($card_id);
 
@@ -402,10 +402,10 @@ class FormBO
     /**
      * Run after card deleted by agent
      *
-     * @param numeric-string|int $card_id
+     * @param int|numeric-string $card_id
      * @return void
      */
-    public static function processing_card_del_agent($card_id)
+    public static function processing_card_del_agent(int|string $card_id): void
     {
         $credit = Connection::getConnection("cc_card")
             ->where("id", $card_id)
@@ -462,10 +462,10 @@ class FormBO
     /**
      * Run after card creation by agent
      *
-     * @param numeric-string|int $card_id
+     * @param int|numeric-string $card_id
      * @return void
      */
-    public static function processing_card_add_agent($card_id)
+    public static function processing_card_add_agent(int|string $card_id): void
     {
         self::create_sipiax_friends($card_id);
         self::create_lock_card($card_id);
@@ -475,7 +475,7 @@ class FormBO
      * Run after refill created
      * @return void
      */
-    public static function processing_refill_add()
+    public static function processing_refill_add(): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -513,7 +513,7 @@ class FormBO
      *
      * @return void
      */
-    public static function did_destination_add()
+    public static function did_destination_add(): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -571,10 +571,10 @@ class FormBO
      * Run after DID destination deletion
      * Release a DID and set the DID use correctly
      *
-     * @param numeric-string|int $did_destination_id
+     * @param int|numeric-string $did_destination_id
      * @return void
      */
-    public static function did_destination_del($did_destination_id)
+    public static function did_destination_del(int|string $did_destination_id): void
     {
         $row = Connection::getConnection("cc_did_destination AS t1", "t1.id_cc_did AS did_id")
             ->selectRaw("COUNT(*) AS destination_count")
@@ -603,11 +603,11 @@ class FormBO
     /**
      * Run after creating a recurring billing item
      *
-     * @param numeric-string|int $new_billing
+     * @param int|numeric-string $new_billing
      * @return void
      * @throws A2bMailException
      */
-    public static function proccessing_billing_customer($new_billing)
+    public static function proccessing_billing_customer(int|string $new_billing): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -764,10 +764,10 @@ class FormBO
      * Run after invoice creation
      * Adds a reference number to the invoice
      *
-     * @param numeric-string|int $id_invoice
+     * @param int|numeric-string $id_invoice
      * @return void
      */
-    public static function create_invoice_reference($id_invoice)
+    public static function create_invoice_reference(int|string $id_invoice): void
     {
         //CREATE AND UPDATE REF NUMBER
         $reference = Invoice::generateReference();
@@ -779,10 +779,10 @@ class FormBO
     /**
      * Run after a payment is made
      *
-     * @param numeric-string|int $id_payment
+     * @param int|numeric-string $id_payment
      * @return void
      */
-    public static function create_refill_after_payment($id_payment)
+    public static function create_refill_after_payment(int|string $id_payment): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -886,10 +886,10 @@ class FormBO
     /**
      * Run after an agent refill is created
      *
-     * @param numeric-string|int $id_payment
+     * @param int|numeric-string $id_payment
      * @return void
      */
-    public static function create_agent_refill($id_payment)
+    public static function create_agent_refill(int|string $id_payment): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -921,10 +921,10 @@ class FormBO
     }
 
     /**
-     * @param numeric-string|int $card_id
+     * @param int|numeric-string $card_id
      * @return void
      */
-    public static function create_sipiax_friends($card_id)
+    public static function create_sipiax_friends(int|string $card_id): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -951,9 +951,10 @@ class FormBO
     }
 
     /**
+     * @param int|numeric-string $card_id
      * @return void
      */
-    public static function create_sipiax_friends_reload($card_id)
+    public static function create_sipiax_friends_reload(int|string $card_id): void
     {
         self::create_sipiax_friends($card_id);
 
@@ -972,10 +973,10 @@ class FormBO
      * Run after card creation
      * Updates the lock date if card was created locked
      *
-     * @param numeric-string|int $card_id
+     * @param int|numeric-string $card_id
      * @return void
      */
-    public static function create_lock_card($card_id)
+    public static function create_lock_card(int|string $card_id): void
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();

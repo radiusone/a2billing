@@ -680,12 +680,11 @@ function array_html_attr(array $attributes): string
     return trim($return);
 }
 
-function abbr(string $content, string $title, string $class = ""): string
+function abbr(string $content, string $title): string
 {
     return sprintf(
-        "<abbr title=\"%s\" class=\"%s\">%s</abbr>",
+        "<abbr title=\"%s\">%s</abbr>",
         htmlspecialchars($title),
-        htmlspecialchars($class),
         htmlspecialchars($content)
     );
 }

@@ -123,11 +123,11 @@ if (!isset($group_id) && $report_type == 1) {
 SELECT
     id, name, call_count, time_minutes, toll_free_buy_cost, pay_phone_buy_cost, orig_only, credits, orig_total,
     toll_free_sell_cost, pay_phone_sell_cost, term_only, charges, term_total, first_use, discount, net_revenue, 
-    net_revenue - orig_total AS profit, (net_revenue - orig_total) / net_revenue * 100 AS margin
+    net_revenue - orig_total AS profit, CASE WHEN net_revenue = 0 THEN 0 ELSE (net_revenue - orig_total) / net_revenue * 100 END AS margin
 FROM (
     SELECT
         main_id AS id, name, call_count, time_minutes, toll_free_buy_cost, pay_phone_buy_cost, orig_only,
-        credits,orig_cost+credits AS orig_total, toll_free_sell_cost, pay_phone_sell_cost, term_only, charges,
+        credits,orig_cost + credits AS orig_total, toll_free_sell_cost, pay_phone_sell_cost, term_only, charges,
         term_cost + charges AS term_total, first_use, discount, ((term_cost + charges)) * (1 - discount / 100) AS net_revenue
     FROM (
         SELECT
@@ -144,7 +144,7 @@ FROM (
                 SUM(CASE WHEN toll_free = 0 THEN 0 ELSE real_sessiontime / 60 * tf_sell_cost END) AS toll_free_sell_cost,
                 SUM(CASE WHEN pay_phone = 0 THEN 0 ELSE real_sessiontime / 60 * tf_sell_cost END) AS pay_phone_sell_cost,
                 SUM(sessionbill) AS term_cost,
-                SUM(discount * sessionbill) / SUM(sessionbill) AS discount
+                CASE WHEN SUM(sessionbill) = 0 THEN 0 ELSE SUM(discount * sessionbill) / SUM(sessionbill) END AS discount
             FROM (
                 SELECT
                     cc.id_group, cdr.sessiontime, cdr.dnid, cdr.real_sessiontime, sessionbill, buycost,
@@ -190,11 +190,11 @@ SQL;
 SELECT
     id, name, call_count, time_minutes, toll_free_buy_cost, pay_phone_buy_cost, orig_only, credits, orig_total,
     toll_free_sell_cost, pay_phone_sell_cost, term_only, charges, term_total, first_use, discount, net_revenue, 
-    net_revenue - orig_total AS profit, (net_revenue - orig_total) / net_revenue * 100 AS margin
+    net_revenue - orig_total AS profit, CASE WHEN net_revenue = 0 THEN 0 ELSE (net_revenue - orig_total) / net_revenue * 100 END AS margin
 FROM (
     SELECT
         main_id AS id, name, call_count, time_minutes, toll_free_buy_cost, pay_phone_buy_cost, orig_only,
-        credits,orig_cost+credits AS orig_total, toll_free_sell_cost, pay_phone_sell_cost, term_only, charges,
+        credits,orig_cost + credits AS orig_total, toll_free_sell_cost, pay_phone_sell_cost, term_only, charges,
         term_cost + charges AS term_total, first_use, discount, ((term_cost + charges)) * (1 - discount / 100) AS net_revenue
     FROM (
         SELECT
@@ -211,7 +211,7 @@ FROM (
                 SUM(CASE WHEN toll_free = 0 THEN 0 ELSE real_sessiontime / 60 * tf_sell_cost END) AS toll_free_sell_cost,
                 SUM(CASE WHEN pay_phone = 0 THEN 0 ELSE real_sessiontime / 60 * tf_sell_cost END) AS pay_phone_sell_cost,
                 SUM(sessionbill) AS term_cost,
-                SUM(discount * sessionbill) / SUM(sessionbill) AS discount
+                CASE WHEN SUM(sessionbill) = 0 THEN 0 ELSE SUM(discount * sessionbill) / SUM(sessionbill) END AS discount
             FROM (
                 SELECT
                     cdr.id_tariffgroup, cdr.sessiontime, cdr.dnid, cdr.real_sessiontime, sessionbill, buycost,
@@ -256,11 +256,11 @@ SQL;
 SELECT
     id, name, call_count, time_minutes, toll_free_buy_cost, pay_phone_buy_cost, orig_only, credits, orig_total,
     toll_free_sell_cost, pay_phone_sell_cost, term_only, charges, term_total, first_use, discount, net_revenue, 
-    net_revenue - orig_total AS profit, (net_revenue - orig_total) / net_revenue * 100 AS margin
+    net_revenue - orig_total AS profit, CASE WHEN net_revenue = 0 THEN 0 ELSE (net_revenue - orig_total) / net_revenue * 100 END AS margin
 FROM (
     SELECT
         main_id AS id, name, call_count, time_minutes, toll_free_buy_cost, pay_phone_buy_cost, orig_only,
-        credits,orig_cost+credits AS orig_total, toll_free_sell_cost, pay_phone_sell_cost, term_only, charges,
+        credits,orig_cost + credits AS orig_total, toll_free_sell_cost, pay_phone_sell_cost, term_only, charges,
         term_cost + charges AS term_total, first_use, discount, ((term_cost + charges)) * (1 - discount / 100) AS net_revenue
     FROM (
         SELECT
@@ -277,7 +277,7 @@ FROM (
                 SUM(CASE WHEN toll_free = 0 THEN 0 ELSE real_sessiontime / 60 * tf_sell_cost END) AS toll_free_sell_cost,
                 SUM(CASE WHEN pay_phone = 0 THEN 0 ELSE real_sessiontime / 60 * tf_sell_cost END) AS pay_phone_sell_cost,
                 SUM(sessionbill) AS term_cost,
-                SUM(discount * sessionbill) / SUM(sessionbill) AS discount
+                CASE WHEN SUM(sessionbill) = 0 THEN 0 ELSE SUM(discount * sessionbill) / SUM(sessionbill) END AS discount
             FROM (
                 SELECT
                     cdr.destination, cdr.sessiontime, cdr.dnid, cdr.real_sessiontime, sessionbill, buycost,

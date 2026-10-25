@@ -85,10 +85,10 @@ if (!is_customer()) {
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 if (is_customer()) {
-    $HD_Form->AddListValue(_("Description"), "description");
+    $HD_Form->AddListValue(_("Description"), "cc_logpayment.description");
 } else {
     $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
-    $HD_Form->AddListValue(_("Refill"), "id_logrefill", "get_refill_link");
+    $HD_Form->AddListValue(_("Refill"), Connection::getConnection()->raw("IFNULL(id_logrefill, 0) AS logrefill"), "get_refill_link");
 
     $HD_Form->AddListFilter("username", _("Account number"));
 }
@@ -143,7 +143,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
 
     $HD_Form->AddEditTextarea(
         _("DESCRIPTION"),
-        "description",
+        "cc_logpayment.description",
         "",
         ["rows" => 4],
         _("Insert the description")
