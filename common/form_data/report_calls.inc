@@ -100,6 +100,10 @@ $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Currency"), false, "choose
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choose_timeunit", [["min", _("Minutes")], ["sec", _("Seconds")]]];
  */
 
+if (is_admin()) {
+    $HD_Form->exportColumns();
+}
+
 $HD_Form->prepare_list_subselection("list");
 if (empty($HD_Form->query_builder->wheres)) {
     $HD_Form->query_builder

@@ -253,6 +253,44 @@ if (!$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::all
     $HD_Form->AddListDeleteButton();
 }
 
+if (is_admin()) {
+    $export_columns = array_map(
+        fn ($v) => "`cc_card`.`" . preg_replace("/\W/", "", $v) . "`",
+        explode(",", $A2B->config['webui']['card_export_field_list'] ?? "")
+    );
+    $HD_Form->exportColumns($export_columns);
+}
+
+$HD_Form->SetSearchType(true, false, true, _("Define specific criteria to search for cards created."));
+$HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
+$HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
+$HD_Form->AddSearchTextInput(_("Account number"), "username");
+$HD_Form->AddSearchTextInput(_("Email"), "cc_card.email");
+$HD_Form->AddSearchTextInput(_("Last name"), "cc_card.lastname");
+$HD_Form->AddSearchTextInput(_("First name"), "cc_card.firstname");
+$HD_Form->AddSearchTextInput(_("Login"), "useralias");
+$HD_Form->AddSearchTextInput(_("Company"), "company_name");
+$HD_Form->AddSearchComparisonInput(_("Customer ID"), "cc_card.id");
+$HD_Form->AddSearchComparisonInput(_("Serial"), "serial");
+$HD_Form->AddSearchComparisonInput(_("Balance"), "cc_card.credit");
+$HD_Form->AddSearchComparisonInput(_("In use"), "inuse");
+
+$HD_Form->AddSearchSqlSelectInput(_("Card series"), "id_seria", Connection::getConnection("cc_card_seria", "name", "id"));
+$HD_Form->AddSearchSelectInput(_("Language"), "cc_card.language", $language_list);
+$HD_Form->AddSearchSqlSelectInput(_("Call plan"), "tariff", Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"));
+$HD_Form->AddSearchSelectInput(_("Status"), "status", $cardstatus_list);
+$HD_Form->AddSearchSelectInput(_("Access"), "simultaccess", $simultaccess_list);
+$HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", Connection::getConnection("cc_card_group", "name", "id"));
+$HD_Form->AddSearchSelectInput(_("Currency"), "cc_card.currency", getCurrenciesList());
+$HD_Form->AddSearchSelectInput(_("Account type"), "typepaid", $typepaid_list);
+$HD_Form->AddSearchSqlSelectInput(
+    _("Agent"),
+    "id_agent",
+    Connection::getConnection("cc_agent")
+        ->selectRaw("CONCAT(firstname, ' ', lastname) AS agentname")
+        ->addSelect("id")
+);
+
 if ($popup_select) {
     // popup window
     switch ($popup_select) {
@@ -262,36 +300,6 @@ if ($popup_select) {
         case 3: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|', '|username|', 'accountcode')"); break;
     }
 } elseif ($form_action === "list") {
-    $HD_Form->SetSearchType(true, false, true, _("Define specific criteria to search for cards created."));
-    $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
-    $HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
-    $HD_Form->AddSearchTextInput(_("Account number"), "username");
-    $HD_Form->AddSearchTextInput(_("Email"), "cc_card.email");
-    $HD_Form->AddSearchTextInput(_("Last name"), "cc_card.lastname");
-    $HD_Form->AddSearchTextInput(_("First name"), "cc_card.firstname");
-    $HD_Form->AddSearchTextInput(_("Login"), "useralias");
-    $HD_Form->AddSearchTextInput(_("Company"), "company_name");
-    $HD_Form->AddSearchComparisonInput(_("Customer ID"), "cc_card.id");
-    $HD_Form->AddSearchComparisonInput(_("Serial"), "serial");
-    $HD_Form->AddSearchComparisonInput(_("Balance"), "cc_card.credit");
-    $HD_Form->AddSearchComparisonInput(_("In use"), "inuse");
-
-    $HD_Form->AddSearchSqlSelectInput(_("Card series"), "id_seria", Connection::getConnection("cc_card_seria", "name", "id"));
-    $HD_Form->AddSearchSelectInput(_("Language"), "cc_card.language", $language_list);
-    $HD_Form->AddSearchSqlSelectInput(_("Call plan"), "tariff", Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"));
-    $HD_Form->AddSearchSelectInput(_("Status"), "status", $cardstatus_list);
-    $HD_Form->AddSearchSelectInput(_("Access"), "simultaccess", $simultaccess_list);
-    $HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", Connection::getConnection("cc_card_group", "name", "id"));
-    $HD_Form->AddSearchSelectInput(_("Currency"), "cc_card.currency", getCurrenciesList());
-    $HD_Form->AddSearchSelectInput(_("Account type"), "typepaid", $typepaid_list);
-    $HD_Form->AddSearchSqlSelectInput(
-        _("Agent"),
-        "id_agent",
-        Connection::getConnection("cc_agent")
-            ->selectRaw("CONCAT(firstname, ' ', lastname) AS agentname")
-            ->addSelect("id")
-    );
-
     $HD_Form->AddListInfoButton("A2B_info_card.php?id=");
 
     if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {

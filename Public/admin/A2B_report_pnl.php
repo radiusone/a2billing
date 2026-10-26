@@ -368,12 +368,8 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_toppage ($form_action);
-$HD_Form->setup_export(
-    "pr_export_pnl_report",
-    false,
-    false,
-    // todo: this is broken for now because it's using a temp table
-);
+// todo: this is broken for now because it's using a temp table
+//$HD_Form->setup_export();
 $HD_Form->create_form($form_action, $list) ;
 
 // create the totals row

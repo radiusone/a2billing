@@ -24,6 +24,9 @@ use A2billing\Forms\Elements\List\SqlMapping;
 use A2billing\Forms\Elements\List\Value;
 use A2billing\Forms\Elements\Search;
 use A2billing\Logger;
+use DateTime;
+use DOMDocument;
+use DOMException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Collection;
@@ -91,14 +94,8 @@ class FormHandler
     /** @var int Number of rows in the current list view */
     public int $FG_LIST_VIEW_ROW_COUNT = 0;
 
-    /** @var bool Whether to enable a CSV export button at the bottom of a list view */
-    public bool $export_enable_csv = false;
-
-    /** @var bool Whether to enable an XML export button at the bottom of a list view */
-    public bool $export_enable_xml = false;
-
-    /** @var string A session variable used to hold export info */
-    public string $export_session_key = "export_data";
+    /** @var string[] $exportColumns */
+    public array $exportColumns = [];
 
     /** @var bool if false, edit or ask-edit action is not allowed */
     public bool $allowEdits = false;
@@ -1136,6 +1133,12 @@ class FormHandler
             case "delete":
                 $this->perform_delete();
                 break;
+            case "export-csv":
+                $this->exportData("csv");
+                break;
+            case "export-xml":
+                $this->exportData("xml");
+                break;
         }
 
         $processed = $this->getProcessed();
@@ -1903,31 +1906,102 @@ class FormHandler
     }
 
     /**
-     * Prepare session variables that will be checked by export code
-     * This must be run after FormHandler::prepare_list_subselection which
-     * sets up the condition and order properties
-     *
-     * @param string $session_key
-     * @param bool $export_csv
-     * @param bool $export_xml
-     * @param array|null $columns
+     * @param string[] $columns
      * @return void
      */
-    public function setup_export(
-        string $session_key,
-        bool $export_csv = true,
-        bool $export_xml = true,
-        ?array $columns = null
-    ): void
+    public function exportColumns(array $columns = ["*"]): void
     {
-        $this->export_session_key = $session_key;
-        $this->export_enable_csv = $export_csv;
-        $this->export_enable_xml = $export_xml;
-        $column = implode(", ", $columns ?? ["*"]);
-        $qb = $this->cloneQueryBuilder(joins: true);
-        $qb->columns = null;
-        $sql = $qb->selectRaw($column)->toRawSql();
-        $_SESSION[$this->export_session_key] = $sql;
+        if ($columns !== ["*"]) {
+            $table = $this->query_builder->from;
+            $table_cols = array_column(
+                Connection::getConnection()->getSchemaBuilder()->getColumns($table),
+                "name",
+            );
+            $table_cols = array_map(
+                fn ($v) => "`cc_card`.`" . preg_replace("/\W/", "", $v) . "`",
+                $table_cols
+            );
+            $columns = array_intersect($table_cols, $columns);
+        }
+        $this->exportColumns = $columns;
+    }
+
+    public function exportData(string $filetype): never
+    {
+        $this->prepare_list_subselection("list");
+        $columns = implode(", ", $this->exportColumns);
+        $qbc = $this->cloneQueryBuilder();
+        $qbc->columns = null;
+        $export_data = $qbc->selectRaw($columns)
+            ->get()
+            ->map(
+                // todo: numeric keys in result
+                fn ($row) => array_filter($row, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY)
+            );
+        if ($export_data->isEmpty()) {
+            if ($err = Connection::getConnection()->getPdo()->errorCode()) {
+                $export_data = [["error" => $err]];
+            }
+        }
+
+        $date = (new DateTime())->format("Ymd");
+        $filename = sprintf("%s dump %s.%s", $this->FG_INSTANCE_NAME, $date, $filetype);
+        header("Content-Disposition: attachment;filename=$filename");
+        if ($filetype === "csv") {
+            header("Content-Type: text/csv");
+            $h = fopen("php://output", "w");
+            foreach ($export_data as $data) {
+                fputcsv($h, $data, escape: "");
+            }
+            fclose($h);
+        } else {
+            // xml format:
+            // <data>
+            //     <header>
+            //         <column name="account"/>
+            //     </header>
+            //     <records count="1">
+            //         <row index="0">
+            //             <column name="account">1234</column>
+            //         </row>
+            //     </records>
+            // </data>
+            header("Content-Type: application/xml");
+            try {
+                $dom = new DOMDocument();
+                $data = $dom->createElement("data");
+                $head = $dom->createElement("header");
+                foreach (array_keys($export_data[0]) as $col) {
+                    $column = $dom->createElement("column");
+                    $column->setAttribute("name", $col);
+                    $head->appendChild($column);
+                }
+                $data->appendChild($head);
+                $records = $dom->createElement("records");
+                $records->setAttribute("count", strval(count($export_data)));
+                foreach ($export_data as $i => $line) {
+                    $row = $dom->createElement("row");
+                    $row->setAttribute("index", "$i");
+                    foreach ($line as $col => $value) {
+                        $column = $dom->createElement("column", $value);
+                        $column->setAttribute("name", $col);
+                        $row->appendChild($column);
+                    }
+                    $records->appendChild($row);
+                }
+                $data->appendChild($records);
+                $dom->appendChild($data);
+                $dom->formatOutput = true;
+                echo $dom->saveXML();
+            } catch (DOMException $e) {
+                printf(
+                    '<?xml version="1.0" encoding="utf-8"?><error><message>%s</message></error>',
+                    htmlspecialchars($e->getMessage())
+                );
+                exit;
+            }
+        }
+        exit;
     }
 
     /**

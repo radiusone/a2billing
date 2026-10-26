@@ -94,6 +94,14 @@ if (!is_customer()) {
     $HD_Form->AddListDeleteButton();
 }
 
+if (is_admin()) {
+    $export_columns = array_map(
+        fn ($v) => "`cc_voucher`.`" . preg_replace("/\W/", "", $v) . "`",
+        explode(",", $A2B->config['webui']['voucher_export_field_list'] ?? "")
+    );
+    $HD_Form->exportColumns($export_columns);
+}
+
 $HD_Form->AddEditElement(
     _("VOUCHER"),
     "voucher",

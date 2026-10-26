@@ -186,6 +186,21 @@ if (is_admin()) {
             ->where("id_agent", Agent::id())
     );
 }
+
+if (is_admin()) {
+    $export_columns = array_map(
+        fn ($v) => "`cc_ratecard`.`" . preg_replace("/\W/", "", $v) . "`",
+        explode(",", $A2B->config['webui']['rate_export_field_list'] ?? "")
+    );
+    if (
+        !isset($deleteselected) &&
+        ($key = array_search("`cc_ratecard`.`destination`", $export_columns)) !== false
+    ) {
+        $export_columns[$key] = "`cc_prefix`.`destination`";
+    }
+    $HD_Form->exportColumns($export_columns);
+}
+
 $HD_Form->AddEditSqlSelect(
     _("Rate Card"),
     "idtariffplan",

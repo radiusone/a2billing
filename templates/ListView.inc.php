@@ -119,20 +119,18 @@ $cols = array_keys(array_first($list ?? []) ?? []);
         ) ?>
     </div>
 
+    <?php if ($form->exportColumns): ?>
     <div class="col-3 list-export-container d-flex align-items-center justify-content-end">
-        <?php if ($form->export_enable_csv): ?>
-            <a href="export_csv.php?export_session=<?= $form->export_session_key ?>&amp;export_type=csv" target="_blank" class="mx-2 text-decoration-none">
-                <div class="bi bi-24 bi-filetype-xls text-center mb-1" aria-hidden="true"></div>
-                <?= gettext("Export CSV") ?>
-            </a>
-        <?php endif ?>
+        <a href="?form_action=export-csv" class="mx-2 text-decoration-none">
+            <div class="bi bi-24 bi-filetype-xls text-center mb-1" aria-hidden="true"></div>
+            <?= gettext("Export CSV") ?>
+        </a>
 
-        <?php if ($form->export_enable_xml): ?>
-            <a href="export_csv.php?export_session=<?= $form->export_session_key ?>&amp;export_type=xml" target="_blank" class="mx-2 text-decoration-none">
-                <div class="bi bi-24 bi-filetype-xml text-center mb-1" aria-hidden="true"></div>
-                <?= gettext("Export XML") ?>
-            </a>
-        <?php endif ?>
+        <a href="?form_action=export-xml" class="mx-2 text-decoration-none">
+            <div class="bi bi-24 bi-filetype-xml text-center mb-1" aria-hidden="true"></div>
+            <?= gettext("Export XML") ?>
+        </a>
     </div>
+    <?php endif ?>
 </div>
 <?php endif ?>

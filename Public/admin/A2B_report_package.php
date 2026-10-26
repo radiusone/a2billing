@@ -64,6 +64,7 @@ $HD_Form->SetSearchType(text: _('Define specific criteria to search for call rec
 $HD_Form->AddSearchPopupInput(_("Card ID"), "id_cc_card", "A2B_entity_card.php");
 $HD_Form->AddSearchSqlSelectInput(_("Package"), "id_cc_package_offer", Connection::getConnection("cc_package_offer", "label", "id"));
 $HD_Form->AddSearchDateInput(_("Date"), "date_consumption");
+$HD_Form->exportColumns();
 
 $form_action = "list";
 $HD_Form->prepare_list_subselection($form_action);
@@ -77,7 +78,6 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_toppage($form_action);
-$HD_Form->setup_export("pr_export_package_report");
 $HD_Form->create_form("list", $list);
 
 $list_total_day = $HD_Form->query_builder->clone()

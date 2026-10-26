@@ -100,6 +100,7 @@ $HD_Form->AddSearchTextInput(_("DNID"), "dnid");
 
 $HD_Form->AddSearchSelectInput(_("Disposition"), "terminatecauseid", $dialstatus_list);
 $HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
+$HD_Form->exportColumns();
 
 $form_action ??= "list";
 $HD_Form->prepare_list_subselection('list');
@@ -113,7 +114,6 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_toppage($form_action);
-$HD_Form->setup_export("pr_export_dnid");
 $HD_Form->create_form("list", $list);
 
 require_once __DIR__ . "/../../common/page_modules/call_graph.php";

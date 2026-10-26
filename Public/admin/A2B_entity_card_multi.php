@@ -441,16 +441,6 @@ $list_country = Connection::getConnection("cc_country")->pluck("countryname", "c
 </form>
 
 <?php
-$export_columns = array_map(
-    fn ($v) => "`cc_card`.`" . preg_replace("/\W/", "", $v) . "`",
-    explode(",", $A2B->config['webui']['card_export_field_list'] ?? "")
-);
-$HD_Form->setup_export(
-    "pr_export_entity_card",
-    is_admin(),
-    is_admin(),
-    $export_columns
-);
 $HD_Form->create_form($form_action, $list) ;
 
 require_once __DIR__ . "/templates/footer.php";

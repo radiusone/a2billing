@@ -506,22 +506,6 @@ $HD_Form->CV_FOLLOWPARAMETERS = array_filter(["package" => $package ?? ""]);
 endif;
 
 $HD_Form->create_toppage($form_action);
-$export_columns = array_map(
-    fn ($v) => "`cc_ratecard`.`" . preg_replace("/\W/", "", $v) . "`",
-    explode(",", $A2B->config['webui']['rate_export_field_list'] ?? "")
-);
-if (
-    !isset($deleteselected) &&
-    ($key = array_search("`cc_ratecard`.`destination`", $export_columns)) !== false
-) {
-    $export_columns[$key] = "`cc_prefix`.`destination`";
-}
-$HD_Form->setup_export(
-    "pr_export_entity_rates",
-    true,
-    true,
-    $export_columns
-);
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/templates/footer.php";

@@ -600,17 +600,6 @@ if ($form_action === "ask-add"):?>
 if ($form_action === "ask-edit") {
     echo get_login_button($id);
 }
-
-$export_columns = array_map(
-    fn ($v) => "`cc_card`.`" . preg_replace("/\W/", "", $v) . "`",
-    explode(",", $A2B->config['webui']['card_export_field_list'] ?? "")
-);
-$HD_Form->setup_export(
-    "pr_export_entity_card",
-    is_admin(),
-    is_admin(),
-    $export_columns
-);
 $HD_Form->create_form($form_action, $list);
 ?>
 
