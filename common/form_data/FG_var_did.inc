@@ -127,6 +127,7 @@ $HD_Form->AddEditSqlSelect(
     _("COUNTRY"),
     "country",
     Connection::getConnection("cc_country", "countryname", "countrycode")
+        ->orderBy("countryname")
 );
 
 $HD_Form->AddEditRadio(

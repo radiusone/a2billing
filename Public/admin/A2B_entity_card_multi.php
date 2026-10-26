@@ -176,7 +176,9 @@ $list_tariff = Connection::getConnection("cc_tariffgroup")->pluck("tariffgroupna
 $list_group = Connection::getConnection("cc_card_group")->pluck("name", "id");
 $list_seria = Connection::getConnection("cc_card_seria")->pluck("name", "id");
 $list_didgroup = Connection::getConnection("cc_didgroup")->pluck("didgroupname", "id");
-$list_country = Connection::getConnection("cc_country")->pluck("countryname", "countrycode");
+$list_country = Connection::getConnection("cc_country")
+    ->orderBy("countryname")
+    ->pluck("countryname", "countrycode");
 
 // FORM FOR THE GENERATION
 ?>

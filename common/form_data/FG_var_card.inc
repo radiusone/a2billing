@@ -470,7 +470,8 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("Country"),
         "country",
-        Connection::getConnection("cc_country", "countryname", "countrycode"),
+        Connection::getConnection("cc_country", "countryname", "countrycode")
+            ->orderBy("countryname"),
     );
 
     $HD_Form->AddEditElement(

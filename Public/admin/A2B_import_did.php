@@ -72,7 +72,9 @@ $assoc_csv = [];
 $import_error = "";
 
 $group_list = Connection::getConnection("cc_didgroup")->pluck("didgroupname", "id");
-$country_list = Connection::getConnection("cc_country")->pluck("countryname", "countrycode");
+$country_list = Connection::getConnection("cc_country")
+    ->orderBy("countryname")
+    ->pluck("countryname", "countrycode");
 
 if ($task) {
     $start_time = microtime(true);

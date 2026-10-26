@@ -169,7 +169,9 @@ require_once __DIR__ . "/templates/main.php";
     $list_refill_type = getRefillType_List();
     $list_refill_type[-1] = _("NO REFILL");
     ksort($list_refill_type);
-    $list_country = Connection::getConnection("cc_country")->pluck("countryname", "countrycode");
+    $list_country = Connection::getConnection("cc_country")
+        ->orderBy("countryname")
+        ->pluck("countryname", "countrycode");
 
 ?>
 

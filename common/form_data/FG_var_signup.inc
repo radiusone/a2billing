@@ -169,7 +169,8 @@ if ($A2B->config["signup"]['field_country'] ?? 0)  {
     $HD_Form->AddEditSqlSelect(
         gettext("COUNTRY"),
         "country",
-        Connection::getConnection("cc_country", "countryname", "countrycode"),
+        Connection::getConnection("cc_country", "countryname", "countrycode")
+            ->orderBy("countryname"),
     );
     $country_editFG = "country,";
 }
