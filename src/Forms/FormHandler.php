@@ -96,17 +96,8 @@ class FormHandler
     /** @var int Number of rows in the current list view */
     public int $FG_LIST_VIEW_ROW_COUNT = 0;
 
-    /** @var bool Whether to show a search popup at the top of the list view */
-    public bool $search_form_enabled = false;
-
-    /** @var string The text for the top of the search dialog */
-    public string $search_form_title = "";
-
     /** @var string The session variable that stores search values */
     public string $search_session_key = '';
-
-    /** @var bool Whether to enable a delete button on the search to allow user to remove all searched items */
-    public bool $search_delete_enabled = true;
 
     /** @var bool Whether to enable a CSV export button at the bottom of a list view */
     public bool $export_enable_csv = false;
@@ -336,7 +327,6 @@ class FormHandler
         $this->edit_message_error = sprintf(_("There was an error editing your %s."), $inst);
         $this->delete_message_error = sprintf(_("There was an error deleting your %s."), $inst);
 
-        $this->search_form_title = _("Define the search criteria");
         $this->add_message_bottom =
         $this->edit_message_bottom = sprintf(_("Click “%s” to continue"), $this->save_button_text);
         $this->delete_message_bottom = sprintf(_("Click “%s” to continue"), $this->delete_button_text);
@@ -920,6 +910,20 @@ class FormHandler
         );
     }
 
+    /**
+     * @param bool $modal if true the search form will be contained in a modal, hidden by default
+     * @param bool $button if false (and modal is true), the page renders its own modal trigger button
+     * @param bool $delete if true, the search form will include a "deleted matching items" button
+     * @param string $text sets the header text for the search form
+     * @return ListView
+     */
+    public function SetSearchType(bool $modal = false, bool $button = true, bool $delete = false, string $text = ""): self
+    {
+        $this->listView->setSearchParameters($modal, $button, $delete, $text);
+
+        return $this;
+    }
+
     public function AddListFilter(string|Expression $column, string $label): void
     {
         $this->listView->addFilterInput(
@@ -1241,7 +1245,9 @@ class FormHandler
     {
         $processed = $this->getProcessed();
 
-        if ($form_action !== "list" || (!$this->search_form_enabled && !$this->listView->getFilters())) {
+        $searches = $this->listView->getSearchElements();
+        $filters = $this->listView->getFilters();
+        if ($form_action !== "list" || (count($searches) === 0 && count($filters) === 0)) {
             return;
         }
 
@@ -1249,7 +1255,7 @@ class FormHandler
             $_SESSION[$this->search_session_key] = '';
         }
 
-        foreach ($this->listView->getFilters() as $i => $filter) {
+        foreach ($filters as $i => $filter) {
             $val = $processed["filterprefix$i"] ?? "";
             if ($val) {
                 $this->query_builder->whereLike($filter->column, "$val%");
@@ -1273,7 +1279,7 @@ class FormHandler
 
         $search = [];
 
-        foreach ($this->listView->getSearchElements() as $el) {
+        foreach ($searches as $el) {
             if ($el->local) {
                 continue;
             }
@@ -1722,33 +1728,6 @@ class FormHandler
         $msg = "$form_action " . _("Done");
         $html = "<div class='row pb-3 align-items-center' id='create_custom'><div class='col'><strong>$msg</strong></div></div>";
         echo $html;
-    }
-
-    public function create_search_form(bool $full_modal = false, bool $with_hide_button = true): void
-    {
-        if (class_exists(Console::class)) {
-            Console::logSpeed('Time taken to get to line ' . __LINE__);
-        }
-        $processed = $this->getProcessed();
-
-        echo new SearchForm($this, $processed, $full_modal, $with_hide_button);
-    }
-
-    public function create_search_button(?string $content = null): string
-    {
-        $processed = $this->getProcessed();
-        $class = "btn-outline-primary";
-        $title = sprintf(_("Search %s"), $this->FG_INSTANCE_NAME);
-        if (!empty($processed["posted_search"]) || !empty($_SESSION[$this->search_session_key])) {
-            $class = "btn-primary btn-search-active";
-            $title .= " (" . _("search activated") . ")";
-        }
-        $content = htmlspecialchars($content ?? sprintf(_("Search %s"), $this->FG_INSTANCE_NAME));
-
-        return <<< HTML
-        <button class="btn btn-sm $class" data-bs-toggle="modal" data-bs-target="#searchModal" title="$title">$content</button>
-
-        HTML;
     }
 
     /**

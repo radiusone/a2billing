@@ -128,7 +128,6 @@ if (!empty($posted)) {
     $_SESSION['search_ratecard'] = null;
 }
 
-$HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchDateInput(_("Start date"), "startdate");
 $HD_Form->AddSearchTextInput(gettext("TAG"), 'tag');
 $HD_Form->AddSearchTextInput(gettext("DESTINATION"), 'destination');
@@ -145,7 +144,6 @@ $_SESSION['search_ratecard'] = $HD_Form->query_builder;
 $list_tariffname = Connection::getConnection("cc_tariffplan")->pluck("tariffname", "id");
 
 require_once __DIR__ . "/templates/main.php";
-$HD_Form->create_search_form();
 ?>
 
 <?php if ($msgs): ?>

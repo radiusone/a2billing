@@ -96,8 +96,7 @@ if ($form_action === "list") {
 
 $HD_Form->AddListAddButton();
 $HD_Form->AddListEditButton();
-$HD_Form->search_form_enabled = true;
-$HD_Form->search_delete_enabled = false;
+$HD_Form->SetSearchType(true);
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");
 $HD_Form->AddSearchTextInput(_("Key"), "config_key");
 $HD_Form->AddSearchTextInput(_("Description"), "config_description");

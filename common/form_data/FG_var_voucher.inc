@@ -78,18 +78,17 @@ $form_action ??= "list";
 $HD_Form->AddListFilter("voucher", _("Voucher"));
 
 // Search form
-$HD_Form->search_form_enabled = !is_customer();
-$HD_Form->search_form_title = _('Define specific criteria to search for vouchers created.');
-$HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
-$HD_Form->AddSearchTextInput(_("Voucher"), "voucher");
-$HD_Form->AddSearchTextInput(_("Card number"), "usedcardnumber");
-$HD_Form->AddSearchTextInput(_("Tag"), "tag");
-$HD_Form->AddSearchComparisonInput(_("Credit"), "credit");
-
-$HD_Form->AddSearchSelectInput(_("Available"), "available", $yesno_list);
-$HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
-
 if (!is_customer()) {
+    $HD_Form->SetSearchType(true, false, true, _('Define specific criteria to search for vouchers created.'));
+    $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
+    $HD_Form->AddSearchTextInput(_("Voucher"), "voucher");
+    $HD_Form->AddSearchTextInput(_("Card number"), "usedcardnumber");
+    $HD_Form->AddSearchTextInput(_("Tag"), "tag");
+    $HD_Form->AddSearchComparisonInput(_("Credit"), "credit");
+
+    $HD_Form->AddSearchSelectInput(_("Available"), "available", $yesno_list);
+    $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
+
     $HD_Form->AddListAddButton(icon: "postcard-heart");
     $HD_Form->AddListEditButton();
     $HD_Form->AddListDeleteButton();

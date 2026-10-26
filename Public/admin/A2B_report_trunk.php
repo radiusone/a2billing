@@ -63,9 +63,8 @@ $HD_Form->AddListValue(abbr(_("ALOC"), _("Average length of call")), Connection:
 $HD_Form->AddListValue(abbr(_("CIC"), _("???")), Connection::getConnection()->raw("COUNT(cic.id) AS cic"));
 $HD_Form->AddListValue(_("Total calls"), Connection::getConnection()->raw("COUNT(cc_call.id) AS total_calls"));
 
-$HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_log_selection';
-$HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
+$HD_Form->SetSearchType(text: _('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");
 $HD_Form->AddSearchRelativeDateInput(_("Date"), "cc_call.starttime", true, false);
@@ -81,8 +80,6 @@ if (empty($HD_Form->query_builder->wheres)) {
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/templates/main.php";
-
-$HD_Form->create_search_form();
 
 // fake this since the report query is all aggregated but the conditions fetch multiple rows
 $HD_Form->FG_LIST_VIEW_PAGE_COUNT = 1;

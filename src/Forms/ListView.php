@@ -12,6 +12,7 @@ use A2billing\Forms\Elements\List\FilterInput;
 use A2billing\Forms\Elements\ListElement;
 use A2billing\Forms\Elements\Search;
 use A2billing\Forms\Elements\SearchElement;
+use PhpProfiler\Console;
 
 final class ListView
 {
@@ -23,6 +24,14 @@ final class ListView
 
     /** @var SearchElement[] */
     private array $searches = [];
+
+    private bool $searchModal = false;
+
+    private bool $searchButton = true;
+
+    private bool $searchDelete = false;
+
+    private string $searchText = "";
 
     /** @var ListElement[] */
     private array $columns = [];
@@ -40,7 +49,9 @@ final class ListView
      * @param FormHandler $form
      */
     public function __construct(readonly private FormHandler $form)
-    {}
+    {
+        $this->searchText = sprintf(_("Search %s"), $form->FG_INSTANCE_NAME);
+    }
 
     public function addFilterInput(FilterInput $input): self
     {
@@ -94,6 +105,23 @@ final class ListView
         }
     }
 
+    public function setSearchParameters(
+        bool $modal = false,
+        bool $button = true,
+        bool $delete = false,
+        string $text = "",
+    ): self
+    {
+        $this->searchModal = $modal;
+        $this->searchButton = $button;
+        $this->searchDelete = $delete;
+        if ($text) {
+            $this->searchText = $text;
+        }
+
+        return $this;
+    }
+
     public function addColumn(ListElement $column): self
     {
         $this->columns[] = $column;
@@ -139,7 +167,7 @@ final class ListView
             "current_page" => $processed["current_page"] ?? null,
             "order" => $processed["order"] ?? null,
             "sens" => $processed["sens"] ?? null,
-            "popup_select" => $processed["popup_select"] ?? null,
+            "popup_select" => $popup_select,
             "popup_formname" => $processed["popup_formname"] ?? null,
             "popup_fieldname" => $processed["popup_fieldname"] ?? null,
         ];
@@ -212,12 +240,25 @@ final class ListView
         $sort_params = $pagination_params = $query_params;
         $pagination_params["current_page"] = "%s";
 
+        $action = http_build_query(array_filter([
+            "order" => $processed["order"] ?? null,
+            "sens" => $processed["sens"] ?? null,
+            "current_page" => $processed["current_page"] ?? null,
+        ]));
+
         $hasActionButtons = (
             $this->deleteButton || $this->infoButton || $this->editButton
             || count($this->actionButtons)
         );
 
+        if (class_exists(Console::class)) {
+            Console::logSpeed('Time taken to get to line ' . __LINE__);
+        }
+
         ob_start();
+        if ($popup_select === 0 && count($this->searches)) {
+            require(__DIR__ . "/../../templates/SearchHandler.inc.php");
+        }
         require(__DIR__ . "/../../templates/ListView.inc.php");
 
         $output = ob_get_clean() ?: "Template error!";

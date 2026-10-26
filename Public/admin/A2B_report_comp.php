@@ -80,7 +80,6 @@ $graphs = [
     "revenues" => _("Revenue by hour"),
     "costs" => _("Costs by hour"),
 ];
-$HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchSingleDateInput(_("Start Date"), "starttime");
 $HD_Form->AddSearchSelectInput(_("Compare days"), "relative_days", $days, 2, false);
 $HD_Form->AddSearchPopupInput(_("Enter the customer ID"), "card_id", "A2B_entity_card.php");
@@ -92,7 +91,6 @@ $HD_Form->AddSearchTextInput(_("Called number"), "calledstation");
 $HD_Form->AddSearchTextInput(_("Source number"), "src");
 $HD_Form->AddSearchSelectInput(_("Graph type"), "graph_type", $graphs, "calls", false);
 $HD_Form->search_session_key = "A2B_report_comp";
-$HD_Form->search_delete_enabled = false;
 
 $HD_Form->prepare_list_subselection("list");
 
@@ -106,7 +104,6 @@ $HD_Form->query_builder->whereBetween("starttime", [$start, $end]);
 
 require_once __DIR__ . "/templates/main.php";
 
-$HD_Form->create_search_form();
 $HD_Form->create_toppage("list");
 
 require_once __DIR__ . "/../../common/page_modules/call_graph.php";

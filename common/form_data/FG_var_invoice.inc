@@ -126,11 +126,8 @@ $HD_Form->AddListMapping(_("STATUS"), "status", $status_list);
 $HD_Form->AddListValue(_("AMOUNT INCL VAT"), Connection::getConnection()->raw("IFNULL(total_price, 0) AS total_price"), "get_money");
 $HD_Form->AddListHiddenValue("status AS status_int");
 
-if (!$popup_select && !is_customer()) {
-    $HD_Form->search_form_enabled = true;
-    $HD_Form->search_delete_enabled = false;
-
-    $HD_Form->search_form_title = _('Define specific criteria to search for invoice created.');
+if (!is_customer()) {
+    $HD_Form->SetSearchType(true, false, false, _('Define specific criteria to search for invoice created.'));
 
     $HD_Form->AddSearchDateInput(_("CREATION DATE"), "date");
 

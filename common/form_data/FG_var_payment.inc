@@ -91,19 +91,16 @@ if (is_customer()) {
     $HD_Form->AddListValue(_("Refill"), Connection::getConnection()->raw("IFNULL(id_logrefill, 0) AS logrefill"), "get_refill_link");
 
     $HD_Form->AddListFilter("username", _("Account number"));
-}
-if (!$popup_select && !is_customer()) {
     $HD_Form->AddListInfoButton("A2B_info_payment.php?id=");
-    $HD_Form->search_form_enabled = true;
-    $HD_Form->search_session_key = "payment_cust_selection";
-    $HD_Form->search_delete_enabled = false;
-    $HD_Form->search_form_title = _("Define specific criteria to search for payments created.");
+}
+$HD_Form->search_session_key = "payment_cust_selection";
+$HD_Form->SetSearchType(text: _("Define specific criteria to search for payments created."));
 
-    $HD_Form->AddSearchDateInput(_("Date"), "date");
-    $HD_Form->AddSearchTextInput(_("Account number"), "username");
-    $HD_Form->AddSearchTextInput(_("Last name"), "lastname");
-    $HD_Form->AddSearchTextInput(_("First name"), "firstname");
-} else {
+$HD_Form->AddSearchDateInput(_("Date"), "date");
+$HD_Form->AddSearchTextInput(_("Account number"), "username");
+$HD_Form->AddSearchTextInput(_("Last name"), "lastname");
+$HD_Form->AddSearchTextInput(_("First name"), "firstname");
+if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 }
 

@@ -160,10 +160,9 @@ if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendRateToPackage('|param|')");
 } else {
     $HD_Form->AddListFilter("dialprefix", _("Dial Prefix"));
-    $HD_Form->search_form_enabled = true;
-    $HD_Form->search_delete_enabled = is_admin();
 }
 
+$HD_Form->SetSearchType(true, false, is_admin());
 // Search form
 if (!is_customer()) {
     $HD_Form->AddSearchDateInput(_("Start Date"), "startdate");

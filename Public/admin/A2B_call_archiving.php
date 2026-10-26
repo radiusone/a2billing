@@ -125,10 +125,8 @@ if ($posted_archive === true) {
     }
 }
 
-$HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_archive_selection';
-$HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
-$HD_Form->search_delete_enabled = false;
+$HD_Form->SetSearchType(text: _('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchRelativeDateInput(_("Dates"), "starttime");
 $HD_Form->AddSearchDateInput(_("Dates"), "starttime");
@@ -152,7 +150,6 @@ if ($posted_search === true && $posted_archive === false) {
 }
 
 require_once __DIR__ . "/templates/main.php";
-$HD_Form->create_search_form();
 
 if ($archive_message) {
     print "<div class='row'><div class='col text-center'>$archive_message</div></div>";

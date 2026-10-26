@@ -34,7 +34,6 @@ $months = array_combine(
         range(1, 12)
     )
 );
-$HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchSingleDateInput(_("Start Date"), "starttime");
 $HD_Form->AddSearchSelectInput(_("Compare months"), "relative_months", $months, 2, false);
 $HD_Form->AddSearchPopupInput(_("Enter the customer ID"), "card_id", "A2B_entity_card.php");
@@ -43,8 +42,6 @@ $HD_Form->AddSearchPopupInput(_("Provider"), "id_provider", "A2B_entity_provider
 $HD_Form->AddSearchPopupInput(_("Trunk"), "cc_call.id_trunk", "A2B_entity_trunk.php", 2);
 $HD_Form->AddSearchPopupInput(_("Rate"), "id_ratecard", "A2B_entity_def_ratecard.php", 2);
 $HD_Form->AddSearchTextInput(_("Called number"), "calledstation");
-
-$HD_Form->search_delete_enabled = false;
 
 // rely on form code to add conditions based on search inputs
 $HD_Form->prepare_list_subselection("list");

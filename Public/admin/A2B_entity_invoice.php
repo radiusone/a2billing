@@ -83,7 +83,6 @@ if ($form_action === "list" && !$popup_select) { ?>
 </div>
 
 <?php
-    $HD_Form->create_search_form(true, false);
 }
 
 // #### TOP SECTION PAGE

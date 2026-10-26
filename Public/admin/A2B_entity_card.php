@@ -191,8 +191,6 @@ require_once __DIR__ . "/templates/main.php";
     </div>
 </div>
 
-<?php $HD_Form->create_search_form(true, false) ?>
-
 <div class="modal" id="batchUpdateModal" aria-labelledby="modal-title-udpate" aria-hidden="true" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">

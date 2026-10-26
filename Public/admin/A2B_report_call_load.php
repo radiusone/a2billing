@@ -63,7 +63,6 @@ $hours = range(0, 23);
 $hours = array_combine($hours, array_map(fn ($v) => sprintf("%02d:00 to %02d:00", $v, $v + 1), $hours));
 $types = ["watch-call" => _("Watch Calls"), "fluctuation" => _("Fluctuation")];
 
-$HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchSingleDateInput(_("Date"), "starttime");
 $HD_Form->AddSearchPopupInput(_("Enter the customer ID"), "card_id", "A2B_entity_card.php");
 $HD_Form->AddSearchPopupInput(_("Call Plan"), "id_tariffgroup", "A2B_entity_tariffgroup.php", 2);
@@ -73,8 +72,6 @@ $HD_Form->AddSearchPopupInput(_("Rate"), "id_ratecard", "A2B_entity_def_ratecard
 $HD_Form->AddSearchTextInput(_("Called Number"), "calledstation");
 $HD_Form->AddSearchSelectInput(_("Hour Details"), "hour_detail", $hours, "", false);
 $HD_Form->AddSearchSelectInput(_("Hour Detail Type"), "hour_detail_type", $types, "watch-call", false);
-
-$HD_Form->search_delete_enabled = false;
 
 $HD_Form->prepare_list_subselection("list");
 $starttime ??= (new DateTime())->format("Y-m-d");
@@ -88,7 +85,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/templates/main.php";
 
-$HD_Form->create_search_form();
 $HD_Form->create_toppage($form_action);
 
 $basic_chart = true;
@@ -222,6 +218,5 @@ if ($hour_detail_type === "fluctuation") {
 </div>
 
 <?php
-echo "xxx";
 require_once __DIR__ . "/templates/footer.php";
 

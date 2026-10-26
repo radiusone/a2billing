@@ -142,7 +142,7 @@ if ((int)$popup_select >= 1) {
     );
 }
 
-$HD_Form->search_form_enabled = true;
+$HD_Form->SetSearchType(delete: true);
 $HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", Connection::getConnection("cc_iso639", "name", "code"));
 
 $source = [];

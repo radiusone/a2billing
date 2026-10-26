@@ -76,19 +76,15 @@ $HD_Form->AddListValue(_("Date"), "cc_logrefill.date");
 $HD_Form->AddListValue(_("Amount"), "cc_logrefill.credit", "get_money");
 $HD_Form->AddListMapping(_("Type"), "cc_logrefill.refill_type", $list_refill_type);
 
-if (!$popup_select) {
-    $HD_Form->search_form_enabled = true;
-    $HD_Form->search_session_key = 'refill_cust_selection';
-    $HD_Form->search_form_title = _('Define specific criteria to search for refills created.');
+$HD_Form->search_session_key = 'refill_cust_selection';
+$HD_Form->SetSearchType(text: _('Define specific criteria to search for refills created.'));
 
-    $HD_Form->AddSearchDateInput(_("DATE"), "date");
-    $HD_Form->AddSearchTextInput(_("Account number"), 'username');
-    $HD_Form->AddSearchTextInput(_("Last name"), 'lastname');
-    $HD_Form->AddSearchTextInput(_("First name"), 'firstname');
-    $HD_Form->search_delete_enabled = false;
+$HD_Form->AddSearchDateInput(_("DATE"), "date");
+$HD_Form->AddSearchTextInput(_("Account number"), 'username');
+$HD_Form->AddSearchTextInput(_("Last name"), 'lastname');
+$HD_Form->AddSearchTextInput(_("First name"), 'firstname');
 
-    $HD_Form->AddListInfoButton("A2B_info_refill.php?id=");
-}
+$HD_Form->AddListInfoButton("A2B_info_refill.php?id=");
 
 $HD_Form->AddListFilter("username", _("Account number"));
 

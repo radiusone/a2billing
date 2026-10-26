@@ -89,7 +89,6 @@ if ($action === "ask_release") {
 
 if ($action !== "ask_release") {
     $list = $HD_Form->perform_action($form_action);
-    $HD_Form->create_search_form();
     $HD_Form->create_form($form_action, $list) ;
 }
 

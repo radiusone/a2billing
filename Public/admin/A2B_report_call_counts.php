@@ -91,13 +91,13 @@ $HD_Form->AddListValue(_("Buy"), Connection::getConnection()->raw("SUM(buycost) 
 $HD_Form->AddListValue(_("Calls"), Connection::getConnection()->raw("COUNT(*) AS count_calls"));
 $HD_Form->AddListHiddenValue(Connection::getConnection()->raw("DATE(starttime) AS day"));
 
-$HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchDateInput(_("Date"), "starttime");
 $HD_Form->AddSearchRadioInput(
     _("Display"),
     "displaytop",
     ["card_id" => _("Top users"), "destination" => _("Top destinations")],
-    false
+    false,
+    "card_id"
 );
 $HD_Form->AddSearchRadioInput(
     _("Call Type"),
@@ -108,7 +108,8 @@ $HD_Form->AddSearchRadioInput(
     _("Group by Date"),
     "groupbyday",
     getYesNoList(),
-    false
+    false,
+    "0"
 );
 
 require_once __DIR__ . "/templates/main.php";
@@ -117,7 +118,6 @@ $form_action = "list";
 if ($posted_search) {
     $list = $HD_Form->perform_action($form_action);
 }
-$HD_Form->create_search_form();
 $HD_Form->create_toppage($form_action);
 if ($posted_search) {
     $HD_Form->create_form($form_action, $list);

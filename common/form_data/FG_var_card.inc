@@ -263,9 +263,7 @@ if ($popup_select) {
         case 3: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|', '|username|', 'accountcode')"); break;
     }
 } elseif ($form_action === "list") {
-    $HD_Form->search_form_enabled = true;
-
-    $HD_Form->search_form_title = _("Define specific criteria to search for cards created.");
+    $HD_Form->SetSearchType(true, false, true, _("Define specific criteria to search for cards created."));
     $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
     $HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
     $HD_Form->AddSearchTextInput(_("Account number"), "username");

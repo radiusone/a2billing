@@ -152,19 +152,18 @@ $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
 $HD_Form->AddListMapping(_("Viewed"), "v.viewed", $viewed_list, false);
 $HD_Form->AddListMapping(_("Status"), "cc_ticket.status", $status_list);
 
-$HD_Form->search_form_enabled = !$popup_select && !is_customer();
-$HD_Form->search_delete_enabled = false;
 $HD_Form->search_session_key = 'ticket_cust_selection';
-$HD_Form->search_form_title = _('Define specific criteria to search for ticket created.');
 
-$HD_Form->AddSearchDateInput(_("Date"), "cc_ticket.creationdate");
-if ($ticket_type === "agent") {
-    $HD_Form->AddSearchTextInput(_("Login"), "login");
-} else {
-    $HD_Form->AddSearchTextInput(_("Account number"), "username");
+if (!is_customer()) {
+    $HD_Form->SetSearchType(true, true, false, _('Define specific criteria to search for ticket created.'));
+    $HD_Form->AddSearchDateInput(_("Date"), "cc_ticket.creationdate");
+    if ($ticket_type === "agent") {
+        $HD_Form->AddSearchTextInput(_("Login"), "login");
+    } else {
+        $HD_Form->AddSearchTextInput(_("Account number"), "username");
+    }
+    $HD_Form->AddSearchTextInput(_("Last name"), "lastname");
 }
-$HD_Form -> AddSearchTextInput(_("Last name"), "lastname");
-
 if (is_admin()) {
     $HD_Form->AddListEditButton();
     $HD_Form->AddListDeleteButton();

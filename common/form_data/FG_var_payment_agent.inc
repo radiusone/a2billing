@@ -87,10 +87,8 @@ $HD_Form->AddListValue(_("Refill"), "cc_logrefill_agent.id AS refill_id", "get_a
 
 $HD_Form->AddListInfoButton("A2B_info_payment.php?type=agent&id=");
 
-$HD_Form->search_form_enabled = !$popup_select;
 $HD_Form->search_session_key = "payment_agent_selection";
-$HD_Form->search_form_title = _("Define specific criteria to search for payments created.");
-$HD_Form->search_delete_enabled = false;
+$HD_Form->SetSearchType(text: _("Define specific criteria to search for payments created."));
 $HD_Form->AddSearchDateInput(_("DATE"), "date");
 $HD_Form->AddSearchTextInput(_("LOGIN"), "login");
 $HD_Form->AddSearchTextInput(_("LASTNAME"), "lastname");

@@ -83,8 +83,7 @@ if ($popup_select) {
     $HD_Form->AddListValue(_("Max use"), "maxuse");
 }
 
-$HD_Form->search_form_enabled = true;
-$HD_Form->search_form_title = _("Search");
+$HD_Form->SetSearchType(delete: true, text: _("Search"));
 $HD_Form->AddSearchTextInput(_("IP or Host"), 'providerip');
 $HD_Form->AddSearchSqlSelectInput(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "provider_name", "id"));
 $HD_Form->AddSearchSelectInput(_("Status"), "status", [_("Inactive"), _("Active")]);

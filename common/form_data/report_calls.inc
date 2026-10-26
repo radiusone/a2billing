@@ -69,9 +69,8 @@ if ($A2B->config['webui']['link_audio_file'] ?? false) {
 }
 $HD_Form->list_message_intro = _("Call Logs");
 
-$HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_log_selection';
-$HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
+$HD_Form->SetSearchType(text: gettext('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");
 if (is_admin() || is_agent()) {
@@ -101,7 +100,6 @@ $HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Currency"), false, "choose_currency", $currencies_list];
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choose_timeunit", [["min", _("Minutes")], ["sec", _("Seconds")]]];
  */
-$HD_Form->search_delete_enabled = false;
 
 $HD_Form->prepare_list_subselection("list");
 if (empty($HD_Form->query_builder->wheres)) {
