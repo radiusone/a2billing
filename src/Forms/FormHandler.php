@@ -72,9 +72,6 @@ class FormHandler
     /** @var string The name of the element you are managing */
     public string $FG_INSTANCE_NAME = "";
 
-    /** @var string The table name for queries */
-    public string $FG_QUERY_TABLE_NAME = "";
-
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
@@ -254,7 +251,6 @@ class FormHandler
         $this->listView = new ListView($this);
         $this->editForm = new EditForm($this);
 
-        $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
         if ($primary_key !== "") {
             $this->update_query_conditions = [$primary_key => "%id"];
@@ -538,7 +534,7 @@ class FormHandler
             $this->query_builder->limit ??= 10;
             $current_size = 0;
             // check for existing custom size
-            $session_limit = $this->FG_QUERY_TABLE_NAME . "-displaylimit";
+            $session_limit = $this->query_builder->from . "-displaylimit";
             if (array_key_exists($session_limit, $_SESSION) && (int)$_SESSION[$session_limit]) {
                 $current_size = (int)$_SESSION[$session_limit];
             }
@@ -810,7 +806,7 @@ class FormHandler
                     2,
                     sprintf(_("New %s created"), $this->FG_INSTANCE_NAME),
                     _("User added a new record in database"),
-                    $this->FG_QUERY_TABLE_NAME,
+                    $this->query_builder->from,
                     $_SERVER['REMOTE_ADDR'],
                     $_SERVER['REQUEST_URI'],
                     array_keys($values),
@@ -875,7 +871,7 @@ class FormHandler
                     3,
                     sprintf(_("Existing %s updated"), $this->FG_INSTANCE_NAME),
                     _("User edited a record in database"),
-                    $this->FG_QUERY_TABLE_NAME,
+                    $this->query_builder->from,
                     $_SERVER['REMOTE_ADDR'],
                     $_SERVER['REQUEST_URI'],
                     array_keys($values),
@@ -905,7 +901,7 @@ class FormHandler
                     3,
                     "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED",
                     "A RECORD IS DELETED, EDITION CLAUSE USED IS " . array_kv($this->update_query_conditions),
-                    $this->FG_QUERY_TABLE_NAME,
+                    $this->query_builder->from,
                     $_SERVER['REMOTE_ADDR'],
                     $_SERVER['REQUEST_URI']
                 );

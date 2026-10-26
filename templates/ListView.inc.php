@@ -101,10 +101,10 @@ $cols = array_keys(array_first($list ?? []) ?? []);
             <?php endforeach ?>
             <div class="col-auto">
                 <select id="displaylimit" name="mydisplaylimit" class="form-select form-select-sm">
-                    <option value="10" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) < 50 ? 'selected="selected"' : "" ?>>10</option>
-                    <option value="50" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 50 ? 'selected="selected"' : "" ?>>50</option>
-                    <option value="100" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 100 ? 'selected="selected"' : "" ?>>100</option>
-                    <option value="ALL" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) > 100 ? 'selected="selected"' : "" ?>>All</option>
+                    <option value="10" <?= (int)($_SESSION["{$form->query_builder->from}-displaylimit"] ?? 10) < 50 ? 'selected="selected"' : "" ?>>10</option>
+                    <option value="50" <?= (int)($_SESSION["{$form->query_builder->from}-displaylimit"] ?? 10) === 50 ? 'selected="selected"' : "" ?>>50</option>
+                    <option value="100" <?= (int)($_SESSION["{$form->query_builder->from}-displaylimit"] ?? 10) === 100 ? 'selected="selected"' : "" ?>>100</option>
+                    <option value="ALL" <?= (int)($_SESSION["{$form->query_builder->from}-displaylimit"] ?? 10) > 100 ? 'selected="selected"' : "" ?>>All</option>
                 </select>
             </div>
         </form>
