@@ -54,11 +54,6 @@ class FormHandler
     public const CONFIRM_DELETE = 2;
     private static self $Instance;
 
-    /**
-     * @var array basically just the contents of $_REQUEST
-     */
-    private array $_processed = [];
-
     /** @var bool if the current submission has passed all validation checks */
     public bool $all_fields_valid = true;
 
@@ -386,12 +381,13 @@ class FormHandler
 
     public function getProcessed(): array
     {
+        $processed = [];
         $vars = array_merge($_GET, $_POST);
         foreach ($vars as $key => $value) {
             // post fields can't contain . so they are replaced with ^^ at render time
             // todo: find out if there's a reason both versions are kept
             if (str_contains($key, "^^")) {
-                $this->_processed[$key] ??= $value;
+                $processed[$key] ??= $value;
                 $key = str_replace("^^", ".", $key);
             }
             // this is hashing admin and agent passwords on save
@@ -403,10 +399,10 @@ class FormHandler
                     continue;
                 }
             }
-            $this->_processed[$key] ??= $value;
+            $processed[$key] ??= $value;
         }
 
-        return $this->_processed;
+        return $processed;
     }
 
     // ----------------------------------------------
@@ -1268,7 +1264,7 @@ class FormHandler
                 // there was a previous search, load the inputs from the session
                 $element_arr = json_decode($_SESSION[$this->search_session_key], true);
                 foreach ($element_arr as $entity_name => $entity_value) {
-                    $this->_processed[$entity_name] = $entity_value;
+                    $processed[$entity_name] = $entity_value;
                     // for subsequent calls to $this->getProcessed()
                     $_POST[$entity_name] = $entity_value;
                 }
