@@ -129,7 +129,12 @@ final class ListView
 
     public function getSearchSession(): string
     {
-        return $_SESSION[$this->searchKey] ?? "";
+        $json = $_SESSION[$this->searchKey] ?? "";
+        if ($json === "[]") {
+            $json = "";
+        }
+
+        return $json;
     }
 
     public function setSearchSession(mixed $data): void
