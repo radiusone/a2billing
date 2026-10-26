@@ -148,10 +148,7 @@ class FormHandler
 
     //	-------------------- DATA FOR THE EDITION --------------------
 
-    /**
-     * @var EditElement[] List of form elements used to create the edit form
-     */
-    public array $FG_EDIT_FORM_ELEMENTS = [];
+    public EditForm $editForm;
 
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
@@ -288,6 +285,7 @@ class FormHandler
         self::$Instance = $this;
 
         $this->listView = new ListView($this);
+        $this->editForm = new EditForm($this);
 
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
@@ -532,7 +530,7 @@ class FormHandler
         ?callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     ): void
     {
-        $el = new Input(
+        $this->editForm->addElement(new Input(
             $label_text,
             $fieldname,
             $form_text_bottom,
@@ -542,13 +540,7 @@ class FormHandler
             $check_emptyvalue,
             $default_value,
             $custom_function,
-        );
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        ));
     }
 
     /**
@@ -562,19 +554,13 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $el = new DayTime(
+        $this->editForm->addElement(new DayTime(
             $label_text,
             $fieldname,
             $form_text_bottom,
             $default_value,
             $error_message,
-        );
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        ));
     }
 
     /**
@@ -612,7 +598,7 @@ class FormHandler
             )
             ->mapWithKeys(fn ($v) => [$v[1] => $v[0]]);
 
-        $el = new Select(
+        $this->editForm->addElement(new Select(
             $label_text,
             $fieldname,
             $options,
@@ -622,13 +608,7 @@ class FormHandler
             $error_message,
             $first_option,
             $validator
-        );
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        ));
     }
 
     /**
@@ -655,7 +635,7 @@ class FormHandler
         ?callable $validator = null,
     ): void
     {
-        $el = new Select(
+        $this->editForm->addElement(new Select(
             $label_text,
             $fieldname,
             $options,
@@ -665,13 +645,7 @@ class FormHandler
             $error_message,
             $first_option,
             $validator,
-        );
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        ));
     }
 
     /**
@@ -694,7 +668,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $el = new Radio(
+        $this->editForm->addElement(new Radio(
             $label_text,
             $fieldname,
             $options,
@@ -702,13 +676,7 @@ class FormHandler
             $form_text_bottom,
             $html_attributes,
             $error_message,
-        );
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        ));
     }
 
     /**
@@ -731,7 +699,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $el = new Popup(
+        $this->editForm->addElement(new Popup(
             $label_text,
             $fieldname,
             $href,
@@ -739,13 +707,7 @@ class FormHandler
             $html_attributes,
             $validator,
             $error_message,
-        );
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        ));
     }
 
     /**
@@ -775,7 +737,7 @@ class FormHandler
     ): void
     {
         $index = $table->from . "." . $insert_column;
-        $el = new HasMany(
+        $this->editForm->addElement(new HasMany(
             $label,
             $index,
             $table,
@@ -785,13 +747,7 @@ class FormHandler
             $multiline,
             $select,
             $pivot_table,
-        );
-
-        if (array_key_exists($index, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$index] = $el;
-        }
+        ));
     }
 
     /**
@@ -814,7 +770,7 @@ class FormHandler
         ?callable $validator = null
     ): void
     {
-        $el = new Textarea(
+        $this->editForm->addElement(new Textarea(
             $label_text,
             $fieldname,
             $form_text_bottom,
@@ -822,29 +778,17 @@ class FormHandler
             $error_message,
             $default_value,
             $validator,
-        );
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        ));
     }
 
     public function AddEditHidden(string $fieldname, string $value): void
     {
-        $el = new Hidden($fieldname, $value);
-
-        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
-            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
-        } else {
-            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
-        }
+        $this->editForm->addElement(new Hidden($fieldname, $value));
     }
 
     public function AddEditSection(string $label): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = new Section($label);
+        $this->editForm->addElement(new Section($label));
     }
 
     /**
@@ -1269,9 +1213,9 @@ class FormHandler
         ) {
             $cols = array_column(
                 array_filter(
-                    $this->FG_EDIT_FORM_ELEMENTS,
+                    $this->editForm->getElements(except: [HasMany::class]),
                     // "has many" have a fake index, some fields may have a numeric one
-                    fn ($v, $k) => !($v instanceof HasMany || is_numeric($k)),
+                    fn ($v, $k) => !is_numeric($k),
                     ARRAY_FILTER_USE_BOTH
                 ),
                 "column"
@@ -1419,10 +1363,7 @@ class FormHandler
         $values = [];
         $arr_value_to_import = [];
 
-        foreach ($this->FG_EDIT_FORM_ELEMENTS as $row) {
-            if ($row instanceof Section || $row instanceof HasMany) {
-                continue;
-            }
+        foreach ($this->editForm->getElements(except: [Section::class, HasMany::class]) as $row) {
             $field = $row->column;
             if ($field === "" || $row->isDisabled() || !array_key_exists($field, $processed)) {
                 continue;
@@ -1515,10 +1456,7 @@ class FormHandler
         $this->all_fields_valid = true;
         $values = [];
 
-        foreach ($this->FG_EDIT_FORM_ELEMENTS as $row) {
-            if ($row instanceof Section || $row instanceof HasMany) {
-                continue;
-            }
+        foreach ($this->editForm->getElements(except: [Section::class, HasMany::class]) as $row) {
             $field = $row->column;
             if ($field === "" || $row->isDisabled() || !array_key_exists($field, $processed)) {
                 continue;
@@ -1668,7 +1606,7 @@ class FormHandler
      */
     public function perform_add_content(string $index, int $id): void
     {
-        $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
+        $entry = $this->editForm->getElement($index);
         if (!$entry instanceof HasMany) {
             return;
         }
@@ -1697,7 +1635,7 @@ class FormHandler
      */
     public function perform_del_content(string $index, int $id): void
     {
-        $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
+        $entry = $this->editForm->getElement($index);
         if (!$entry instanceof HasMany) {
             return;
         }
@@ -1834,33 +1772,27 @@ class FormHandler
         // passed by javascript functions for add-content and del-content
         $edit_form_index = $processed["form_el_index"] ?? 0;
 
+        if ($form_action === "ask-delete") {
+            $this->check_child_records();
+        }
+
         switch ($form_action) {
             case "add-content":
                 $this->perform_add_content($edit_form_index, $processed['id']);
-                echo new EditForm($this, $processed, $list);
+                echo $this->editForm->render($processed, $list, $form_action);
                 break;
 
             case "del-content":
                 $this->perform_del_content($edit_form_index, $processed['id']);
-                echo new EditForm($this, $processed, $list);
+                echo $this->editForm->render($processed, $list, $form_action);
                 break;
 
             case "ask-edit":
             case "edit":
-                echo new EditForm($this, $processed, $list);
-                break;
-
             case "ask-add":
-                echo new AddForm($this, $processed, $list);
-                break;
-
             case "ask-delete":
             case "ask-del-confirm":
-                if ($form_action === "ask-delete") {
-                    $this->check_child_records();
-                }
-
-                echo new DeleteForm($this, $processed, $list, $form_action);
+                echo $this->editForm->render($processed, $list, $form_action);
                 break;
 
             case "list":

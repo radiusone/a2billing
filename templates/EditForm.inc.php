@@ -5,6 +5,7 @@ namespace A2billing\Forms;
 use A2billing\Forms\Elements\Edit\HasMany;
 
 /**
+ * @var EditForm $this
  * @var FormHandler $form
  * @var array $processed
  * @var array $list
@@ -20,7 +21,7 @@ use A2billing\Forms\Elements\Edit\HasMany;
     <input type="hidden" name="sens" value="<?= $processed["sens"] ?? "" ?>"/>
     <?= $form->csrf_inputs() ?>
 
-    <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i => $row): ?>
+    <?php foreach ($this->elements as $i => $row): ?>
         <?php if ($row instanceof HasMany): ?>
         <?= $row->render($i, $processed["id"]) ?>
         <?php else: ?>

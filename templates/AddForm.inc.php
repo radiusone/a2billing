@@ -2,13 +2,14 @@
 
 namespace A2billing\Forms;
 
-use A2billing\Forms\Elements\Edit\HasMany;
+use A2billing\Forms\Elements\EditElement;
 
 /**
  * @var FormHandler $form
  * @var array $processed
  * @var array $list
  * @var array $db_data
+ * @var EditElement[] $elements
  */
 ?>
 
@@ -16,8 +17,8 @@ use A2billing\Forms\Elements\Edit\HasMany;
     <input type="hidden" name="form_action" value="add"/>
     <?= $form->csrf_inputs() ?>
 
-<?php foreach (array_filter($form->FG_EDIT_FORM_ELEMENTS, fn ($v) => !$v instanceof HasMany) as $i=>$row):?>
-    <?= $row->render($i, $processed[$row->name ?? ""] ?? null) ?>
+<?php foreach ($elements as $i=>$row):?>
+    <?= $row->render($i, $processed[$row->name] ?? null) ?>
 <?php endforeach ?>
 
     <div class="row my-4 justify-content-between">

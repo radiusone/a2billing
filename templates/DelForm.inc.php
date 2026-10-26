@@ -2,7 +2,7 @@
 
 namespace A2billing\Forms;
 
-use A2billing\Forms\Elements\Edit\HasMany;
+use A2billing\Forms\Elements\EditElement;
 
 /**
  * @var FormHandler $form
@@ -10,6 +10,7 @@ use A2billing\Forms\Elements\Edit\HasMany;
  * @var array $list
  * @var string $form_action
  * @var array $db_data
+ * @var EditElement[] $elements
  */
 ?>
 
@@ -57,9 +58,8 @@ use A2billing\Forms\Elements\Edit\HasMany;
     <input type="hidden" name="fk_count" value="<?= $form->fk_record_count ?>"/>
     <input type="hidden" name="form_action" value="ask-del-confirm"/>
     <?php endif ?>
-
-    <?php foreach (array_filter($form->FG_EDIT_FORM_ELEMENTS, fn ($v) => !$v instanceof HasMany) as $i=>$row):?>
-        <?php $row->attributes["disabled"] = "disabled"; echo $row->render($i, $db_data[$i]) ?>
+    <?php foreach ($elements as $i=>$row):?>
+        <?= $row->render($i, $db_data[$i]) ?>
     <?php endforeach ?>
 
     <div class="row my-4 justify-content-between">
