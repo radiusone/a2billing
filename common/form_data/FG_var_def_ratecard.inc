@@ -214,7 +214,8 @@ $HD_Form->AddEditElement(
     _("A) Add destination prefixes, ie '441' for UK Landlines.<br>B) Use 'defaultprefix' to setup a rate for all destinations where a specific rate is not provided.<br>C) if you ADD a rate, NOT an EDIT, you can define a range of prefixes. '32484-32487' adds all prefixes between 32484 and 32487. '32484,32386,32488' would add only the individual prefixes listed.<br>D) Asterisk extensions style + POSIX regex syntaxes are supported. '_447[7-9]XXXXXXXX' matches 12-digit UK mobiles. '_X{0,3}(112|999|911)' matches any 0-3 digits followed an emergency number. '_' can be used to add length, and raise the priority."),
     ["maxlength" => 80],
     [Validator::class, "asteriskExtension"],
-    _("Insert the dialing prefix, such as for UK '44' or for US '1' ")
+    _("Insert the dialing prefix, such as for UK '44' or for US '1' "),
+    splittable: true,
 );
 
 $HD_Form->AddEditPopup(
@@ -603,7 +604,5 @@ if (ADVANCED_MODE) {
     $musiconhold_list = getMusicOnHold_List($A2B);
     $HD_Form->AddEditSelect(_("On-hold Music"), "musiconhold", $musiconhold_list);
 }
-
-$HD_Form->FG_SPLITABLE_FIELDS[] = 'dialprefix';
 
 $HD_Form->add_message_intro = $HD_Form->edit_message_intro = sprintf(_("Rates must be entered in the base currency (%s)"), (BASE_CURRENCY));

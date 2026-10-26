@@ -8,6 +8,7 @@ use A2billing\Forms\Elements\Edit\HasMany;
 use A2billing\Forms\Elements\Edit\Input;
 use A2billing\Forms\Elements\Edit\Section;
 use A2billing\Forms\Elements\Edit\Select;
+use A2billing\Forms\Elements\Edit\Textarea;
 use A2billing\Forms\Elements\Search;
 use A2billing\Forms\Traits\EditMethods;
 use A2billing\Forms\Traits\ListMethods;
@@ -47,6 +48,8 @@ class FormHandler
     public const CONFIRM_NONE = 0;
     public const CONFIRM_WARN = 1;
     public const CONFIRM_DELETE = 2;
+
+    /** @var FormHandler this is used extensively by the FormBO class */
     private static self $Instance;
 
     /** @var bool if the current submission has passed all validation checks */
@@ -114,8 +117,6 @@ class FormHandler
 
     public EditForm $editForm;
 
-    /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
-    public array $FG_SPLITABLE_FIELDS = [];
 
     /** @var array columns/values to be used as a condition in update/delete queries as well as fetching for edits */
     public array $update_query_conditions = ["id" => "%id"];
@@ -731,7 +732,7 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->all_fields_valid = true;
         $values = [];
-        $arr_value_to_import = [];
+        $split_values = [];
 
         foreach ($this->editForm->getElements(except: [Section::class, HasMany::class]) as $row) {
             $field = $row->column;
@@ -750,15 +751,8 @@ class FormHandler
                 continue;
             }
 
-            // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
-            if (in_array($field, $this->FG_SPLITABLE_FIELDS)) {
-                $value = $processed[$field];
-                if (empty($value) || str_starts_with($value, "_")) {
-                    // dialprefix can be a range *or* an Asterisk-style extension pattern starting with _
-                    continue;
-                }
-                $arr_value_to_import[$field] = $this->split_ranges($value);
-                $values[$field] = "%check_array%";
+            if (($row instanceof Input || $row instanceof Textarea) && $row->splittable) {
+                $split_values[$field] = $row->getSplitValues($processed[$field]);
             } elseif ($processed[$field] === "" && ($row instanceof Input && $row->empty_is_null)) {
                 $values[$field] = null;
             } elseif ($processed[$field] !== "") {
@@ -768,22 +762,24 @@ class FormHandler
 
         if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
+
             return;
         }
 
-        $id = null;
-        if (($key = array_search("%check_array%", $values)) !== false) {
-            foreach ($arr_value_to_import[$key] as $array_value) {
-                $values[$key] = $array_value;
-                try {
-                    $id = $this->query_builder->insertGetId($values);
-                    // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-                    if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                        ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+        if (count($split_values)) {
+            foreach ($split_values as $key => $array) {
+                foreach ($array as $array_value) {
+                    $values[$key] = $array_value;
+                    try {
+                        $id = $this->query_builder->insertGetId($values);
+                        // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
+                        if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                            ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+                        }
+                    } catch (Throwable $e) {
+                        $this->add_message_error .= " " . $e->getMessage();
+                        break;
                     }
-                } catch (Throwable $e) {
-                    $this->add_message_error .= " " . $e->getMessage();
-                    break;
                 }
             }
         } else {
@@ -1372,43 +1368,5 @@ class FormHandler
             }
         }
         exit;
-    }
-
-    /**
-     * Take a string such as "3-5,12,18-20" and return ["3", "4", "5", "12", "18", "19", "20"]
-     *
-     * @param string $input
-     * @return numeric-string[]
-     */
-    private function split_ranges(string $input): array
-    {
-        $array = [];
-        $items = explode(",", $input);
-        foreach ($items as $item) {
-            $item = trim($item);
-            $range = explode("-", $item, 2);
-            if (isset($range[1])) {
-                $min = trim($range[0]);
-                $max = trim($range[1]);
-                // get common prefix to avoid issues with very large numeric strings like card numbers
-                $prefix_len = strspn("$min" ^ "$max", chr(0));
-                $prefix = substr($min, 0, $prefix_len);
-                $min = substr($min, $prefix_len);
-                $max = substr($max, $prefix_len);
-                if (is_numeric($min) && is_numeric($max) && $min < $max) {
-                    for ($i = $min; $i <= $max; $i++) {
-                        $array[] = $prefix . $i;
-                    }
-                } elseif (is_numeric($min)) {
-                    $array[] = $prefix . $min;
-                } elseif (is_numeric($max)) {
-                    $array[] = $prefix . $max;
-                }
-            } elseif (is_numeric($range[0])) {
-                $array[] = $range[0];
-            }
-        }
-
-        return $array;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace A2billing\Forms\Elements\Edit;
 
+use A2billing\Forms\Elements\Edit\Traits\Splittable;
 use A2billing\Forms\Elements\EditElement;
 
 /**
@@ -10,6 +11,8 @@ use A2billing\Forms\Elements\EditElement;
  */
 class Input extends EditElement
 {
+    use Splittable;
+
     public bool $check_empty = true;
     public bool $empty_is_null = false;
 
@@ -23,6 +26,7 @@ class Input extends EditElement
      * @param string $check_empty If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
      * @param string|null $default When adding (not editing), the value of the input
      * @param callable(string):string|null $callback A callback to run the value through before displaying it
+     * @param bool $splittable If true, value is "splittable" during create or edit (values like e.g. 12-14 or 15;16;17)
      */
     public function __construct(
         string $label,
@@ -34,6 +38,7 @@ class Input extends EditElement
         string $check_empty = "",
         ?string $default = null,
         protected mixed $callback = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
+        public bool $splittable = false,
     )
     {
         $this->column = $column;

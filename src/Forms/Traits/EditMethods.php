@@ -18,6 +18,7 @@ trait EditMethods
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
      * @param string|null $default_value When adding (not editing), the value of the input
      * @param callable(string):string|null $custom_function A callback to run the value through before displaying it
+     * @param bool $splittable If true, value is "splittable" during create or edit (values like e.g. 12-14 or 15;16;17)
      * @return $this
      */
     public function AddEditElement(
@@ -29,7 +30,8 @@ trait EditMethods
         string $error_message = "",
         string $check_emptyvalue = "",
         ?string $default_value = "",
-        ?callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
+        ?callable $custom_function = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
+        bool $splittable = false,
     ): static
     {
         $this->editForm->addElement(new Edit\Input(
@@ -42,6 +44,7 @@ trait EditMethods
             $check_emptyvalue,
             $default_value,
             $custom_function,
+            $splittable
         ));
 
         return $this;
@@ -274,6 +277,7 @@ trait EditMethods
      * @param string $error_message A message to show if validation fails
      * @param string $default_value When adding (not editing) the value of the input
      * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
+     * @param bool $splittable If true, value is "splittable" during create or edit (values like e.g. 12-14 or 15;16;17)
      * @return $this
      */
     public function AddEditTextarea(
@@ -283,7 +287,8 @@ trait EditMethods
         array $html_attributes = [],
         string $error_message = "",
         string $default_value = "",
-        ?callable $validator = null
+        ?callable $validator = null,
+        bool $splittable = false,
     ): static
     {
         $this->editForm->addElement(new Edit\Textarea(
@@ -294,6 +299,7 @@ trait EditMethods
             $error_message,
             $default_value,
             $validator,
+            $splittable,
         ));
 
         return $this;

@@ -56,7 +56,6 @@ $HD_Form -> AddListMapping(_("STATUS"), "activated", getActivationList());
 $HD_Form->AddListAddButton(icon: "telephone-outbound-fill");
 $HD_Form->AddListEditButton();
 $HD_Form->AddListDeleteButton();
-$HD_Form -> FG_SPLITABLE_FIELDS[] = "cid";
 
 $HD_Form->AddEditTextarea(
     _("CID"),
@@ -65,7 +64,8 @@ $HD_Form->AddEditTextarea(
         ? _("Define the CallerIDs. You can define a range of CallerID. <br>80412340210-80412340218 would add all CID's between the range, whereas CIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual CID listed.")
         : _("Define the CallerIDs"),
     ["rows" => 4],
-    _("Insert the CID")
+    _("Insert the CID"),
+    splittable: true,
 );
 
 $HD_Form->AddEditSqlSelect(

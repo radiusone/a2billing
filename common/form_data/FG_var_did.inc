@@ -80,7 +80,6 @@ $HD_Form->AddListValue(abbr(_("SR"), _("Sell Rate")), "selling_rate");
 $HD_Form->AddListAddButton("A2B_entity_did.php?form_action=ask-add", _("Add DID"), "telephone-inbound-fill");
 $HD_Form->AddListEditButton();
 $HD_Form->AddListDeleteButton();
-$HD_Form->FG_SPLITABLE_FIELDS = ["did"];
 
 $HD_Form->AddEditElement(
     _("DID"),
@@ -91,6 +90,7 @@ $HD_Form->AddEditElement(
     ["maxlength" => "60"],
     [Validator::class, "min1Char"],
     _("Insert the DID"),
+    splittable: true,
 );
 
 
