@@ -122,7 +122,6 @@ if ($A2B->config["webui"]["hide_expired_rates"]) {
 }
 
 $HD_Form->query_builder->orderBy("dialprefix");
-$HD_Form->search_session_key = "entity_ratecard_selection";
 
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
     _("Please fill in the fields below to set up the rate for each destination.")

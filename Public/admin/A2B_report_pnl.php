@@ -359,7 +359,6 @@ $HD_Form->AddListValue(gettext("Total Profit"), "profit", "get_money");
 $HD_Form->AddSearchDateInput(_("Date"), "starttime");
 $HD_Form->AddSearchRelativeDateInput(_("Date"), "starttime", true, false);
 $HD_Form->AddSearchSelectInput(_("Report type"), "report_type", [1 => _("Card Group"), 2 => _("Call Plan")], false);
-$HD_Form->search_session_key = 'pnl_selection';
 
 $HD_Form->list_message_empty  = gettext("NO INFO!");
 

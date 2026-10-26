@@ -72,10 +72,10 @@ if ($form_action === "list" && !$popup_select) { ?>
 <div class="row pb-3 justify-content-center">
     <div class="col-auto">
         <button
-            class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary btn-search-active" ?>"
+            class="btn btn-sm <?= empty($HD_Form->listView->getSearchSession()) ? "btn-outline-primary" : "btn-primary btn-search-active" ?>"
             data-bs-toggle="modal"
             data-bs-target="#searchModal"
-            title="<?= _("Search Invoices") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
+            title="<?= _("Search Invoices") ?> <?= empty($HD_Form->listView->getSearchSession()) ? "" : "(" . _("search activated") . ")" ?>"
         >
             <?= _("Search Invoices") ?>
         </button>

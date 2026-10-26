@@ -69,7 +69,6 @@ if ($A2B->config['webui']['link_audio_file'] ?? false) {
 }
 $HD_Form->list_message_intro = _("Call Logs");
 
-$HD_Form->search_session_key = 'call_log_selection';
 $HD_Form->SetSearchType(text: gettext('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");

@@ -176,10 +176,10 @@ if ($form_action === "list" && !$popup_select): ?>
 <div class="row pb-3 justify-content-center">
     <div class="col-auto">
         <button
-            class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary" ?>"
+            class="btn btn-sm <?= empty($HD_Form->listView->getSearchSession()) ? "btn-outline-primary" : "btn-primary" ?>"
             data-bs-toggle="modal"
             data-bs-target="#searchModal"
-            title="<?= _("Search Rates") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
+            title="<?= _("Search Rates") ?> <?= empty($HD_Form->listView->getSearchSession()) ? "" : "(" . _("search activated") . ")" ?>"
         >
             <?= _("Search Rates") ?>
         </button>

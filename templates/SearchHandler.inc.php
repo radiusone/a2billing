@@ -18,7 +18,7 @@ use A2billing\Forms\ListView;
 <div class="row pb-3 justify-content-center">
     <div class="col-auto">
         <button
-            class="btn <?= !empty($processed["posted_search"]) || !empty($_SESSION[$form->search_session_key]) ? "btn-primary btn-search-active" : "btn-outline-primary" ?>"
+            class="btn <?= ($processed["posted_search"] ?? 0) || $this->getSearchSession() ? "btn-primary btn-search-active" : "btn-outline-primary" ?>"
             data-bs-toggle="modal"
             data-bs-target="#searchModal"
         ><?= sprintf(_("Search %s"), $form->FG_INSTANCE_NAME) ?></button>
@@ -65,7 +65,7 @@ use A2billing\Forms\ListView;
     <div class="row justify-content-end border-top pt-3 mt-3 bg-transparent">
         <div class="col text-end">
 <?php endif ?>
-            <?php if (strlen($_SESSION[$form->search_session_key] ?? "")): ?>
+            <?php if ($this->getSearchSession()): ?>
                 <?php if ($this->searchDelete): ?>
             <a class="btn btn-danger confirm-with-message" href="?deleteselected=true" data-message="<?= htmlspecialchars(sprintf(_("Are you sure you want to delete %d selected records?"), $form->FG_LIST_VIEW_ROW_COUNT)) ?>"><?= _("Delete") ?></a>
                 <?php endif ?>

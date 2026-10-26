@@ -33,6 +33,9 @@ final class ListView
 
     private string $searchText = "";
 
+    /** @var string the session key that holds search conditions */
+    private string $searchKey;
+
     /** @var ListElement[] */
     private array $columns = [];
 
@@ -51,6 +54,8 @@ final class ListView
     public function __construct(readonly private FormHandler $form)
     {
         $this->searchText = sprintf(_("Search %s"), $form->FG_INSTANCE_NAME);
+        $hash = md5($_SERVER["PHP_SELF"]);
+        $this->searchKey = "search_$hash";
     }
 
     public function addFilterInput(FilterInput $input): self
@@ -120,6 +125,21 @@ final class ListView
         }
 
         return $this;
+    }
+
+    public function getSearchSession(): string
+    {
+        return $_SESSION[$this->searchKey] ?? "";
+    }
+
+    public function setSearchSession(mixed $data): void
+    {
+        $_SESSION[$this->searchKey] = json_encode($data);
+    }
+
+    public function clearSearchSession(): void
+    {
+        $_SESSION[$this->searchKey] = "";
     }
 
     public function addColumn(ListElement $column): self

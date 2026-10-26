@@ -47,7 +47,6 @@ Admin::checkPageAccess(Admin::ACX_RATECARD);
 
 $HD_Form = new FormHandler('cc_ratecard', 'Rate Card');
 $HD_Form->init();
-$HD_Form->search_session_key = 'entity_ratecard_selection';
 
 getpost_ifset(["posted" ,"idtariffplan", "ratecard_source", "ratecard_destination", "selected_cols", "posted_search"]);
 /**

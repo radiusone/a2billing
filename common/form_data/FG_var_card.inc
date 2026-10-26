@@ -77,7 +77,6 @@ $HD_Form = new FormHandler(
         ->when(is_customer(), fn (Builder $q) => $q->where("cc_card.id", Customer::id()))
         ->when($popup_select, fn (Builder $q) => $q->limit(6))
 );
-$HD_Form->search_session_key = 'entity_card_selection';
 // todo: there are probably more than this
 $HD_Form->foreign_keys = [
     "cc_card_history" => "id_cc_card",

@@ -63,7 +63,6 @@ $HD_Form->AddListValue(abbr(_("ALOC"), _("Average length of call")), Connection:
 $HD_Form->AddListValue(abbr(_("CIC"), _("???")), Connection::getConnection()->raw("COUNT(cic.id) AS cic"));
 $HD_Form->AddListValue(_("Total calls"), Connection::getConnection()->raw("COUNT(cc_call.id) AS total_calls"));
 
-$HD_Form->search_session_key = 'call_log_selection';
 $HD_Form->SetSearchType(text: _('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");

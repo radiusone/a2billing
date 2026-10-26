@@ -359,7 +359,7 @@ if ($form_action=='list' && !($popup_select>=1)) {
     <div class="col text-center">
         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide" aria-expanded="false" aria-controls="tohide">
             <?= _("REFILL") ?>
-            <?php if (!empty($_SESSION['entity_card_selection'])) echo gettext("search activated"); ?>
+            <?php if ($HD_Form->listView->getSearchSession()) echo gettext("search activated"); ?>
         </button>
     </div>
 </div>
@@ -374,10 +374,10 @@ if ($form_action == "list" && (!($popup_select>=1))) {
 <div class="row pb-3 justify-content-center">
     <div class="col-auto">
         <button
-                class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary" ?>"
+                class="btn btn-sm <?= empty($HD_Form->listView->getSearchSession()) ? "btn-outline-primary" : "btn-primary" ?>"
                 data-bs-toggle="modal"
                 data-bs-target="#searchModal"
-                title="<?= _("Search Customers") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
+                title="<?= _("Search Customers") ?> <?= empty($HD_Form->listView->getSearchSession()) ? "" : "(" . _("search activated") . ")" ?>"
         >
             <?= _("Search Customers") ?>
         </button>

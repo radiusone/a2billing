@@ -76,7 +76,6 @@ $HD_Form->AddListValue(_("Date"), "cc_logrefill.date");
 $HD_Form->AddListValue(_("Amount"), "cc_logrefill.credit", "get_money");
 $HD_Form->AddListMapping(_("Type"), "cc_logrefill.refill_type", $list_refill_type);
 
-$HD_Form->search_session_key = 'refill_cust_selection';
 $HD_Form->SetSearchType(text: _('Define specific criteria to search for refills created.'));
 
 $HD_Form->AddSearchDateInput(_("DATE"), "date");

@@ -69,7 +69,6 @@ $HD_Form->AddListValue(
     "get_money",
 );
 
-$HD_Form->search_session_key = "agent_situation";
 $HD_Form->SetSearchType(text: _("Define specific criteria to search for agents."));
 $HD_Form->AddSearchTextInput(_("LOGIN"), "login");
 $HD_Form->AddSearchTextInput(_("LASTNAME"), "lastname");

@@ -72,7 +72,6 @@ getpost_ifset(["id", "subject", "message", "from", "fromname", "submit"]);
  */
 
 $HD_Form = new FormHandler("cc_card", "Card");
-$HD_Form->search_session_key = 'entity_card_selection_mail';
 $HD_Form->init();
 $instance_cus_table = $HD_Form->query_builder->clone()->select("id", "email");
 

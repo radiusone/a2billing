@@ -79,7 +79,6 @@ $HD_Form->AddListValue(_("Amount"), "credit", "get_money");
 
 $HD_Form->AddListInfoButton("A2B_info_refill.php?type=agent&id=");
 
-$HD_Form->search_session_key = 'refill_agent_selection';
 $HD_Form->SetSearchType(text: _('Define specific criteria to search for refills created.'));
 $HD_Form->AddSearchDateInput(_("Date"), "date");
 $HD_Form->AddSearchPopupInput(_("Agent"), "agent_id", "A2B_entity_agent.php");

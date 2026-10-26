@@ -59,7 +59,6 @@ $HD_Form->AddListValue(_("Package"), "label");
 $HD_Form->AddListValue(_("Minutes"), Connection::getConnection()->raw("SUM(used_secondes) AS total_seconds"), "get_minute");
 $HD_Form->AddListValue(_("Calls"), Connection::getConnection()->raw("COUNT(*) AS count_calls"));
 
-$HD_Form->search_session_key = 'package_report_selection';
 $HD_Form->SetSearchType(text: _('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchPopupInput(_("Card ID"), "id_cc_card", "A2B_entity_card.php");

@@ -83,7 +83,6 @@ $HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Type"), "type", $type_list);
 $HD_Form->AddListMapping(_("Status"), "status", $status_list);
 
-$HD_Form->search_session_key = 'remittance_agent_selection';
 $HD_Form->SetSearchType(text: _('Define specific criteria to search for remittances requests created.'));
 
 $HD_Form->AddSearchDateInput(_("Date"), "date");

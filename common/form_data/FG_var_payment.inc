@@ -93,7 +93,6 @@ if (is_customer()) {
     $HD_Form->AddListFilter("username", _("Account number"));
     $HD_Form->AddListInfoButton("A2B_info_payment.php?id=");
 }
-$HD_Form->search_session_key = "payment_cust_selection";
 $HD_Form->SetSearchType(text: _("Define specific criteria to search for payments created."));
 
 $HD_Form->AddSearchDateInput(_("Date"), "date");

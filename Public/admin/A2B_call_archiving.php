@@ -125,7 +125,6 @@ if ($posted_archive === true) {
     }
 }
 
-$HD_Form->search_session_key = 'call_archive_selection';
 $HD_Form->SetSearchType(text: _('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchRelativeDateInput(_("Dates"), "starttime");

@@ -152,7 +152,6 @@ $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
 $HD_Form->AddListMapping(_("Viewed"), "v.viewed", $viewed_list, false);
 $HD_Form->AddListMapping(_("Status"), "cc_ticket.status", $status_list);
 
-$HD_Form->search_session_key = 'ticket_cust_selection';
 
 if (!is_customer()) {
     $HD_Form->SetSearchType(true, true, false, _('Define specific criteria to search for ticket created.'));

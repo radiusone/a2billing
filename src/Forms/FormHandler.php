@@ -91,9 +91,6 @@ class FormHandler
     /** @var int Number of rows in the current list view */
     public int $FG_LIST_VIEW_ROW_COUNT = 0;
 
-    /** @var string The session variable that stores search values */
-    public string $search_session_key = '';
-
     /** @var bool Whether to enable a CSV export button at the bottom of a list view */
     public bool $export_enable_csv = false;
 
@@ -1247,10 +1244,6 @@ class FormHandler
             return;
         }
 
-        if ($processed['cancelsearch'] ?? false) {
-            $_SESSION[$this->search_session_key] = '';
-        }
-
         foreach ($filters as $i => $filter) {
             $val = $processed["filterprefix$i"] ?? "";
             if ($val) {
@@ -1258,19 +1251,25 @@ class FormHandler
             }
         }
 
+        if ($processed['cancelsearch'] ?? false) {
+            $this->listView->clearSearchSession();
+            return;
+        }
+
         // we have not posted a new search
         if (intval($processed['posted_search'] ?? 0) !== 1) {
-            if (!empty($_SESSION[$this->search_session_key])) {
+            if ($this->listView->getSearchSession()) {
                 // there was a previous search, load the inputs from the session
-                $element_arr = json_decode($_SESSION[$this->search_session_key], true);
+                $element_arr = json_decode($this->listView->getSearchSession(), true) ?: [];
                 foreach ($element_arr as $entity_name => $entity_value) {
                     $processed[$entity_name] = $entity_value;
                     // for subsequent calls to $this->getProcessed()
                     $_POST[$entity_name] = $entity_value;
                 }
+            } else {
+                // this isn't a newly posted search, so we're done
+                return;
             }
-            // this isn't a newly posted search, so we're done
-            return;
         }
 
         $search = [];
@@ -1333,7 +1332,9 @@ class FormHandler
             }
         }
 
-        $_SESSION[$this->search_session_key] = json_encode(array_filter($search, fn($v) => is_string($v) && strlen($v)));
+        $this->listView->setSearchSession(
+            array_filter($search, fn($v) => is_string($v) && strlen($v))
+        );
     }
 
     /****************************************

@@ -84,7 +84,6 @@ $HD_Form->AddListValue(_("Sell"), Connection::getConnection()->raw("SUM(sessionb
 
 $HD_Form->list_message_intro = _("DNID Report");
 
-$HD_Form->search_session_key = "dnid_selection";
 $HD_Form->SetSearchType(text: _('Define specific criteria to search for call records'));
 
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");

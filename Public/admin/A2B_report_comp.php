@@ -90,7 +90,6 @@ $HD_Form->AddSearchPopupInput(_("Rate"), "id_ratecard", "A2B_entity_def_ratecard
 $HD_Form->AddSearchTextInput(_("Called number"), "calledstation");
 $HD_Form->AddSearchTextInput(_("Source number"), "src");
 $HD_Form->AddSearchSelectInput(_("Graph type"), "graph_type", $graphs, "calls", false);
-$HD_Form->search_session_key = "A2B_report_comp";
 
 $HD_Form->prepare_list_subselection("list");
 
