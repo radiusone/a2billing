@@ -50,6 +50,11 @@ final class ListView
         return $this;
     }
 
+    public function getFilters(): array
+    {
+        return $this->filter->inputs ?? [];
+    }
+
     public function addFirstTopButton(TopButton $button): self
     {
         array_unshift($this->topButtons, $button);
@@ -138,7 +143,7 @@ final class ListView
             "popup_formname" => $processed["popup_formname"] ?? null,
             "popup_fieldname" => $processed["popup_fieldname"] ?? null,
         ];
-        for ($i = 0; $i < count($form->filter?->inputs ?? []); $i++) {
+        for ($i = 0; $i < count($this->getFilters()); $i++) {
             $query_params["filterprefix$i"] = $processed["filterprefix$i"] ?? null;
         }
         foreach ($processed as $k => $v) {

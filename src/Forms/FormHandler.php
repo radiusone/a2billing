@@ -13,13 +13,11 @@ use A2billing\Forms\Elements\Edit\Radio;
 use A2billing\Forms\Elements\Edit\Section;
 use A2billing\Forms\Elements\Edit\Select;
 use A2billing\Forms\Elements\Edit\Textarea;
-use A2billing\Forms\Elements\EditElement;
 use A2billing\Forms\Elements\List\Buttons\ActionButton;
 use A2billing\Forms\Elements\List\Buttons\DeleteButton;
 use A2billing\Forms\Elements\List\Buttons\EditButton;
 use A2billing\Forms\Elements\List\Buttons\InfoButton;
 use A2billing\Forms\Elements\List\Buttons\TopButton;
-use A2billing\Forms\Elements\List\Filter;
 use A2billing\Forms\Elements\List\FilterInput;
 use A2billing\Forms\Elements\List\Mapping;
 use A2billing\Forms\Elements\List\SqlMapping;
@@ -97,9 +95,6 @@ class FormHandler
     public int $FG_LIST_VIEW_PAGE_COUNT = 0;
     /** @var int Number of rows in the current list view */
     public int $FG_LIST_VIEW_ROW_COUNT = 0;
-
-    /** @var Filter|null a filter added to the list view */
-    public Filter|null $filter = null;
 
     /** @var bool Whether to show a search popup at the top of the list view */
     public bool $search_form_enabled = false;
@@ -927,7 +922,6 @@ class FormHandler
 
     public function AddListFilter(string|Expression $column, string $label): void
     {
-        $this->filter ??= new Filter();
         $this->listView->addFilterInput(
             new FilterInput($column, $label)
         );
@@ -1247,7 +1241,7 @@ class FormHandler
     {
         $processed = $this->getProcessed();
 
-        if ($form_action !== "list" || (!$this->search_form_enabled && !$this->filter)) {
+        if ($form_action !== "list" || (!$this->search_form_enabled && !$this->listView->getFilters())) {
             return;
         }
 
@@ -1255,7 +1249,7 @@ class FormHandler
             $_SESSION[$this->search_session_key] = '';
         }
 
-        foreach ($this->filter?->inputs ?? [] as $i => $filter) {
+        foreach ($this->listView->getFilters() as $i => $filter) {
             $val = $processed["filterprefix$i"] ?? "";
             if ($val) {
                 $this->query_builder->whereLike($filter->column, "$val%");
