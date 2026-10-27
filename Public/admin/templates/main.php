@@ -1,11 +1,13 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\NotificationsDAO;
 
 require_once("header.php");
 require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 /**
+ * @var A2Billing $A2B
  * @var string $popup_select
  * @var int|null $menu_section
  */
@@ -74,7 +76,11 @@ $menu_section ??= 0;
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a class="link-dark rounded" href="A2B_entity_card.php"><?= _("Add :: Search") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_import_card.php"><?= _("Import") ?></a></li>
+                            <?php if (!empty($A2B->config['global']['use_realtime']) || !empty($A2B->config["webui"]["buddy_sip_file"])): ?>
                             <li><a class="link-dark rounded" href="A2B_entity_friend.php?voip_conf=sip"><?= _("VoIP Settings") ?></a></li>
+                            <?php elseif (!empty($A2B->config["webui"]["buddy_iax_file"])): ?>
+                            <li><a class="link-dark rounded" href="A2B_entity_friend.php?voip_conf=iax"><?= _("VoIP Settings") ?></a></li>
+                            <?php endif ?>
                             <li><a class="link-dark rounded" href="A2B_entity_callerid.php"><?= _("Caller-ID") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_card_group.php"><?= _("Groups") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_card_seria.php"><?= _("Card series") ?></a></li>

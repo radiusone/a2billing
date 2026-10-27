@@ -165,7 +165,7 @@ if (!USE_REALTIME) {
             $who = Notification::$UNKNOWN;
             $id = -1;
         }
-        NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $id);
+        NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $id);
     }
 }
 
@@ -173,29 +173,30 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/templates/main.php";
 
-// #### HELP SECTION
-if ($form_action === "list") {
-    if (!USE_REALTIME) {
-    ?>
+if ($form_action === "list"):
+if (!USE_REALTIME && !empty($A2B->config["webui"]["buddy_{$voip_type}_file"])):
+?>
 <div class="row pb-3">
     <div class="col">
-        <?= _("Link to Generate on SIP/IAX Friends") ?>
+        <?= sprintf(_("Link to Generate on %s Friends"), $voip_type) ?>
         <br/>
         <?= _("Realtime not active, you have to use the conf file for your system") ?>
     </div>
 </div>
 <div class="row pb-3">
     <div class="col d-flex justify-content-around">
+        <?php if ($voip_type === "sip"): ?>
         <a href="CC_generate_friend_file.php?voip_type=sipfriend" class="btn btn-sm btn-outline-primary">
             <?= _("GENERATE ADDITIONAL_A2BILLING_SIP.CONF") ?>
         </a>
+        <?php elseif ($voip_type === "iax"): ?>
         <a href="CC_generate_friend_file.php?voip_type=iaxfriend" class="btn btn-sm btn-outline-primary">
             <?= _("GENERATE ADDITIONAL_A2BILLING_IAX.CONF") ?>
         </a>
+        <?php endif ?>
     </div>
 </div>
-    <?php
-    } else { ?>
+    <?php elseif (USE_REALTIME): ?>
 <div class="row pb-3">
     <div class="col-auto">
         <a href="CC_generate_friend_file.php?action=reload" class="btn btn-sm btn-outline-primary">
@@ -203,9 +204,16 @@ if ($form_action === "list") {
         </a>
     </div>
 </div>
-    <?php
-    }
-?>
+    <?php else: ?>
+<div class="row pb-3">
+    <div class="col-auto">
+        <h6>
+            <?= sprintf(_("Your system is not configured for realtime or %s configuration files, this page is useless."), $voip_type) ?>
+        </h6>
+    </div>
+</div>
+    <?php endif ?>
+
 <form method="get" class="form form-horizontal">
     <div class="row pb-3">
         <label for="voip_type" class="col-2 col-form-label"><?= _("CONFIGURATION TYPE") ?></label>
@@ -218,6 +226,7 @@ if ($form_action === "list") {
     </div>
 </form>
 
+    <?php if ($HD_Form->FG_LIST_VIEW_ROW_COUNT): ?>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <div class="row pb-3">
     <div class="col-auto">
@@ -279,9 +288,10 @@ if ($form_action === "list") {
 </div> <!-- .modal -->
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <?php
-}
+endif;
+endif;
 
 $HD_Form->create_toppage ($form_action);
-$HD_Form->create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/templates/footer.php";
