@@ -55,7 +55,6 @@ if (($form_action !== "edit" && $form_action !== "ask-edit") || (int)$id !== Cus
     header("Location: A2B_info_card.php");
 }
 
-$HD_Form->init();
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/templates/main.php";

@@ -44,8 +44,6 @@ require_once __DIR__ . "/../../common/form_data/report_calls.inc";
 
 Customer::checkPageAccess(Customer::ACX_CALL_HISTORY);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $HD_Form->prepare_list_subselection("list");
 

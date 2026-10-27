@@ -45,8 +45,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_outbound_cid.php";
 
 Admin::checkPageAccess(Admin::ACX_OUTBOUNDCID);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 

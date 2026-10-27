@@ -102,8 +102,6 @@ if (ADVANCED_MODE) {
 }
 
 /***********************************************************************************/
-$HD_Form->init();
-
 // CHECK IF REQUEST OF BATCH UPDATE
 if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
     // get the checkboxes that are checked

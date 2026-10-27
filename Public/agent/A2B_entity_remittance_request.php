@@ -59,7 +59,6 @@ if ($action === "cancel" && $id) {
         ->update(["status" => 3]);
     die();
 }
-$HD_Form->init();
 
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);

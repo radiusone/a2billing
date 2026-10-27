@@ -55,7 +55,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_friend.inc";
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-$HD_Form->init();
 $form_action ??= "list";
 
 /********************************* BATCH UPDATE ***********************************/
@@ -150,9 +149,6 @@ if ($batchupdate === "1" && count($check)) {
     $_POST['host'] = $A2B->config['peer_friend']['host'];
     $_POST['dtmfmode'] = $A2B->config['peer_friend']['dtmfmode'];
     $_POST['secret'] = strtr(base64_encode(bin2hex(random_bytes(16))), "+/=", "   ");
-
-    // for the getProcessed var
-    $HD_Form->init();
 }
 
 if (!USE_REALTIME) {

@@ -44,8 +44,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_notify.inc";
 
 Customer::checkPageAccess(Customer::ACX_NOTIFICATION);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 

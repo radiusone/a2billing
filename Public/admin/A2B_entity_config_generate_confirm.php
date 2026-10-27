@@ -45,7 +45,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_config_group.inc";
  */
 
 $form_action ??= "";
-$HD_Form -> init();
 
 require_once __DIR__ . "/templates/main.php";
 

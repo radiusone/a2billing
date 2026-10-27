@@ -60,7 +60,6 @@ $HD_Form = new FormHandler(
         ->orderBy("dnid")
         ->limit(25)
 );
-$HD_Form->init();
 
 $dialstatus_list = getDialStatusList();
 $calltype_list = [

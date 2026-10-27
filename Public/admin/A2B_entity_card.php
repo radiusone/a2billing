@@ -54,8 +54,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_card.inc";
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-$HD_Form->init();
-
 /********************************* BATCH UPDATE ***********************************/
 getpost_ifset(['batchupdate', 'check', 'type', 'mode']);
 

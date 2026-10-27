@@ -49,8 +49,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_currencies.inc";
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
-$HD_Form -> init();
-
 /********************************* BATCH UPDATE CURRENCY TABLE ***********************************/
 $form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);

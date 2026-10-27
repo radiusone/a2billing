@@ -64,8 +64,6 @@ if (!is_numeric($subscriber_signup)) {
     }
 }
 
-$HD_Form->init();
-
 $list = $HD_Form->perform_action($form_action);
 
 if ($form_action === "add") {

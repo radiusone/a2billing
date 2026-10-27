@@ -327,8 +327,6 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("pnl_report")->orderBy("name")
 );
 
-$HD_Form->init();
-
 if (!isset($group_id)) {
     if ($report_type == 1) {
         $HD_Form->AddListValue(gettext("Group"), "name", "linktonext_1");

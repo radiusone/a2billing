@@ -45,8 +45,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_def_ratecard.inc";
 
 Agent::checkPageAccess(Agent::ACX_RATECARD);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 

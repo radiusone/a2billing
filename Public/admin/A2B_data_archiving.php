@@ -62,9 +62,6 @@ $HD_Form = new FormHandler(
     "Customer",
     builder: Connection::getConnection("cc_card")->limit(30)
 );
-$HD_Form->init();
-
-$HD_Form->search_session_key = "entity_archiving_selection";
 
 $language_list = getLanguages();
 $simultaccess_list = getCardAccess_List();

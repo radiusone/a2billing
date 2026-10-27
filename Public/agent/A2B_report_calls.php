@@ -45,8 +45,6 @@ require_once __DIR__ . "/../../common/form_data/report_calls.inc";
 
 Agent::checkPageAccess(Agent::ACX_CALL_REPORT);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $HD_Form->prepare_list_subselection("list");
 

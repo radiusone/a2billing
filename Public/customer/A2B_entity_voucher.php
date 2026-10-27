@@ -47,7 +47,6 @@ getpost_ifset(["voucher"]);
 /**
  * @var numeric-string|null $voucher
  */
-$HD_Form -> init();
 $currencies_list = get_currencies();
 $success = "";
 $error = "";

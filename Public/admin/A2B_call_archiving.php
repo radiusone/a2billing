@@ -93,8 +93,6 @@ $HD_Form = new FormHandler(
         ->limit(30)
 );
 
-$HD_Form->init();
-
 $HD_Form->list_message_empty = _("No matching calls found; use the fields above to refine your search.");
 
 $HD_Form->AddListValue(_("Calldate"), "starttime");

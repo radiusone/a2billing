@@ -42,8 +42,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_payment.inc";
 
 Customer::checkPageAccess(Customer::ACX_PAYMENT_HISTORY);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 

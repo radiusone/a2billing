@@ -54,7 +54,6 @@ if ($form_action !== "edit" && $form_action !== "ask-edit" || (isset($id) && (in
     header("Location: A2B_info_agent.php");
 }
 
-$HD_Form -> init();
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/templates/main.php";

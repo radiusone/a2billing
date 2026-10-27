@@ -47,8 +47,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_diduse.inc";
  */
 Admin::checkPageAccess(Admin::ACX_DID);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $action ??= "";
 

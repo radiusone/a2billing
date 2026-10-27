@@ -56,8 +56,6 @@ Agent::checkPageAccess(Agent::ACX_VOIPCONF);
 $form_action ??= "list";
 $voip_type ??= "";
 
-$HD_Form -> init();
-
 /********************************* ADD SIP / IAX FRIEND ***********************************/
 getpost_ifset(["id_cc_card", "cardnumber", "useralias"]);
 /**
@@ -110,9 +108,6 @@ if (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_
     $_POST['host'] = $A2B->config['peer_friend']['host'];
     $_POST['dtmfmode'] = $A2B->config['peer_friend']['dtmfmode'];
     $_POST["secret"] = generate_random_value("#####XXXXXXXXXX#####");
-
-    // for the getProcessed var
-    $HD_Form->init();
 }
 
 if (!USE_REALTIME) {

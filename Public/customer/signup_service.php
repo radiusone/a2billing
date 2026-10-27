@@ -45,8 +45,6 @@ if (!$A2B->config["signup"]['enable_signup']) {
 
 $HD_Form = new FormHandler();
 
-$HD_Form->init();
-
 //check subscriber
 $result_subscriber = Connection::getConnection("cc_subscription_signup")
     ->where("enable", 1)

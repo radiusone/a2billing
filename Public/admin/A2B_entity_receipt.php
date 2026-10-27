@@ -63,8 +63,6 @@ if ($action === "lock") {
     die();
 }
 
-$HD_Form->init();
-
 $form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);

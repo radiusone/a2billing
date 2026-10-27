@@ -54,8 +54,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_voucher.inc";
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
-$HD_Form->init();
-
 /********************************* BATCH UPDATE ***********************************/
 getpost_ifset(["action", "check", "type"]);
 /**

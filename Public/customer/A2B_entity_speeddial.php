@@ -46,7 +46,6 @@ Customer::checkPageAccess(Customer::ACX_SPEED_DIAL);
 
 $form_action ??= "list";
 
-$HD_Form->init();
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/templates/main.php";

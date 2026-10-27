@@ -140,8 +140,6 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
 $HD_Form->query_builder->where("lastname", $_SESSION["IDfilter"]);
 // END GENERATE CARDS
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 

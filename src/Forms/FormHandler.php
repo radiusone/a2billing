@@ -348,20 +348,6 @@ class FormHandler
         return self::$Instance;
     }
 
-    /**
-     * Perform the execution of some actions to prepare the form generation
-     *
-     * @todo: why isn't this just done in the constructor instead of manually calling it 100 times?
-     */
-    public function init(): void
-    {
-        if (class_exists(Console::class)) {
-            Console::log('FormHandler -> init');
-            Console::logMemory(null, 'FormHandler -> init : Line ' . __LINE__);
-            Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
-        }
-    }
-
     public function getProcessed(): array
     {
         $processed = [];
@@ -457,6 +443,12 @@ class FormHandler
      */
     public function perform_action(string &$form_action): array
     {
+        if (class_exists(Console::class)) {
+            Console::log('FormHandler -> perform_action');
+            Console::logMemory(null, 'FormHandler -> perform_action : Line ' . __LINE__);
+            Console::logSpeed('FormHandler -> perform_action : Line ' . __LINE__);
+        }
+
         $processed = $this->getProcessed();
         //security check
         $self = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);

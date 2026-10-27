@@ -47,8 +47,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_charge.inc";
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
-$HD_Form_c->init();
-
 if (!empty($id)) {
     $HD_Form_c->update_query_conditions["cc_charge.id"] = str_replace(
         "%id",

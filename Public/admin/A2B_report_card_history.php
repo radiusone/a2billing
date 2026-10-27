@@ -45,8 +45,6 @@ require_once __DIR__ . "/../../common/form_data/report_card_history.inc";
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $HD_Form->prepare_list_subselection('list');
 

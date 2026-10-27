@@ -45,8 +45,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_ticket.inc";
 
 Admin::checkPageAccess(Admin::ACX_SUPPORT);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $action = $action ?? $form_action;
 

@@ -56,7 +56,6 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 getpost_ifset(array ( 'key' ));
 
 $HD_Form = new FormHandler("cc_card", "User");
-$HD_Form->init();
 
 // HEADER SECTION
 require_once __DIR__ . "/templates/signup_header.php";

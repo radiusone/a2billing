@@ -75,8 +75,6 @@ if ($form_action !== "list" && !empty($id)) {
         die();
     }
 }
-$HD_Form -> init();
-
 /********************************* BATCH UPDATE ***********************************/
 getpost_ifset(['batchupdate', 'check', 'type', 'mode']);
 

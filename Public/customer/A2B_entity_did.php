@@ -48,8 +48,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_customer_did.inc";
 
 Customer::checkPageAccess(Customer::ACX_DID);
 
-$HD_Form->init();
-
 $form_action ??= "list";
 $message = "";
 if ($form_action === "add") {
