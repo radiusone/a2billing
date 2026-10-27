@@ -179,16 +179,16 @@ class FormHandler
     /** @var string Label for the "cancel" button */
     public string $cancel_button_text;
 
-    /** @var callable|null Static method of FormBO class executed after creating */
+    /** @var (callable(int|numeric-string, array<string,mixed>):void)|null Static method of FormBO class executed after creating */
     public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = null;
 
-    /** @var callable|null Static method of FormBO class executed before deleting */
+    /** @var (callable(int|numeric-string):void)|null Static method of FormBO class executed before deleting */
     public $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = null;
 
-    /** @var callable|null Static method of FormBO class executed after deleting */
+    /** @var (callable(int|numeric-string):void)|null Static method of FormBO class executed after deleting */
     public $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = null;
 
-    /** @var callable|null Static method of FormBO class executed before editing */
+    /** @var (callable(int|numeric-string, array<string,mixed>):void)|null Static method of FormBO class executed before editing */
     public $FG_ADDITIONAL_FUNCTION_BEFORE_EDIT = null;
 
     /**
@@ -752,7 +752,7 @@ class FormHandler
                         $id = $this->query_builder->insertGetId($values);
                         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
                         if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                            ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+                            ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id, $values);
                         }
                     } catch (Throwable $e) {
                         $this->add_message_error .= " " . $e->getMessage();
@@ -765,7 +765,7 @@ class FormHandler
                 $id = $this->query_builder->insertGetId($values);
                 // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
                 if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                    ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+                    ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id, $values);
                 }
             } catch (Throwable $e) {
                 $this->add_message_error .= " " . $e->getMessage();

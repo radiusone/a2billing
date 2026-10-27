@@ -77,13 +77,12 @@ class FormBO
     /**
      * Run after DID creation
      *
-     * @param int|numeric-string $did_id
+     * @param int|numeric-string $did_id the newly created datbase id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function add_did_use(int|string $did_id): void
+    public static function add_did_use(int|string $did_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         Connection::getConnection("cc_did_use")
             ->insert(["id_did" => $did_id, "activated" => $processed["activated"] ?? 0]);
     }
@@ -111,13 +110,12 @@ class FormBO
     /**
      * Run after ticket creation
      *
-     * @param int|numeric-string $ticket_id
+     * @param int|numeric-string $ticket_id the new database id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function ticket_add(int|string $ticket_id): void
+    public static function ticket_add(int|string $ticket_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $title = $processed['title'];
         $card_id = $processed['creator'];
         $priority = $processed['priority'];
@@ -153,6 +151,7 @@ class FormBO
                     $result["email"]
                 );
             } catch (Exception $e) {
+                $form = FormHandler::GetInstance();
                 $form->add_message_error = $e->getMessage();
             }
         }
@@ -174,6 +173,7 @@ class FormBO
                     $result["email"]
                 );
             } catch (Exception $e) {
+                $form = FormHandler::GetInstance();
                 $form->add_message_error = $e->getMessage();
             }
         }
@@ -199,12 +199,13 @@ class FormBO
     /**
      * Run after an agent refill
      *
+     * @param int|numeric-string $refill_id the new database id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
+     * @noinspection PhpUnusedParameterInspection
      */
-    public static function add_agent_refill(): void
+    public static function add_agent_refill(int|string $refill_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $credit = $processed['credit'];
         $agent_id = $processed['agent_id'];
 
@@ -218,12 +219,11 @@ class FormBO
      * Run after creation of an agent
      *
      * @param int|numeric-string $agent_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function creation_agent_refill(int|string $agent_id): void
+    public static function creation_agent_refill(int|string $agent_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $credit = $processed["credit"];
 
         if ($credit > 0) {
@@ -237,17 +237,19 @@ class FormBO
      * Run after user self-signup
      *
      * @param int|numeric-string $id_card
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      * @throws A2bMailException
+     * @noinspection PhpUnusedParameterInspection
      */
-    public static function processing_card_signup(int|string $id_card): void
+    public static function processing_card_signup(int|string $id_card, array $processed): void
     {
         global $A2B;
 
         if ($A2B->config["signup"]['reload_asterisk_if_sipiax_created'] ?? false) {
-            self::create_sipiax_friends_reload($id_card);
+            self::create_sipiax_friends_reload($id_card, $processed);
         } else {
-            self::create_sipiax_friends($id_card);
+            self::create_sipiax_friends($id_card, $processed);
         }
 
         // create subscriptions
@@ -351,12 +353,11 @@ class FormBO
      * Run after agent commission added
      *
      * @param int|numeric-string $agent_commission_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function processing_commission_add(int|string $agent_commission_id): void
+    public static function processing_commission_add(int|string $agent_commission_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $id_agent = $processed["id_agent"];
         if (!empty($id_agent)) {
             //update record with agent commission
@@ -380,14 +381,13 @@ class FormBO
      * Run after card creation by admin
      *
      * @param int|numeric-string $card_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function processing_card_add(int|string $card_id): void
+    public static function processing_card_add(int|string $card_id, array $processed): void
     {
-        self::create_sipiax_friends($card_id);
+        self::create_sipiax_friends($card_id, $processed);
 
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $credit = $processed['credit'];
 
         if ($credit) {
@@ -463,22 +463,26 @@ class FormBO
      * Run after card creation by agent
      *
      * @param int|numeric-string $card_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
+     * @noinspection PhpUnusedParameterInspection
      */
-    public static function processing_card_add_agent(int|string $card_id): void
+    public static function processing_card_add_agent(int|string $card_id, array $processed): void
     {
-        self::create_sipiax_friends($card_id);
+        self::create_sipiax_friends($card_id, $processed);
         self::create_lock_card($card_id);
     }
 
     /**
      * Run after refill created
+     *
+     * @param int|numeric-string $refill_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
+     * @noinspection PhpUnusedParameterInspection
      */
-    public static function processing_refill_add(): void
+    public static function processing_refill_add(int|string $refill_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $credit = $processed["credit"];
         $card_id = $processed["card_id"];
 
@@ -511,13 +515,13 @@ class FormBO
     /**
      * Run after DID destination creation
      *
+     * @param int|numeric-string $did_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
+     * @noinspection PhpUnusedParameterInspection
      */
-    public static function did_destination_add(): void
+    public static function did_destination_add(int|string $did_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
-
         $id_cc_did = $processed['id_cc_did'];
         $id_cc_card = $processed['id_cc_card'];
 
@@ -604,13 +608,12 @@ class FormBO
      * Run after creating a recurring billing item
      *
      * @param int|numeric-string $new_billing
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      * @throws A2bMailException
      */
-    public static function proccessing_billing_customer(int|string $new_billing): void
+    public static function proccessing_billing_customer(int|string $new_billing, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         //find the last billing
         $card_id = $processed["id_card"];
         $date_bill = $processed["date"];
@@ -765,9 +768,11 @@ class FormBO
      * Adds a reference number to the invoice
      *
      * @param int|numeric-string $id_invoice
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
+     * @noinspection PhpUnusedParameterInspection
      */
-    public static function create_invoice_reference(int|string $id_invoice): void
+    public static function create_invoice_reference(int|string $id_invoice, array $processed): void
     {
         //CREATE AND UPDATE REF NUMBER
         $reference = Invoice::generateReference();
@@ -780,12 +785,11 @@ class FormBO
      * Run after a payment is made
      *
      * @param int|numeric-string $id_payment
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function create_refill_after_payment(int|string $id_payment): void
+    public static function create_refill_after_payment(int|string $id_payment, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $date = $processed["date"];
         $card_id = $processed["card_id"];
         $amount = $processed["payment"];
@@ -887,13 +891,11 @@ class FormBO
      * Run after an agent refill is created
      *
      * @param int|numeric-string $id_payment
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function create_agent_refill(int|string $id_payment): void
+    public static function create_agent_refill(int|string $id_payment, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
-
         if (!$processed["added_refill"]) {
             return;
         }
@@ -922,12 +924,11 @@ class FormBO
 
     /**
      * @param int|numeric-string $card_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function create_sipiax_friends(int|string $card_id): void
+    public static function create_sipiax_friends(int|string $card_id, array $processed): void
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
         $sip = intval($processed['sip_buddy'] ?? 0);
         $iax = intval($processed['iax_buddy'] ?? 0);
         if (!$sip && !$iax) {
@@ -952,11 +953,12 @@ class FormBO
 
     /**
      * @param int|numeric-string $card_id
+     * @param array<string,mixed> $processed the values submitted for the save
      * @return void
      */
-    public static function create_sipiax_friends_reload(int|string $card_id): void
+    public static function create_sipiax_friends_reload(int|string $card_id, array $processed): void
     {
-        self::create_sipiax_friends($card_id);
+        self::create_sipiax_friends($card_id, $processed);
 
         $as = new AGI_AsteriskManager();
         $res = $as->connect(MANAGER_HOST,MANAGER_USERNAME,MANAGER_SECRET);
