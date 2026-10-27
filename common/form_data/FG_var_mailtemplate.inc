@@ -207,5 +207,4 @@ $HD_Form->add_message_intro = _("Add a new mail template");
 
 if ($source) {
     $HD_Form->add_message_intro = _("Copy an existing mail template");
-    $HD_Form->save_button_text = _("Save Copy");
 }

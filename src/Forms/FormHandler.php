@@ -167,18 +167,6 @@ class FormHandler
     /** @var string Text telling you to click the button */
     public string $delete_message_bottom;
 
-    /** @var string Label for the "add" button */
-    public string $add_button_text;
-
-    /** @var string Label for the "save" button */
-    public string $save_button_text;
-
-    /** @var string Label for the "delete" button */
-    public string $delete_button_text;
-
-    /** @var string Label for the "cancel" button */
-    public string $cancel_button_text;
-
     /** @var (callable(int|numeric-string, array<string,mixed>):void)|null Static method of FormBO class executed after creating */
     public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = null;
 
@@ -285,18 +273,12 @@ class FormHandler
             $_SESSION['CSRF_TOKEN'] = $this->FG_CSRF_TOKEN;
         }
 
-        //initializing variables with _
-        $this->save_button_text = _("Save");
-        $this->add_button_text = _("Add");
-        $this->delete_button_text = _("Delete");
-        $this->cancel_button_text = _("Cancel");
-
         $inst = strtolower($this->FG_INSTANCE_NAME);
         $this->list_message_empty = sprintf(_("No %s have been created"), $inst);
         $this->list_message_intro = sprintf(_("%s list"), ucfirst($inst));
         $this->edit_message_intro = sprintf(_("Editing %s"), $inst);
         $this->delete_message_result = sprintf(_("Your %s has been deleted."), $inst);
-        $this->delete_message_intro = sprintf(_("If you really want to remove this %s, click the “%s” button"), $inst, $this->delete_button_text);
+        $this->delete_message_intro = sprintf(_("If you really want to remove this %s, click the “Delete” button"), $inst);
         $this->add_message_intro = sprintf(_("Creating new %s"), $inst);
         $this->add_message_result = sprintf(_("Your new %s has been created."), $inst);
         $this->add_message_error = sprintf(_("There was an error creating your %s."), $inst);
@@ -304,8 +286,8 @@ class FormHandler
         $this->delete_message_error = sprintf(_("There was an error deleting your %s."), $inst);
 
         $this->add_message_bottom =
-        $this->edit_message_bottom = sprintf(_("Click “%s” to continue"), $this->save_button_text);
-        $this->delete_message_bottom = sprintf(_("Click “%s” to continue"), $this->delete_button_text);
+        $this->edit_message_bottom = _("Click “Save” to continue");
+        $this->delete_message_bottom = _("Click “Delete” to continue");
 
         $this->delete_message_confirm_fk = _("Are you sure you want to delete all records connected to this instance?");
     }

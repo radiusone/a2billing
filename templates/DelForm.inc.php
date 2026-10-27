@@ -67,8 +67,8 @@ use A2billing\Forms\Elements\EditElement;
             <?= $form->delete_message_bottom ?>
         </div>
         <div class="col-auto">
-            <a class="btn btn-secondary" href="?form_action=list"><?= $form->cancel_button_text ?></a>
-            <button type="submit" class="btn btn-danger"><?= $form->delete_button_text ?></button>
+            <a class="btn btn-secondary" href="?form_action=list"><?= _("Cancel") ?></a>
+            <button type="submit" class="btn btn-danger"><?= _("Delete") ?></button>
         </div>
     </div>
 

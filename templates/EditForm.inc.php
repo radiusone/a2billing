@@ -34,8 +34,8 @@ use A2billing\Forms\Elements\Edit\HasMany;
             <?= $form->edit_message_bottom ?>
         </div>
         <div class="col-auto">
-            <a class="btn btn-secondary" href="?form_action=list"><?= $form->cancel_button_text ?></a>
-            <button type="submit" class="btn btn-primary"><?= $form->save_button_text ?></button>
+            <a class="btn btn-secondary" href="?form_action=list"><?= _("Cancel") ?></a>
+            <button type="submit" class="btn btn-primary"><?= _("Save") ?></button>
         </div>
     </div>
 </form>

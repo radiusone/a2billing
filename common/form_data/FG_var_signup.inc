@@ -319,4 +319,3 @@ if ($form_action === "add") {
 
 $HD_Form->add_message_intro = "";
 $HD_Form->add_message_bottom = _("Click 'SIGNUP' to continue");
-$HD_Form->save_button_text = _("SIGNUP");
