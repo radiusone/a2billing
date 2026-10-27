@@ -113,12 +113,12 @@ trait ListMethods
         );
     }
 
-    public function AddListDeleteButton(?string $url = null, string $condition = ""): void
+    public function AddListDeleteButton(?string $url = null, string $condition = "", array $forbidden = []): void
     {
         $this->allowDeletes = true;
         $url ??= "?form_action=ask-delete&id=";
         $this->listView->addDeleteButton(
-            new Buttons\DeleteButton($url, $this->FG_INSTANCE_NAME, condition: $condition)
+            new Buttons\DeleteButton($url, $this->FG_INSTANCE_NAME, condition: $condition, forbidden: $forbidden)
         );
     }
 

@@ -67,9 +67,7 @@ $cols = array_keys(array_first($list ?? []) ?? []);
                     <td>
                     <?= $this->infoButton?->renderButton($row["instance_primary_key"], $row) ?>
                     <?= $this->editButton?->renderButton($row["instance_primary_key"], $row) ?>
-                    <?php if(!in_array($row["instance_primary_key"], $form->FG_DELETION_FORBIDDEN_ID)): ?>
-                        <?= $this->deleteButton?->renderButton($row["instance_primary_key"], $row) ?>
-                    <?php endif ?>
+                    <?= $this->deleteButton?->renderButton($row["instance_primary_key"], $row) ?>
                     <?php foreach ($this->actionButtons as $button): ?>
                         <?= $button->renderButton($row["instance_primary_key"], $row) ?>
                     <?php endforeach ?>

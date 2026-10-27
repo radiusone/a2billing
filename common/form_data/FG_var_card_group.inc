@@ -56,8 +56,7 @@ $HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", "0", "5
 
 $HD_Form->AddListAddButton(icon: "people-fill");
 $HD_Form->AddListEditButton();
-$HD_Form->AddListDeleteButton();
-$HD_Form->FG_DELETION_FORBIDDEN_ID = [1];
+$HD_Form->AddListDeleteButton(forbidden: [1]);
 
 $right_list = [
     Customer::ACX_PASSWORD => _("PASSWORD"),

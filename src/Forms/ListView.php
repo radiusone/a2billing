@@ -175,6 +175,11 @@ final class ListView
         return $this;
     }
 
+    public function getDeleteForbidden(): array
+    {
+        return $this->deleteButton?->forbidden ?? [];
+    }
+
     public function addActionButton(ActionButton $button): self
     {
         $this->actionButtons[] = $button;

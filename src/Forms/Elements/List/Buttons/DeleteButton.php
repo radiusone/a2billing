@@ -12,6 +12,7 @@ class DeleteButton extends ListButton
         string $icon = "trash3-fill",
         ?string $label = null,
         string $condition = "",
+        public array $forbidden = [],
     )
     {
         $this->link = $link;
@@ -23,7 +24,7 @@ class DeleteButton extends ListButton
 
     public function renderButton(int $id, array $row = []): string
     {
-        if (!$this->checkCondition($id, $row)) {
+        if (!$this->checkCondition($id, $row) || in_array($id, $this->forbidden)) {
             return "";
         }
 

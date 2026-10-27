@@ -76,9 +76,6 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
-    /** @var array Primary key of entries that can't be deleted */
-    public array $FG_DELETION_FORBIDDEN_ID = [];
-
     /** @var int Number of pages in the current list view */
     public int $FG_LIST_VIEW_PAGE_COUNT = 0;
     /** @var int Number of rows in the current list view */
@@ -464,7 +461,7 @@ class FormHandler
 
         $processed = $this->getProcessed();
 
-        if ($form_action === "ask-delete" && in_array($processed['id'], $this->FG_DELETION_FORBIDDEN_ID)) {
+        if ($form_action === "ask-delete" && in_array($processed['id'], $this->listView->getDeleteForbidden())) {
             $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? $self);
         }
 
