@@ -720,6 +720,7 @@ class FormHandler
             return;
         }
 
+        $id = false;
         if (count($split_values)) {
             foreach ($split_values as $key => $array) {
                 foreach ($array as $array_value) {

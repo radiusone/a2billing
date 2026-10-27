@@ -91,7 +91,7 @@ $HD_Form->AddEditSelect(
 
 $HD_Form->AddEditElement(
     _("MAX VALUE"),
-    "`maxvalue`",
+    "maxvalue",
     _("Input the maximum value (between 0 and 1 for ASR ; > 0 for ALOC in sec ; > 0 for CIC)"),
     [],
     null,

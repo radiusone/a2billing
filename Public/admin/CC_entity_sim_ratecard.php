@@ -43,8 +43,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
  * @var A2Billing $A2B
  */
 
-Admin::checkPageAccess(Admin::ACX_RATECARD);
-
 getpost_ifset(['posted', 'tariffplan', 'balance', 'id_cc_card', 'called', 'accountcode']);
 /**
  * @var string $posted

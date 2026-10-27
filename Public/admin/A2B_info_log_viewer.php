@@ -39,7 +39,7 @@ use A2billing\Connection;
 $menu_section = 16;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
 getpost_ifset(["id"]);
 /**

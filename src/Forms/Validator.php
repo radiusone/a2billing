@@ -25,7 +25,7 @@ class Validator
     public static function email(string $value): bool|string
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) === $value
-            ?: _("(must be a valid email address");
+            ?: _("(must be a valid email address)");
     }
 
     /**
@@ -178,7 +178,7 @@ class Validator
     public static function time(string $value): bool|string
     {
         return preg_match("/^([01][0-9]|2[0-3]):([0-5][0-9])$/", $value) === 1
-            ?: _("(must be a time in hh:mm format");
+            ?: _("(must be a time in hh:mm format)");
     }
 
     /**
@@ -236,7 +236,7 @@ class Validator
     public static function timeSeconds(string $value): bool|string
     {
         return preg_match("/^([01][0-9]|2[0-3])(:[0-5][0-9]){2}$/", $value) === 1
-            ?: _("(must be a time in hh:mm:ss format");
+            ?: _("(must be a time in hh:mm:ss format)");
     }
 
     /**

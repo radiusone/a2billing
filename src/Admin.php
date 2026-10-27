@@ -4,37 +4,58 @@ namespace A2billing;
 
 class Admin extends User
 {
+    /** @var int what it says on the tin */
     public const ACX_NOACCESS = 0;
-    public const ACX_CUSTOMER = 1;
-    public const ACX_BILLING = 2;
-    public const ACX_RATECARD = 4;
-    public const ACX_TRUNK = 8;
-    public const ACX_CALL_REPORT = 16;
-    public const ACX_CRONT_SERVICE = 32;
-    /**
-     * Meaning is unclear; seems like it was intended for permissions to view sub-admins and agents
-     * but is also checked on pages that have nothing to do with that. I suspect poor naming has
-     * led to it being used as a general check for whether or not a user is an administrator
-     */
-    public const ACX_ADMINISTRATOR = 64;
-    public const ACX_MAINTENANCE = 128;
-    public const ACX_MAIL = 256;
-    public const ACX_DID = 512;
-    public const ACX_CALLBACK = 1024;
-    public const ACX_OUTBOUNDCID = 2048;
-    public const ACX_PACKAGEOFFER = 4096;
-    public const ACX_PREDICTIVE_DIALER = 8192;
-    public const ACX_INVOICING = 16384;
-    public const ACX_SUPPORT = 32768;
-    public const ACX_DASHBOARD = 65536;
-    public const ACX_ACXSETTING = 131072;
-    public const ACX_MODIFY_REFILLS = 262144;
-    public const ACX_MODIFY_PAYMENTS = 524288;
-    public const ACX_MODIFY_CUSTOMERS = 1048576;
-    public const ACX_DELETE_NOTIFICATIONS = 2097152;
-    public const ACX_DELETE_CDR = 4194304;
-    public const ACX_MODIFY_ADMINS = 8388608;
-    public const ACX_MODIFY_AGENTS = 16777216;
+    /** @var int view customer data */
+    public const ACX_CUSTOMER = 2 ** 0;
+    /** @var int view refills, commission, payments, etc */
+    public const ACX_BILLING = 2 ** 1;
+    /** @var int manage call plans, rate cards, and rates */
+    public const ACX_RATECARD = 2 ** 2;
+    /** @var int manage providers, trunks, and prefixes */
+    public const ACX_TRUNK = 2 ** 3;
+    /** @var int view reports */
+    public const ACX_CALL_REPORT = 2 ** 4;
+    /** @var int manage "recurring services" */
+    public const ACX_CRONT_SERVICE = 2 ** 5;
+    /** @var int view agents and other administrators */
+    public const ACX_ADMINISTRATOR = 2 ** 6;
+    /** @var int manage maintenance scripts, cron, etc */
+    public const ACX_MAINTENANCE = 2 ** 7;
+    /** @var int manage mail templates and send mail out */
+    public const ACX_MAIL = 2 ** 8;
+    /** @var int manage inbound and outbound DIDs */
+    public const ACX_DID = 2 ** 9;
+    /** @var int manage callback services, whatever that means */
+    public const ACX_CALLBACK = 2 ** 10;
+    /** @var int manage CIDs and groups */
+    public const ACX_OUTBOUNDCID = 2 ** 11;
+    /** @var int manage packages */
+    public const ACX_PACKAGEOFFER = 2 ** 12;
+    /** @var int unused */
+    public const ACX_PREDICTIVE_DIALER = 2 ** 13;
+    /** @var int manage and send invoices and receipts */
+    public const ACX_INVOICING = 2 ** 14;
+    /** @var int manage support boxes and tickets */
+    public const ACX_SUPPORT = 2 ** 15;
+    /** @var int view the dashboard */
+    public const ACX_DASHBOARD = 2 ** 16;
+    /** @var int manage global settings */
+    public const ACX_ACXSETTING = 2 ** 17;
+    /** @var int add, edit, delete refills */
+    public const ACX_MODIFY_REFILLS = 2 ** 18;
+    /** @var int add, edit, delete payments */
+    public const ACX_MODIFY_PAYMENTS = 2 ** 19;
+    /** @var int add, edit, delete users */
+    public const ACX_MODIFY_CUSTOMERS = 2 ** 20;
+    /** @var int delete notifications */
+    public const ACX_DELETE_NOTIFICATIONS = 2 ** 21;
+    /** @var int delete calls */
+    public const ACX_DELETE_CDR = 2 ** 22;
+    /** @var int add, edit, delete admins */
+    public const ACX_MODIFY_ADMINS = 2 ** 23;
+    /** @var int add, edit, delete agents */
+    public const ACX_MODIFY_AGENTS = 2 ** 24;
     public const ACX_ALL_RIGHTS = 2 ** 32;
 
     /** @var array|string[] pages that don't require authentication */
