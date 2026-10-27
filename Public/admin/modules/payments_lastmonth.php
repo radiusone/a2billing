@@ -96,7 +96,7 @@ if (!empty($type) && !empty($view_type)) {
     die();
 }
 ?>
-<div class="card-text">
+<div class="card-text small">
     <strong><?= _("Report Period") ?>:</strong>&nbsp;<label for="view_payment_day"><?= _("Days") ?></label>&nbsp;<input
             id="view_payment_day"
             type="radio"
@@ -114,7 +114,7 @@ if (!empty($type) && !empty($view_type)) {
             data-graph="#payments_graph"
     />
 </div>
-<div class="card-text">
+<div class="card-text small">
     <strong><?= _("Report Type") ?>:</strong>&nbsp;<label for="payments_count"><?= _("Payment Count") ?></label>&nbsp;<input
             id="payments_count"
             type="radio"
