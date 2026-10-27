@@ -183,7 +183,7 @@ $title = sprintf(
     $starttime,
     $hour_detail,
     count($call_list),
-    max($change_load)
+    max($change_load ?: [0])
 );
 if ($hour_detail_type === "fluctuation") {
     // this is a simple bar graph showing when each change in load occurred

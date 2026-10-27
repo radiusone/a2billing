@@ -87,7 +87,7 @@ if (!empty($type) && !empty($view_type)) {
         ];
     }
     $response = [
-        "max" => floatval(max(array_column($data, 1))),
+        "max" => floatval(max(array_column($data, 1) ?: [0])),
         "data" => $data,
         "format" => "",
     ];

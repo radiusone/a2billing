@@ -798,7 +798,7 @@ function createBarGraph(array $data, string $title, Graph|null $graph = null): G
 {
     $graph ??= createBarGraphBody($title);
 
-    $graph->yaxis->SetTickPositions(range(0, ceil(max($data) * 1.1)));
+    $graph->yaxis->SetTickPositions(range(0, ceil(max($data ?: [0]) * 1.1)));
     $graph->xaxis->SetTickLabels(array_keys($data));
 
     createBarPlot($data, $graph);

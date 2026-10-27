@@ -160,7 +160,7 @@ class A2Billing
     public bool $update_callerid = false;
 
     /** @var int[]|null valid card number lengths */
-    public ?array $cardnumber_range;
+    public ?array $cardnumber_range = [10];
 
     /** @var bool $set_inuse Define if we have changed the status of the card */
     public bool $set_inuse = false;
@@ -347,7 +347,7 @@ class A2Billing
         // add default values to config for uninitialized values
         //Card Number Length Code
         $card_length_range = $this->config['global']['interval_len_cardnumber'] ?? null;
-        $this->cardnumber_range = split_data($card_length_range) ?: 10;
+        $this->cardnumber_range = split_data($card_length_range) ?: [10];
 
         if (!count($this->cardnumber_range)) {
             echo gettext("Invalid card number length list defined in configuration.");

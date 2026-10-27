@@ -26,7 +26,7 @@ $list_total_day = $graph_builder->orderBy("day")->groupBy("day")->get()->toArray
 if (!count($list_total_day)) {
     return;
 }
-$mmax = max(array_column($list_total_day, "calltime"));
+$mmax = max(array_column($list_total_day, "calltime") ?: [0]);
 $totalcall = array_sum(array_column($list_total_day, "nbcall"));
 $totalminutes = array_sum(array_column($list_total_day, "calltime"));
 $totalsell = array_sum(array_column($list_total_day, "sell"));
