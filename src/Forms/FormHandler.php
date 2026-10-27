@@ -457,6 +457,17 @@ class FormHandler
             case "export-xml":
                 $this->exportData("xml");
                 break;
+            case "add-content":
+                // passed by javascript functions for add-content and del-content
+                $edit_form_index = $processed["form_el_index"] ?? 0;
+                $this->perform_add_content($edit_form_index, $processed["id"]);
+                // will redirect if successful, otherwise...
+                $form_action = "ask-edit";
+                break;
+            case "del-content":
+                $edit_form_index = $processed["form_el_index"] ?? 0;
+                $this->perform_del_content($edit_form_index, $processed["id"]);
+                $form_action = "ask-edit";
         }
 
         $processed = $this->getProcessed();
@@ -519,9 +530,8 @@ class FormHandler
                 $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $this->query_builder->limit);
             }
         } elseif (
-            $form_action === "edit" || $form_action === "ask-delete" ||
-            $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
-            $form_action === "ask-del-confirm"
+            $form_action === "edit" || $form_action === "ask-delete"
+            || $form_action === "ask-edit" || $form_action === "ask-del-confirm"
         ) {
             $cols = array_column(
                 array_filter(
@@ -936,6 +946,7 @@ class FormHandler
         }
         $foreign_key = $entry->foreign_key;
         $table->insert([$column => $value, $foreign_key => $id]);
+        $this->gotoLocation("?form_action=ask-edit&id=");
     }
 
 
@@ -963,6 +974,7 @@ class FormHandler
         $value = $processed["del-content-value"];
         $foreign_key = $entry->foreign_key;
         $table->where([$column => $value, $foreign_key => $id])->delete();
+        $this->gotoLocation("?form_action=ask-edit&id=");
     }
 
 
@@ -974,7 +986,7 @@ class FormHandler
     {
         $help = "";
         $msg = "";
-        if ($form_action === "ask-edit" || $form_action === "edit" || $form_action === "add-content" || $form_action === "del-content") {
+        if ($form_action === "ask-edit" || $form_action === "edit") {
             if ($form_action === "ask-edit") {
                 $help = $this->edit_help_text ?: $this->help_text;
             }
@@ -1054,24 +1066,11 @@ class FormHandler
         }
         $processed = $this->getProcessed();
 
-        // passed by javascript functions for add-content and del-content
-        $edit_form_index = $processed["form_el_index"] ?? 0;
-
         if ($form_action === "ask-delete") {
             $this->check_child_records();
         }
 
         switch ($form_action) {
-            case "add-content":
-                $this->perform_add_content($edit_form_index, $processed['id']);
-                echo $this->editForm->render($processed, $list, $form_action);
-                break;
-
-            case "del-content":
-                $this->perform_del_content($edit_form_index, $processed['id']);
-                echo $this->editForm->render($processed, $list, $form_action);
-                break;
-
             case "ask-edit":
             case "edit":
             case "ask-add":
