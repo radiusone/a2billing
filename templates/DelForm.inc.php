@@ -13,6 +13,21 @@ use A2billing\Forms\Elements\EditElement;
  * @var EditElement[] $elements
  */
 ?>
+<?php if (($help = $form->del_help_text ?: $form->help_text)): ?>
+<div class="row pb-3 align-items-center" id="create_toppage_help">
+    <div class='col'>
+        <?= $help ?>
+    </div>
+</div>
+<?php endif ?>
+
+<?php if ($form->delete_message_intro): ?>
+<div class="row pb-3 align-items-center" id="create_toppage">
+    <div class='col'>
+        <?= $form->delete_message_intro ?>
+    </div>
+</div>
+<?php endif ?>
 
 <form action="" id="myForm" method="post" name="myForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>">

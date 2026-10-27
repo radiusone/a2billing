@@ -12,6 +12,22 @@ use A2billing\Forms\Elements\Edit\HasMany;
  * @var array $db_data
  */
 ?>
+<?php if (($help = $form->edit_help_text ?: $form->help_text)): ?>
+<div class="row pb-3 align-items-center" id="create_toppage_help">
+    <div class='col'>
+        <?= $help ?>
+    </div>
+</div>
+<?php endif ?>
+
+<?php if ($form->edit_message_intro): ?>
+<div class="row pb-3 align-items-center" id="create_toppage">
+    <div class='col'>
+        <?= $form->edit_message_intro ?>
+    </div>
+</div>
+<?php endif ?>
+
 <form action="" method="post" name="myForm" id="editForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
     <input type="hidden" name="form_action" value="edit"/>

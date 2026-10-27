@@ -449,7 +449,7 @@ class FormHandler
                 $this->perform_edit($form_action);
                 break;
             case "delete":
-                $this->perform_delete();
+                $this->perform_delete($form_action);
                 break;
             case "export-csv":
                 $this->exportData("csv");
@@ -472,8 +472,14 @@ class FormHandler
 
         $processed = $this->getProcessed();
 
-        if ($form_action === "ask-delete" && in_array($processed['id'], $this->listView->getDeleteForbidden())) {
-            $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? $self);
+        if ($form_action === "ask-delete") {
+            if (in_array($processed['id'], $this->listView->getDeleteForbidden())) {
+                $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? $self);
+            }
+            if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)) {
+                // this function can insert a warning into the page top before delete is done
+                ($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)($processed[$this->FG_QUERY_PRIMARY_KEY]);
+            }
         }
 
         $list = [];
@@ -765,6 +771,8 @@ class FormHandler
                 );
             }
             $this->gotoLocation($this->FG_LOCATION_AFTER_ADD ?? "?form_action=ask-edit&id=", $this->QUERY_RESULT);
+        } else {
+            $form_action = "ask-add";
         }
     }
 
@@ -841,7 +849,7 @@ class FormHandler
      *
      * @public
      */
-    public function perform_delete(): void
+    public function perform_delete(string &$form_action): void
     {
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->all_fields_valid = true;
@@ -866,6 +874,7 @@ class FormHandler
             $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? "?form_action=list");
         } else {
             $this->delete_message_error .= (" " . _("There was a database error."));
+            $form_action = "ask-delete";
         }
     }
 
@@ -978,52 +987,11 @@ class FormHandler
         $this->gotoLocation("?form_action=ask-edit&id=");
     }
 
-
-    /**
-     * Function to create the top page section
-     * todo: return, don't echo
-     */
-    public function create_toppage(string $form_action): void
-    {
-        $help = "";
-        $msg = "";
-        if ($form_action === "ask-edit" || $form_action === "edit") {
-            if ($form_action === "ask-edit") {
-                $help = $this->edit_help_text ?: $this->help_text;
-            }
-            $msg = $this->edit_message_intro;
-        } elseif ($form_action === "ask-add") {
-            $msg = $this->add_message_intro;
-            $help = $this->add_help_text ?: $this->help_text;
-        } elseif ($form_action === "ask-delete") {
-            if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)) {
-                // this function can insert a warning into the page top before delete is done
-                $processed = $this->getProcessed();
-                ($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)($processed[$this->FG_QUERY_PRIMARY_KEY]);
-            }
-            $msg = $this->delete_message_intro;
-            $help = $this->del_help_text ?: $this->help_text;
-        } elseif ($form_action === "list") {
-            $help = $this->list_help_text ?: $this->help_text;
-        }
-
-        if ($help) {
-            $help = "<div class='row pb-3 align-items-center' id='create_toppage_help'><div class='col'>$help</div></div>";
-        }
-        if ($msg) {
-            $msg = "<div class='row pb-3 align-items-center' id='create_toppage'><div class='col'>$msg</div></div>";
-        }
-
-        echo $help . $msg;
-
-        $this->create_actionfinish($form_action);
-    }
-
     /**
      * Display a result message after add or delete is complete
-     * @todo: show this on edit as well
+     * @todo add/delete success never displays because it redirects to edit or list pages
      */
-    public function create_actionfinish($form_action): void
+    public function create_toppage($form_action): void
     {
         $class = $this->QUERY_RESULT ? "success" : "danger";
         if (!empty($_POST) && str_ends_with($form_action, "delete")) {
@@ -1086,7 +1054,6 @@ class FormHandler
 
             case "delete":
             case "add":
-                $this->create_actionfinish($form_action);
                 break;
 
             default:

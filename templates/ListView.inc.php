@@ -15,6 +15,13 @@ namespace A2billing\Forms;
  */
 $cols = array_keys(array_first($list ?? []) ?? []);
 ?>
+<?php if ($help = $form->list_help_text ?: $form->help_text): ?>
+<div class="row pb-3 align-items-center" id="create_toppage_help">
+    <div class='col'>
+        <?= $help ?>
+    </div>
+</div>
+<?php endif ?>
 
 <?php if ($this->filter || ($popup_select < 1 && count($this->topButtons) > 0)): ?>
 <div class="row pb-3 align-items-end" id="list-filter-container">

@@ -12,6 +12,21 @@ use A2billing\Forms\Elements\EditElement;
  * @var EditElement[] $elements
  */
 ?>
+<?php if (($help = $form->add_help_text ?: $form->help_text)): ?>
+<div class="row pb-3 align-items-center" id="create_toppage_help">
+    <div class='col'>
+        <?= $help ?>
+    </div>
+</div>
+<?php endif ?>
+
+<?php if ($form->add_message_intro): ?>
+<div class="row pb-3 align-items-center" id="create_toppage">
+    <div class='col'>
+        <?= $form->add_message_intro ?>
+    </div>
+</div>
+<?php endif ?>
 
 <form action="" method="post" name="myForm" id="myForm">
     <input type="hidden" name="form_action" value="add"/>
