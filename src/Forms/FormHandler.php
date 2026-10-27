@@ -650,7 +650,7 @@ class FormHandler
                 case Search\Popup::class:
                 case Search\Radio::class:
                 case Search\Select::class:
-                    $col = $el->column;
+                    $col = $el->sanitizeColumn($el->column);
                     if (empty($processed[$col])) {
                         break;
                     }
@@ -668,7 +668,7 @@ class FormHandler
                 case Search\DateRange::class:
                     $suffixes ??= ["start", "end"];
                     foreach ($suffixes as $i) {
-                        $col = "{$el->column}_$i";
+                        $col = $el->sanitizeColumn("{$el->column}_$i");
                         if (empty($processed["enable_$col"]) || empty($processed[$col])) {
                             continue;
                         }
@@ -682,7 +682,7 @@ class FormHandler
                     unset($suffixes);
                     break;
                 case Search\DateRelative::class:
-                    $col = $el->column . ($el->start ? "_start" : "_end") . "_relative";
+                    $col = $el->sanitizeColumn($el->column . ($el->start ? "_start" : "_end") . "_relative");
                     if (empty($processed["enable_$col"]) || empty($processed[$col])) {
                         break;
                     }
