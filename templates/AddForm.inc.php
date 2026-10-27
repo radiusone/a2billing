@@ -21,10 +21,7 @@ use A2billing\Forms\Elements\EditElement;
     <?= $row->render($i, $processed[$row->name] ?? null) ?>
 <?php endforeach ?>
 
-    <div class="row my-4 justify-content-between">
-        <div class="col-auto">
-            <?= $form->add_message_bottom ?>
-        </div>
+    <div class="row my-4 justify-content-end">
         <div class="col-auto">
             <a class="btn btn-secondary" href="?form_action=list"><?= _("Cancel") ?></a>
             <button type="submit" class="btn btn-primary"><?= _("Save") ?></button>

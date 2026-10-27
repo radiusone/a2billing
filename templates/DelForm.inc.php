@@ -62,10 +62,7 @@ use A2billing\Forms\Elements\EditElement;
         <?= $row->render($i, $db_data[$i]) ?>
     <?php endforeach ?>
 
-    <div class="row my-4 justify-content-between">
-        <div class="col-auto">
-            <?= $form->delete_message_bottom ?>
-        </div>
+    <div class="row my-4 justify-content-end">
         <div class="col-auto">
             <a class="btn btn-secondary" href="?form_action=list"><?= _("Cancel") ?></a>
             <button type="submit" class="btn btn-danger"><?= _("Delete") ?></button>

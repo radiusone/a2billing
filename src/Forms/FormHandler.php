@@ -158,15 +158,6 @@ class FormHandler
     /** @var string Error text for the delete page */
     public string $delete_message_error;
 
-    /** @var string Text telling you to click the button on the add page */
-    public string $add_message_bottom;
-
-    /** @var string Text telling you to click the button */
-    public string $edit_message_bottom;
-
-    /** @var string Text telling you to click the button */
-    public string $delete_message_bottom;
-
     /** @var (callable(int|numeric-string, array<string,mixed>):void)|null Static method of FormBO class executed after creating */
     public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = null;
 
@@ -284,10 +275,6 @@ class FormHandler
         $this->add_message_error = sprintf(_("There was an error creating your %s."), $inst);
         $this->edit_message_error = sprintf(_("There was an error editing your %s."), $inst);
         $this->delete_message_error = sprintf(_("There was an error deleting your %s."), $inst);
-
-        $this->add_message_bottom =
-        $this->edit_message_bottom = _("Click “Save” to continue");
-        $this->delete_message_bottom = _("Click “Delete” to continue");
 
         $this->delete_message_confirm_fk = _("Are you sure you want to delete all records connected to this instance?");
     }
