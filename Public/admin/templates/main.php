@@ -76,7 +76,6 @@ $menu_section ??= 0;
                             <li><a class="link-dark rounded" href="A2B_import_card.php"><?= _("Import") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_friend.php?voip_conf=sip"><?= _("VoIP Settings") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_callerid.php"><?= _("Caller-ID") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_notifications.php"><?= _("Credit Notification") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_card_group.php"><?= _("Groups") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_card_seria.php"><?= _("Card series") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_speeddial.php"><?= _("Speed Dial") ?></a></li>
