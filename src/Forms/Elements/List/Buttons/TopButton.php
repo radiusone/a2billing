@@ -15,18 +15,19 @@ class TopButton extends ListButton
 
     public function renderButton(int $id = 0, array $row = []): string
     {
-        $icon = $this->icon
-            ? sprintf(
-                '<span class="bi bi-16 bi-%s" aria-hidden="true"></span>',
-                htmlspecialchars($this->icon)
-            )
-            : "";
+        $h = <<< HTML
+        <div class="col-auto ms-auto">
+            <a href="%s" class="text-decoration-none">
+                %s&nbsp;<span class="bi bi-16 bi-%s" aria-hidden="true"></span>
+            </a>
+        </div>
+        HTML;
 
         return sprintf(
-            '<div class="col-auto ms-auto"><a href="%s" class="text-decoration-none">%s&nbsp;%s</a></div>',
+            $h,
             htmlspecialchars($this->link),
             htmlspecialchars($this->label),
-            $icon
+            $this->icon
         );
     }
 }
