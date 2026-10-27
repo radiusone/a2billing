@@ -1151,7 +1151,7 @@ class FormHandler
 
         $ret = <<< HTML
         <nav aria-label="page navigation">
-            <ul class="pagination pagination-sm justify-content-center m-0">
+            <ul class="pagination pagination-sm m-0">
                 <li class="page-item $prevdis">
                     $firstlink
                 </li>

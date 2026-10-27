@@ -81,7 +81,7 @@ $cols = array_keys(array_first($list ?? []) ?? []);
 </div>
 
 <div class="row pb-3 justify-content-between align-items-center">
-    <div class="col-3" id="list-displaylimit-container">
+    <div class="col-auto" id="list-displaylimit-container">
         <form id="displaylimit_form" action="" class="row">
             <label for="displaylimit" class="col-auto col-form-label-sm"><?= gettext("Display");?></label>
             <input type="hidden" name="id" value="<?= $processed["id"] ?? "" ?>"/>
@@ -108,7 +108,7 @@ $cols = array_keys(array_first($list ?? []) ?? []);
         </form>
     </div>
 
-    <div class="col-6" id="list-pagination-container">
+    <div class="col-auto d-flex <?= $form->exportColumns ? "justify-content-center" : "justify-content-end" ?>" id="list-pagination-container">
         <?= FormHandler::printPages(
             (int)($processed['current_page'] ?? 0) + 1,
             $form->FG_LIST_VIEW_PAGE_COUNT,
@@ -118,7 +118,7 @@ $cols = array_keys(array_first($list ?? []) ?? []);
     </div>
 
     <?php if ($form->exportColumns): ?>
-    <div class="col-3 list-export-container d-flex align-items-center justify-content-end">
+    <div class="col-auto list-export-container d-flex align-items-center justify-content-end">
         <a href="?form_action=export-csv" class="mx-2 text-decoration-none">
             <div class="bi bi-24 bi-filetype-xls text-center mb-1" aria-hidden="true"></div>
             <?= gettext("Export CSV") ?>
