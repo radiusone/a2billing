@@ -96,7 +96,9 @@ $HD_Form->AddEditElement(
     "pwd_encoded",
     $form_action === "ask-edit" ? _("Enter a new password or leave blank to keep the old one") : _("Enter a new password"),
     ["maxlength" => 32],
-    $form_action === "ask-edit" ? [Validator::class, "min8CharsOptional"] : [Validator::class, "min8Chars"]
+    $form_action === "ask-edit" ? [Validator::class, "min8CharsOptional"] : [Validator::class, "min8Chars"],
+    custom_function: fn() => "",
+    save_function: fn ($value) => password_hash($value, PASSWORD_DEFAULT),
 );
 
 if ($subadmin) {

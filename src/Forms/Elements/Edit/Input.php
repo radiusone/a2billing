@@ -25,7 +25,8 @@ class Input extends EditElement
      * @param string $error A message to show if validation fails
      * @param string $check_empty If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
      * @param string|null $default When adding (not editing), the value of the input
-     * @param callable(string):string|null $callback A callback to run the value through before displaying it
+     * @param (callable(string):string)|null $display_callback A callback to run the value through before displaying it
+     * @param (callable(string):string)|null $save_callback A callback to run the value through before saving it to database
      * @param bool $splittable If true, value is "splittable" during create or edit (values like e.g. 12-14 or 15;16;17)
      */
     public function __construct(
@@ -37,7 +38,8 @@ class Input extends EditElement
         string $error = "",
         string $check_empty = "",
         ?string $default = null,
-        protected mixed $callback = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
+        protected mixed $display_callback = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
+        public mixed $save_callback = null,
         public bool $splittable = false,
     )
     {
@@ -87,8 +89,8 @@ class Input extends EditElement
             $this->value ??= $this->default ?? "";
         }
         $value = $this->value;
-        if ($this->callback) {
-            $value = ($this->callback)("$value");
+        if ($this->display_callback) {
+            $value = ($this->display_callback)("$value");
         }
         $this->attributes["type"] ??= "text";
         $attributes = $this->attributeString();

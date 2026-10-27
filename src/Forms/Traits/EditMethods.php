@@ -18,6 +18,7 @@ trait EditMethods
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
      * @param string|null $default_value When adding (not editing), the value of the input
      * @param callable(string):string|null $custom_function A callback to run the value through before displaying it
+     * @param (callable(string):string)|null $save_function A callback to run the value through before saving it to database
      * @param bool $splittable If true, value is "splittable" during create or edit (values like e.g. 12-14 or 15;16;17)
      * @return $this
      */
@@ -30,7 +31,8 @@ trait EditMethods
         string $error_message = "",
         string $check_emptyvalue = "",
         ?string $default_value = "",
-        ?callable $custom_function = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
+        ?callable $custom_function = null,
+        ?callable $save_function = null,
         bool $splittable = false,
     ): static
     {
@@ -44,6 +46,7 @@ trait EditMethods
             $check_emptyvalue,
             $default_value,
             $custom_function,
+            $save_function,
             $splittable
         ));
 

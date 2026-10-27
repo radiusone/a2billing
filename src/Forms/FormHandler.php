@@ -21,8 +21,6 @@ use Illuminate\Database\Query\Builder;
 use PhpProfiler\Console;
 use Throwable;
 
-use const PASSWORD_DEFAULT;
-
 /***************************************************************************
  *
  * Class.FormHandler.php : FormHandler - PHP : Handle, Form Generator (FG) for A2Billing
@@ -359,15 +357,6 @@ class FormHandler
                 $processed[$key] ??= $value;
                 $key = str_replace("^^", ".", $key);
             }
-            // this is hashing admin and agent passwords on save
-            // todo: make this a property of the input component or something
-            if ($key === "pwd_encoded") {
-                if ($value) {
-                    $value = password_hash($value, PASSWORD_DEFAULT);
-                } else {
-                    continue;
-                }
-            }
             $processed[$key] ??= $value;
         }
 
@@ -585,11 +574,6 @@ class FormHandler
                 $this->edit_message_error .= " " . $e->getMessage();
                 $this->QUERY_RESULT = false;
             }
-
-            // don't display the hashed password in the text box
-            if (count($list) > 0 && array_key_exists("pwd_encoded", $list[0])) {
-                $list[0]["pwd_encoded"] = "";
-            }
         }
 
         return $list;
@@ -745,6 +729,8 @@ class FormHandler
 
             if (($row instanceof Input || $row instanceof Textarea) && $row->splittable) {
                 $split_values[$field] = $row->getSplitValues($processed[$field]);
+            } elseif ($row instanceof Input && $row->save_callback) {
+                $values[$field] = ($row->save_callback)($processed[$field]);
             } elseif ($processed[$field] === "" && ($row instanceof Input && $row->empty_is_null)) {
                 $values[$field] = null;
             } elseif ($processed[$field] !== "") {
@@ -833,6 +819,8 @@ class FormHandler
 
             if ($processed[$field] === "" && $row instanceof Input && $row->empty_is_null) {
                 $values[$field] = null;
+            } elseif ($row instanceof Input && $row->save_callback) {
+                $values[$field] = ($row->save_callback)($processed[$field]);
             } else {
                 $values[$field] ??= $processed[$field];
             }
